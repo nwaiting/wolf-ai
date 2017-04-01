@@ -9,6 +9,12 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+db_host = '10.200.11.74'
+db_port = 3306
+db_user = 'root'
+db_passwd = 'root'
+db_name = 'spider'
+
 BOT_NAME = 'dhseed'
 
 SPIDER_MODULES = ['dhseed.spiders']
