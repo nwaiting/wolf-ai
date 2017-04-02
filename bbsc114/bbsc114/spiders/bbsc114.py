@@ -3,6 +3,7 @@ import sys
 import os
 import scrapy
 import urlparse
+import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from items import Bbsc114Item
@@ -12,16 +13,29 @@ sys.setdefaultencoding('utf-8')
 
 class Bbsc114Spider(scrapy.Spider):
     name = "bbsc114"
-    allowed_domains = ["c114.net"]
-    base_url = "http://bbs.c114.net/askjob/"
+    allowed_domains = ["www.originseed.com"]
+    base_url = "http://www.originseed.com.cn/news/"
     start_urls = (
-        'http://bbs.c114.net/askjob/browse.php?type=2',
+        'http://www.originseed.com.cn/news/view.php?pid=15&id=892',
     )
     
     def __init__(self):
         self.all_contents = ""
     
     def parse(self, response):
+        details = response.xpath("//td[@class='zhengwen-zhong']/div[@align='left']/p/span")
+        re_hm = str()
+        result = str()
+        re_comp = re.compile(r'(?<=\>)(.*?)(?=\<)', re.U | re.S)
+        for ite in details.xpath("font/span").extract():
+            re_hm += ite.strip()
+        for ite in re_comp.findall(re_hm):
+            result += ite.strip()
+        for ite in details.xpath("span/font/text()").extract():
+            result += ite.strip()
+        print result
+        return
+    
         # sites = response.xpath(".//div[@id='main']/div[@id='middle']/div[@id='left2']/div[@class='w100']/div[@id='pg']/a[last()-1]@href").extract()
 	sites = response.xpath(".//*[@id='pg']/a[10]/text()").extract()
         print "sites {}".format(sites)

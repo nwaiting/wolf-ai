@@ -9,6 +9,12 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+db_host = '127.0.0.1'
+db_port = 3306
+db_user = 'root'
+db_passwd = 'root'
+db_name = 'spider'
+
 BOT_NAME = 'originseed'
 
 SPIDER_MODULES = ['originseed.spiders']
@@ -64,9 +70,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    'originseed.pipelines.OriginseedPipeline': 300,
-#}
+ITEM_PIPELINES = {
+    'originseed.pipelines.OriginseedPipeline': 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See http://doc.scrapy.org/en/latest/topics/autothrottle.html
