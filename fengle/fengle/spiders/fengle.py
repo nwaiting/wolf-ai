@@ -5,26 +5,25 @@ sys.setdefaultencoding('utf-8')
 import os
 import scrapy
 import urlparse
+from scrapy.selector import Selector
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from items import DhseedItem
+from items import FengleItem
 
 class DhseedSpider(scrapy.Spider):
-    name = "dhseed"
-    allowed_domains = ["dhseed.com"]
-    base_url = "http://www.dhseed.com"
+    name = "fengle"
+    allowed_domains = ["fengle.com.cn"]
+    base_url = "http://www.fengle.com.cn"
     start_urls = ( 
-        'http://www.dhseed.com/news_more.asp?lm2=169',
-        #'http://www.dhseed.com/news_more.asp?lm2=170',
-        #'http://www.dhseed.com/news_more.asp?lm2=191'
+        'http://www.fengle.com.cn/list/?116_1.html',
     )   
 
     def __init__(self):
         self.all_contents = ""
     
     def parse(self, response):
-        sites = response.xpath(".//*[@id='content']/div[2]/table/tbody/tr[2]/td/center/a[1]/@href").extract()
-        sites = response.xpath(".//*[@id='content']/div[2]").extract()
+        sites = response.xpath("html/body/div[2]/div[2]/div/div[2]/div/div/a[1]/text()").extract()
+        sites = Selector(response=response).xpath('html/body/div[2]/div[2]/div/div[2]/div/div/a[1]/text()').extract()
         print "sites {}".format(sites)
         return 
         for url in sites.xpath("@href").extract():
@@ -39,7 +38,7 @@ class DhseedSpider(scrapy.Spider):
             yield scrapy.Request(detailurl, callback=self.parse_detail)
 
     def parse_detail(self, response):
-        bitem = DhseedItem()
+        bitem = FengleItem()
         bitem['art_title'] = response.xpath(".//*[@id='content']/div[1]/font/text()")
         #  2017-3-23 14:28:44 编辑：dhseed 来源：敦煌种业 浏览次数：
         detail_info = response.xpath(".//*[@id='content']/div[2]/text()")

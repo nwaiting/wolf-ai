@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for dhseed project
+# Scrapy settings for fengle project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,20 +9,14 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
-db_host = '127.0.0.1'
-db_port = 3306
-db_user = 'root'
-db_passwd = 'root'
-db_name = 'spider'
+BOT_NAME = 'fengle'
 
-BOT_NAME = 'dhseed'
-
-SPIDER_MODULES = ['dhseed.spiders']
-NEWSPIDER_MODULE = 'dhseed.spiders'
+SPIDER_MODULES = ['fengle.spiders']
+NEWSPIDER_MODULE = 'fengle.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'dhseed (+http://www.yourdomain.com)'
+#USER_AGENT = 'fengle (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -53,13 +47,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'dhseed.middlewares.DhseedSpiderMiddleware': 543,
+#    'fengle.middlewares.MyCustomSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'dhseed.middlewares.MyCustomDownloaderMiddleware': 543,
+#    'fengle.middlewares.MyCustomDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -71,7 +65,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'dhseed.pipelines.DhseedPipeline': 300,
+    'fengle.pipelines.FenglePipeline': 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

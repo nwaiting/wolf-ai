@@ -7,27 +7,28 @@ import scrapy
 import urlparse
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from items import DhseedItem
+from items import OriginseedItem
 
-class DhseedSpider(scrapy.Spider):
-    name = "dhseed"
-    allowed_domains = ["dhseed.com"]
-    base_url = "http://www.dhseed.com"
+class OriginseedSpider(scrapy.Spider):
+    name = "originseed"
+    allowed_domains = ["originseed.com.cn"]
+    base_url = "http://www.originseed.com.cn/news/"
     start_urls = ( 
-        'http://www.dhseed.com/news_more.asp?lm2=169',
-        #'http://www.dhseed.com/news_more.asp?lm2=170',
-        #'http://www.dhseed.com/news_more.asp?lm2=191'
+        'http://www.originseed.com.cn/news/list.php?pid=15&id=8',
+        #'http://www.originseed.com.cn/news/list.php?pid=15&id=45',
     )   
 
     def __init__(self):
         self.all_contents = ""
     
     def parse(self, response):
-        sites = response.xpath(".//*[@id='content']/div[2]/table/tbody/tr[2]/td/center/a[1]/@href").extract()
-        sites = response.xpath(".//*[@id='content']/div[2]").extract()
+        #with open('a.log', 'w') as f:
+        #    f.write(''.join(response.body))
+        #return
+        sites = response.xpath("html")
         print "sites {}".format(sites)
         return 
-        for url in sites.xpath("@href").extract():
+        for url in sites.xpath("/@href").extract():
             next_curl = sites.xpath("/text()").extract()
             if next_curl[0] == "下一页":
                 new_url = urlparse.urljoin(self.base_url, url)
