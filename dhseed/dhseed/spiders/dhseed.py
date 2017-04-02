@@ -23,26 +23,37 @@ class DhseedSpider(scrapy.Spider):
         self.all_contents = ""
     
     def parse(self, response):
-        sites = response.xpath(".//*[@id='content']/div[2]/table/tbody/tr[2]/td/center/a[1]/@href").extract()
-        sites = response.xpath(".//*[@id='content']/div[2]").extract()
-        print "sites {}".format(sites)
-        return 
-        for url in sites.xpath("@href").extract():
-            next_curl = sites.xpath("/text()").extract()
-            if next_curl[0] == "下一页":
-                new_url = urlparse.urljoin(self.base_url, url)
-                yield scrapy.Request(new_url, callback=self.parse)
+        sites = response.xpath("//td[@valign='top']/center/a[1]")
+        print "sites ", sites.xpath("text()").extract()
+        if sites.xpath("text()").extract()[0] == "下一页":
+            new_url = urlparse.urljoin(self.base_url, sites.xpath("@href").extract()[0].strip())
+            print "new_url {}".format(new_url)
+            yield scrapy.Request(new_url, callback=self.parse)
 
-        for detailinfo in response.xpath(".//*[@id='content']/div[2]/table/tbody/tr[2]/td/table/tbody"):
-            detailurl = detailinfo.xpath("td[2]/a/@href").extract()
+        for detailurl in response.xpath("//td/a[@target='_top']/@href").extract():
             detailurl = self.base_url + detailurl
             yield scrapy.Request(detailurl, callback=self.parse_detail)
 
     def parse_detail(self, response):
         bitem = DhseedItem()
-        bitem['art_title'] = response.xpath(".//*[@id='content']/div[1]/font/text()")
+        bitem['art_title'] = ''
+        bitem['art_content'] = ''
+        bitem['art_from'] = ''
+        bitem['art_author'] = ''
+        bitem['art_read'] = ''
+        bitem['art_pub_time'] = ''
+        
+        details = response.xpath("//div[@id='content']/div")
+        titles = details.xpath("font/text()").extract()
+        if len(titles) > 0:
+            bitem['art_title'] = titles[0]
+
+        infos = details.xpath("span/text()").extract()
+        if len(infos) > 0:
+            bitem['art_read'] = infos[0]
+
         #  2017-3-23 14:28:44 编辑：dhseed 来源：敦煌种业 浏览次数：
-        detail_info = response.xpath(".//*[@id='content']/div[2]/text()")
+        detail_info = details.xpath("text()").extract()[0]
         t_index = detail_info.find("编辑：")
         if t_index:
             bitem['art_pub_time'] = detail_info[:detail_info.find("编辑：")].strip()
@@ -54,8 +65,9 @@ class DhseedSpider(scrapy.Spider):
         t_index_2 = detail_info.find("浏览次数：")
         if t_index_2 > t_index:
             bitem['art_from'] = detail_info[t_index:t_index_2].strip()
-        bitem['art_read'] = response.xpath(".//*[@id='hits']/text()")
-        bitem['art_content'] = response.xpath(".//*[@id='content']/div[3]/p[1]/text()")
+
+        for info in details.xpath("p/text()").extract():
+            bitem['art_content'] += info.strip()
         yield bitem
 
 

@@ -19,7 +19,7 @@ class DBManager(object):
     @staticmethod
     def get_db():
         if not DBManager.g_db:
-            DBManager.g_db = MySQLdb.connect(host=db_host, port=db_port, user=db_user, passwd=db_passwd, db=db_name)
+            DBManager.g_db = MySQLdb.connect(host=db_host, port=db_port, user=db_user, passwd=db_passwd, db=db_name, charset='utf8')
             sql = "CREATE TABLE IF NOT EXISTS {0}(" \
                   "id int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增长id'," \
                   "art_title VARCHAR(1024) NOT NULL COMMENT 'article title'," \
