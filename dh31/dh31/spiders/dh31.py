@@ -43,16 +43,15 @@ class Dh31Spider(scrapy.Spider):
 
         if response.url.find("news.asp") != -1:
             for detailurl in response.xpath("//div[@class='right_news']/ul/li/a/@href").extract():
-                print "before news.asp detailurl {0} {1}".format(self.news_base_url, detailurl)
                 detailurl = urlparse.urljoin(self.news_base_url, detailurl)
                 print "news.asp detailurl {}".format(detailurl)
-                #yield scrapy.Request(detailurl, callback=self.parse_detail)
+                yield scrapy.Request(detailurl, callback=self.parse_detail)
 
         if response.url.find("pro.asp") != -1:
             for detailurl in response.xpath("//div[@class='cp']/div[@class='cp_title']/a/@href").extract():
                 detailurl = urlparse.urljoin(self.pro_base_url, detailurl)
                 print "pro.asp detailurl {}".format(detailurl)
-                #yield scrapy.Request(detailurl, callback=self.parse_detail)
+                yield scrapy.Request(detailurl, callback=self.parse_detail)
 
     def parse_detail(self, response):
         bitem = Dh31Item()
@@ -83,6 +82,18 @@ class Dh31Spider(scrapy.Spider):
 
         for ite in details.xpath("div[@class='nei-xx']/p/span/text()").extract():
             bitem['art_content'] += ite
+
+        if not bitem['art_content']:
+            for ite in details.xpath("div[@class='nei-xx']/div/p/text()").extract():
+                bitem['art_content'] += ite
+
+        if not bitem['art_content']:
+            for ite in details.xpath("div[@class='nei-xx']/p/text()").extract():
+                bitem['art_content'] += ite
+        
+        if not bitem['art_content']:
+            for ite in details.xpath("div[@class='nei-xx']/span/p/span/text()").extract():
+                bitem['art_content'] += ite
 
         if not bitem['art_content']:
             print "content null {}".format(response.url)
