@@ -54,7 +54,6 @@ class OriginseedSpider(scrapy.Spider):
         result = (''.join(response.xpath("//div[@align='left']/p[@class='MsoNormal']/span/text()").extract())).strip()
         bitem['art_content'] = result
 
-        
         re_comp = re.compile(r'(?<=\>)(.*?)(?=\<)', re.U | re.S)
         if not result:
             re_hm = str()

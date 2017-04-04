@@ -9,6 +9,12 @@
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
 
+db_host = '127.0.0.1'
+db_port = 3306
+db_user = 'root'
+db_passwd = 'root'
+db_name = 'spider'
+
 BOT_NAME = 'fengle'
 
 SPIDER_MODULES = ['fengle.spiders']
