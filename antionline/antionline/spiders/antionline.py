@@ -21,27 +21,21 @@ class AntionlineSpider(scrapy.Spider):
         self.all_contents = ""
     
     def parse(self, response):
-        for site in response.xpath("//div[@class='titleline']/h2[@class='forumtitle']/a/@href").extract():
+        # total 0405
+        for site in response.xpath("//h2[@class='forumtitle']/a/@href").extract():
             new_url = urlparse.urljoin(self.base_url, site)
-            yield scrapy.Request(new_url, callback=self.parse)
+            yield scrapy.Request(new_url, callback=self.middle_parse)
 
+    def middle_parse(self, response):
+        # next page 0405
+        for detailurl in response.xpath("//span[@class='prev_next']/a/@href").extract():
+            detailurl = urlparse.urljoin(self.base_url, detailurl)
+            yield scrapy.Request(detailurl, callback=self.middle_parse)
 
-        # 先遍历列表然后遍历下一页
-        for detail in response.xpath("//div[@class='inner']/h3[@class=threadtitle]/a/@href").extract():
+        # on one page 0405
+        for detail in response.xpath("//h3[@class='threadtitle']/a/@href").extract():
             detail_url = urlparse.urljoin(self.base_url, detail)
             yield scrapy.Request(detail_url, callback=self.parse_detail)
-
-        next_details = response.xpath().extract()
-        # todo
-
-        if sites.xpath("text()").extract()[0] == "下一页":
-            new_url = urlparse.urljoin(self.base_url, sites.xpath("@href").extract()[0].strip())
-            print "new_url {}".format(new_url)
-            yield scrapy.Request(new_url, callback=self.parse)
-
-        for detailurl in response.xpath("//td/a[@target='_top']/@href").extract():
-            detailurl = urlparse.urljoin(self.base_url, detailurl)
-            yield scrapy.Request(detailurl, callback=self.parse_detail)
 
     def parse_detail(self, response):
         bitem = AntionlineItem()
@@ -52,6 +46,8 @@ class AntionlineSpider(scrapy.Spider):
         bitem['art_read'] = ''
         bitem['art_pub_time'] = ''
         
+        # content 0405
+        "//div[@class='content']/div/blockquote/text()"
         details = response.xpath("//div[@id='content']/div")
         titles = details.xpath("font/text()").extract()
         if len(titles) > 0:
