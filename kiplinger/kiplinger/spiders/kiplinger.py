@@ -33,8 +33,12 @@ class DhseedSpider(scrapy.Spider):
             url = 'http://www.kiplinger.com/requires/nextrecent.php?boxId={0}&frontId=7&frontType=channels&globalAgg=0&catFilter=0&_={1}'.format(box_id, time_stamp)
             box_id += 1
             time_stamp += 1
-            yield scrapy.Request(url, callback=self.parse_detail)
+            yield scrapy.Request(url, callback=self.parse_detail_list)
             
+    def parse_detail_list(self, response):
+        for url in response.xpath("//div[@class='kip-thumb pull-left']/a/@href").extract():
+            url = urlparse.urljoin(self.base_url, url)
+            yield scrapy.Request(url, callback=self.parse_detail)
 
     def parse_detail(self, response):
         if response.status != 200:
@@ -49,31 +53,26 @@ class DhseedSpider(scrapy.Spider):
         bitem['art_read'] = ''
         bitem['art_pub_time'] = ''
         
-        details = response.xpath("//div[@id='content']/div")
-        titles = details.xpath("font/text()").extract()
-        if len(titles) > 0:
-            bitem['art_title'] = titles[0]
-
-        infos = details.xpath("span/text()").extract()
+        details = response.xpath("//p[@class='kip-byline clearfix']")
+        infos = details.xpath("text()").extract()
         if len(infos) > 0:
-            bitem['art_read'] = infos[0]
+            bitem['art_pub_time'] = infos[-1].strip()
 
-        #  2017-3-23 14:28:44 编辑：dhseed 来源：敦煌种业 浏览次数：
-        detail_info = details.xpath("text()").extract()[0]
-        t_index = detail_info.find("编辑：")
-        if t_index:
-            bitem['art_pub_time'] = detail_info[:detail_info.find("编辑：")].strip()
-        t_index = detail_info.find("编辑：") + len("编辑：")
-        t_index_2 = detail_info.find("来源：")
-        if t_index_2 > t_index:
-            bitem['art_author'] = detail_info[t_index:t_index_2].strip()
-        t_index = detail_info.find("来源：") + len("来源：")
-        t_index_2 = detail_info.find("浏览次数：")
-        if t_index_2 > t_index:
-            bitem['art_from'] = detail_info[t_index:t_index_2].strip()
+        infos = details.xpath("i/text()").extract()
+        if len(infos) > 0:
+            bitem['art_from'] = infos[0].strip()
 
-        for info in details.xpath("p/text()").extract():
+        names = details.xpath("a/text()").extract()
+        if len(names) > 0:
+            bitem['art_author'] = names[0].strip()
+
+        infos = response.xpath("//div[@class='kip-head row']/div/h1/text()").extract()
+        if len(infos) > 0:
+            bitem['art_title'] = infos[0].strip()
+
+        for info in response.xpath("//div[@class='kip-content']/p/text()").extract()
             bitem['art_content'] += info.strip()
+            
         yield bitem
 
 
