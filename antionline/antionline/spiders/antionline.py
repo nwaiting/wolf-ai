@@ -66,12 +66,12 @@ class AntionlineSpider(scrapy.Spider):
             
         titles = response.xpath("//span[@class='threadtitle']/a/text()").extract()
         if len(titles) > 0:
-            bitem['art_title'] = titles[0]
+            bitem['art_title'] = titles[0].strip()
 
         infos = response.xpath("//span[@class='postdate old']/span[@class='date']/text()").extract()
         if len(infos):
-            bitem['art_pub_time'] = infos[0]
-            
+            bitem['art_pub_time'] = infos[0].strip()
+
         yield bitem
 
 
