@@ -1,5 +1,6 @@
 # scrapy-0331
-antionline: 不能正常打开网页 可能本地网速等相关因素
+<!-- 
+antionline: 
 caas: done
 chinaseed114: done
 dh31: done
@@ -9,3 +10,4 @@ kiplinger:
 originseed: done
 seedtest: 
 yahoo:
+-->
