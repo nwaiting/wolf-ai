@@ -37,6 +37,20 @@ class AntionlineSpider(scrapy.Spider):
             detail_url = urlparse.urljoin(self.base_url, detail)
             yield scrapy.Request(detail_url, callback=self.parse_detail)
 
+        for detail in response.xpath("//span[@class='prev_next']/a/@href").extract():
+            detail_url = urlparse.urljoin(self.base_url, detail)
+            scrapy.Request(detail_url, callback=self.middle_parse_page)
+            break
+
+    def middle_parse_page(self, response):
+        for detail in response.xpath("//span[@class='prev_next']/a/@href").extract():
+            detail_url = urlparse.urljoin(self.base_url, detail)
+            yield scrapy.Request(detail_url, callback=self.middle_parse_page)
+
+        for detail in response.xpath("//h3[@class='threadtitle']/a/@href").extract():
+            detail_url = urlparse.urljoin(self.base_url, detail)
+            yield scrapy.Request(detail_url, callback=self.parse_detail)
+
     def parse_detail(self, response):
         bitem = AntionlineItem()
         bitem['art_title'] = ''
@@ -47,32 +61,17 @@ class AntionlineSpider(scrapy.Spider):
         bitem['art_pub_time'] = ''
         
         # content 0405
-        "//div[@class='content']/div/blockquote/text()"
-        details = response.xpath("//div[@id='content']/div")
-        titles = details.xpath("font/text()").extract()
+        for info in response.xpath("//div[@class='quote_container']/text()").extract():
+            bitem['art_content'] += info.strip()
+            
+        titles = response.xpath("//span[@class='threadtitle']/a/text()").extract()
         if len(titles) > 0:
             bitem['art_title'] = titles[0]
 
-        infos = details.xpath("span/text()").extract()
-        if len(infos) > 0:
-            bitem['art_read'] = infos[0]
-
-        #  2017-3-23 14:28:44 编辑：dhseed 来源：敦煌种业 浏览次数：
-        detail_info = details.xpath("text()").extract()[0]
-        t_index = detail_info.find("编辑：")
-        if t_index:
-            bitem['art_pub_time'] = detail_info[:detail_info.find("编辑：")].strip()
-        t_index = detail_info.find("编辑：") + len("编辑：")
-        t_index_2 = detail_info.find("来源：")
-        if t_index_2 > t_index:
-            bitem['art_author'] = detail_info[t_index:t_index_2].strip()
-        t_index = detail_info.find("来源：") + len("来源：")
-        t_index_2 = detail_info.find("浏览次数：")
-        if t_index_2 > t_index:
-            bitem['art_from'] = detail_info[t_index:t_index_2].strip()
-
-        for info in details.xpath("p/text()").extract():
-            bitem['art_content'] += info.strip()
+        infos = response.xpath("//span[@class='postdate old']/span[@class='date']/text()").extract()
+        if len(infos):
+            bitem['art_pub_time'] = infos[0]
+            
         yield bitem
 
 
