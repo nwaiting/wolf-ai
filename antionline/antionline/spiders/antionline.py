@@ -23,22 +23,22 @@ class AntionlineSpider(scrapy.Spider):
     def parse(self, response):
         # total 0405
         for site in response.xpath("//h2[@class='forumtitle']/a/@href").extract():
-            new_url = urlparse.urljoin(self.base_url, site)
+            new_url = urlparse.urljoin(self.base_url, site.strip())
             yield scrapy.Request(new_url, callback=self.middle_parse)
 
     def middle_parse(self, response):
         # next page 0405
         for detailurl in response.xpath("//span[@class='prev_next']/a/@href").extract():
-            detailurl = urlparse.urljoin(self.base_url, detailurl)
+            detailurl = urlparse.urljoin(self.base_url, detailurl.strip())
             yield scrapy.Request(detailurl, callback=self.middle_parse)
 
         # on one page 0405
         for detail in response.xpath("//h3[@class='threadtitle']/a/@href").extract():
-            detail_url = urlparse.urljoin(self.base_url, detail)
+            detail_url = urlparse.urljoin(self.base_url, detail.strip())
             yield scrapy.Request(detail_url, callback=self.parse_detail)
 
         for detail in response.xpath("//span[@class='prev_next']/a/@href").extract():
-            detail_url = urlparse.urljoin(self.base_url, detail)
+            detail_url = urlparse.urljoin(self.base_url, detail.strip())
             scrapy.Request(detail_url, callback=self.middle_parse_page)
             break
 
@@ -71,6 +71,9 @@ class AntionlineSpider(scrapy.Spider):
         infos = response.xpath("//span[@class='postdate old']/span[@class='date']/text()").extract()
         if len(infos):
             bitem['art_pub_time'] = infos[0].strip()
+
+        if not bitem['art_content']:
+            print "content null {}".format(response.url)
 
         yield bitem
 
