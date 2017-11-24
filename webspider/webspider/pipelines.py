@@ -5,6 +5,10 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 from scrapy.exceptions import DropItem
+import json
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 class WebspiderPipeline(object):
     def __init__(self,v=None):
@@ -50,10 +54,14 @@ class WebspiderPipelineIqiyi(object):
 
     def process_item(self, item, spider):
         #to do 存储等
+        #print 'WebspiderPipelineIqiyi process'
         #from webspider.items import WebspiderPipelineIqiyiItem
         #item = WebspiderPipelineIqiyiItem()
-        s = "{0}, {1}, {2}, {3}".format(item.name, item.score, item.actors, item.isvip)
-        self.savefile.write(s)
+        #s = "{0}, {1}, {2}, {3}".format(item['name'], item['score'], item['actors'], item['isvip'])
+        #self.savefile.write(s)
+        #print u"{0} {1}".format(item['name'], item)
+        #self.savefile.write(json.dumps(dict(item), encoding='utf-8') + "\n")
+        self.savefile.write(u"{0}-{1}-{2}-{3}\n".format(item['name'], item['score'], item['isvip'], item['actors']))
         #raise DropItem()
 
     def open_spider(self,spider):
