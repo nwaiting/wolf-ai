@@ -76,9 +76,7 @@ class WebspiderSpiderMiddleware(object):
 
 class RandomUserAgentDownMiddleware(object):
     def process_request(self, request, spider):
-        print 'process_request'
         request.headers.setdefault('User-Agent', random.choice(USER_AGENTS))
 
     def process_response(self, request, response, spider):
-        print('process_response')
         return response

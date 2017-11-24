@@ -12,3 +12,12 @@ class WebspiderItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
+
+class WebspiderPipelineIqiyiItem(scrapy.Item):
+    name = scrapy.Field()
+    score = scrapy.Field()
+    totalsee = scrapy.Field()
+    good = scrapy.Field()
+    bad = scrapy.Field()
+    isvip = scrapy.Field()
+    actors = scrapy.Field()
