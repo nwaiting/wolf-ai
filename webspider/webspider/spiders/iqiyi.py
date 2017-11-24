@@ -46,5 +46,14 @@ class IqiyiSpider(scrapy.Spider):
                 webiqiyi['actors'] = actors
                 yield webiqiyi
                 #print u"=================== {0} {1} {2}".format(webiqiyi['name'], webiqiyi['score'], webiqiyi['actors'])
+
+                """
+                子页面分数：
+                http://score-video.iqiyi.com/beaver-api/get_sns_score?qipu_ids=820545900&appid=21&tvid=820545900&pageNo=1&callback=window.Q.__callbacks__.cb6c2i3y
+
+                子页面评论等：
+                http://mixer.video.iqiyi.com/jp/mixin/videos/820545900?select=user,credit,focus,star,cast&status=1&callback=playInfo96
+                """
+
         except Exception as e:
             print "error {0}".format(e)
