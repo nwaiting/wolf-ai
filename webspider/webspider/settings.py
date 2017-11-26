@@ -102,7 +102,7 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-DEPTH_LIMIT = 3
+#DEPTH_LIMIT = 3
 
 #WARNING: Got data loss in http://list.iqiyi.com/. If you want to process broken responses set the setting DOWNLOAD_FAIL_ON_DATALOSS = False -- This message won't be shown in further requests
 DOWNLOAD_FAIL_ON_DATALOSS = False

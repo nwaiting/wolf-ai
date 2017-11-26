@@ -48,7 +48,7 @@ class WebspiderPipeline(object):
 
 class WebspiderPipelineIqiyi(object):
     def __init__(self):
-        self.file_name = 'iqiyi.log'
+        self.file_name = 'iqiyi.data'
         self.savefile = None
         pass
 
@@ -61,7 +61,8 @@ class WebspiderPipelineIqiyi(object):
         #self.savefile.write(s)
         #print u"{0} {1}".format(item['name'], item)
         #self.savefile.write(json.dumps(dict(item), encoding='utf-8') + "\n")
-        self.savefile.write(u"{0}-{1}-{2}-{3}\n".format(item['name'], item['score'], item['isvip'], item['actors']))
+        self.savefile.write(u"{0}-{1}-{2}-{3}-{4}-{5}-{6}-{7}\n".format(item['name'], item['score'], item['isvip'],
+         item['totalcomments'], item['playcounts'], item['upcounts'], item['downcounts'], item['actors']))
         #raise DropItem()
 
     def open_spider(self,spider):

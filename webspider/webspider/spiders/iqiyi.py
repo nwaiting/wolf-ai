@@ -3,12 +3,16 @@ import scrapy
 from scrapy.http.request import Request
 from urlparse import urljoin
 from webspider.items import WebspiderPipelineIqiyiItem
+import requests
+import re
 
 class IqiyiSpider(scrapy.Spider):
     name = 'iqiyi'
     allowed_domains = ['iqiyi.com']
     page_pre = 'http://list.iqiyi.com'
     start_urls = ['http://list.iqiyi.com/']
+
+    totalsee_detail_url_template = 'http://mixer.video.iqiyi.com/jp/mixin/videos/{0}?select=user,credit,focus,star,cast&status=1&callback=playInfo96'
 
     def parse(self, response):
         print response
@@ -25,6 +29,8 @@ class IqiyiSpider(scrapy.Spider):
                 name = item.xpath('.//div[@class="mod-listTitle_left"]/p/a/text()').extract_first()
                 if name:
                     webiqiyi['name'] = name.strip()
+
+                detail_id = item.xpath('.//div[@class="site-piclist_pic"]/a/@data-qidanadd-tvid').extract_first()
 
                 webiqiyi['score'] = None
                 score = item.xpath('.//span[@class="score"]/strong/text()').extract_first()
@@ -44,6 +50,30 @@ class IqiyiSpider(scrapy.Spider):
                 for actor in item.xpath('*//div[@class="role_info"]/em/a/text()').extract():
                     actors += actor.strip() + "+"
                 webiqiyi['actors'] = actors
+
+                if detail_id:
+                    detail_url = self.totalsee_detail_url_template.format(detail_id)
+                    detail_res = requests.get(url=detail_url)
+                    reres = re.search(r'(?=\"upCount)(.*?)(?=,)', detail_res.text)
+                    webiqiyi['upcounts'] = None
+                    if reres:
+                        webiqiyi['upcounts'] = reres.group()
+
+                    reres = re.search(r'(?=\"downCount)(.*?)(?=,)', detail_res.text)
+                    webiqiyi['downcounts'] = None
+                    if reres:
+                        webiqiyi['downcounts'] = reres.group()
+
+                    reres = re.search(r'(?=\"playCount)(.*?)(?=,)', detail_res.text)
+                    webiqiyi['playcounts'] = None
+                    if reres:
+                        webiqiyi['playcounts'] = reres.group()
+
+                    reres = re.search(r"(?=\"starTotal)(.*?)(?=,)", detail_res.text)
+                    webiqiyi['totalcomments'] = None
+                    if reres:
+                        webiqiyi['totalcomments'] = reres.group()
+
                 yield webiqiyi
                 #print u"=================== {0} {1} {2}".format(webiqiyi['name'], webiqiyi['score'], webiqiyi['actors'])
 
