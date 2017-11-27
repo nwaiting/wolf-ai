@@ -23,3 +23,10 @@ class WebspiderPipelineIqiyiItem(scrapy.Item):
     downcounts = scrapy.Field()
     isvip = scrapy.Field()
     actors = scrapy.Field()
+
+class WebspiderPipelinePPTVItem(scrapy.Item):
+    name = scrapy.Field()
+    fileurl = scrapy.Field()
+    score = scrapy.Field()
+    isvip = scrapy.Field()
+    details = scrapy.Field()

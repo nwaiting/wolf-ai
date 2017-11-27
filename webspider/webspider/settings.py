@@ -78,7 +78,8 @@ DOWNLOADER_MIDDLEWARES = {
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    #'webspider.pipelines.WebspiderPipeline': 300,
-   'webspider.pipelines.WebspiderPipelineIqiyi': 400,
+   #'webspider.pipelines.WebspiderPipelineIqiyi': 400,
+   'webspider.pipelines.WebspiderPipelinePPTVItem': 400,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -102,7 +103,7 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-#DEPTH_LIMIT = 3
+DEPTH_LIMIT = 1
 
 #WARNING: Got data loss in http://list.iqiyi.com/. If you want to process broken responses set the setting DOWNLOAD_FAIL_ON_DATALOSS = False -- This message won't be shown in further requests
 DOWNLOAD_FAIL_ON_DATALOSS = False
