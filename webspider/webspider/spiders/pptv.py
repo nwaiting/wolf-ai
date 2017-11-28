@@ -13,7 +13,7 @@ class PptvSpider(scrapy.Spider):
         for pitem in response.xpath('//ul[@class="cf"]/li'):
             pptvitem = WebspiderPipelinePPTVItem()
             item = pitem.xpath('./a[@class="ui-list-ct"]')
-            parseres = item.xpath('//em[@class="cover ico_4 cf"]').extract()
+            parseres = item.xpath('.//em[@class="cover ico_4 cf"]').extract()
             pptvitem['isvip'] = "0"
             if len(parseres) > 0:
                 pptvitem['isvip'] = "1"
@@ -32,14 +32,15 @@ class PptvSpider(scrapy.Spider):
                     detail += s.strip()
             pptvitem['details'] = detail
             yield pptvitem
-        for i in xrange(2, 3):
+        for i in xrange(2, 151):
             yield scrapy.Request(url=self.next_page_template.format(i), callback=self.parse_addpage)
 
     def parse_addpage(self, response):
+        print response
         for pitem in response.xpath('//li'):
             pptvitem = WebspiderPipelinePPTVItem()
             item = pitem.xpath('./a[@class="ui-list-ct"]')
-            parseres = item.xpath('//em[@class="cover ico_4 cf"]').extract()
+            parseres = item.xpath('.//em[@class="cover ico_4 cf"]').extract()
             pptvitem['isvip'] = "0"
             if len(parseres) > 0:
                 pptvitem['isvip'] = "1"
