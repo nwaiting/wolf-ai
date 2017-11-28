@@ -80,6 +80,7 @@ ITEM_PIPELINES = {
    #'webspider.pipelines.WebspiderPipeline': 300,
    #'webspider.pipelines.WebspiderPipelineIqiyi': 400,
    #'webspider.pipelines.WebspiderPipelinePPTVItem': 400,
+   'webspider.pipelines.WebspiderPipelineTieBaItem': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

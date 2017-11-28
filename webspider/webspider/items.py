@@ -30,3 +30,12 @@ class WebspiderPipelinePPTVItem(scrapy.Item):
     score = scrapy.Field()
     isvip = scrapy.Field()
     details = scrapy.Field()
+
+class WebspiderPipelineTieBaFilm(scrapy.Item):
+    title = scrapy.Field()
+    author = scrapy.Field()
+    authorlevel = scrapy.Field()
+    responsenum = scrapy.Field()
+    frescontent = scrapy.Field()
+    fresuser = scrapy.Field()
+    frestime = scrapy.Field()

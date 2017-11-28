@@ -126,3 +126,36 @@ class WebspiderPipelinePPTVItem(object):
         except Exception as e:
             print "close file {0} error {1}".format(self.file_name, e)
         print('WebspiderPipelinePPTVItem close')
+
+class WebspiderPipelineTieBaItem(object):
+    def __init__(self):
+        self.file_name = 'baidu.tieba.data'
+        self.savefile = None
+
+    def process_item(self, item, spider):
+        """
+            title = scrapy.Field()
+            author = scrapy.Field()
+            authorlevel = scrapy.Field()
+            responsenum = scrapy.Field()
+            frescontent = scrapy.Field()
+            fresuser = scrapy.Field()
+            frestime = scrapy.Field()
+        """
+        self.savefile.write(u"{0}-{1}-{2}-{3}-{4}-{5}-{6}\n".format(item['title'], item['author'], item['authorlevel'], item['responsenum'], item['frescontent'], item['fresuser'], item['frestime']))
+        #raise DropItem()
+
+    def open_spider(self,spider):
+        try:
+            self.savefile = open(self.file_name, 'w')
+        except Exception as e:
+            print "open file {0} error {1}".format(self.file_name, e)
+
+        print('WebspiderPipelineTieBaItem open')
+
+    def close_spider(self,spider):
+        try:
+            self.savefile.close()
+        except Exception as e:
+            print "close file {0} error {1}".format(self.file_name, e)
+        print('WebspiderPipelineTieBaItem close')
