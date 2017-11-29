@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from scrapy import Selector
 from webspider.items import WebspiderPipelineTieBaFilm
 import re
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 class TiebaSpider(scrapy.Spider):
     name = 'tieba'
@@ -12,7 +17,49 @@ class TiebaSpider(scrapy.Spider):
         print response
         contents = response.body
 
-        #self.parse_detail(response=contents)
+        first = contents.find('<ul id="thread_list" class="threadlist_bright j_threadlist_bright">')
+        second = contents.find('<div class="thread_list_bottom clearfix">')
+        if first and second:
+            hse = Selector(text=contents[first:second])
+            for item in hse.xpath('//div[@class="t_con cleafix"]'):
+                tieba = WebspiderPipelineTieBaFilm()
+                tieba['responsenum'] = None
+                responsenum = item.xpath('./div[@class="col2_left j_threadlist_li_left"]/span/text()').extract_first()
+                if responsenum:
+                    tieba['responsenum'] = responsenum.strip()
+
+                tieba['title'] = None
+                title = item.xpath('.//div[@class="threadlist_lz clearfix"]/div/a/text()').extract_first()
+                if title:
+                    tieba['title'] = title.strip()
+
+                tieba['author'] = None
+                author = item.xpath('//span[@class="frs-author-name-wrap"]/a/text()').extract_first()
+                if author:
+                    tieba['author'] = author.strip()
+
+                tieba['authorlevel'] = None
+                authorlevel = item.xpath('.//div[@class="threadlist_lz clearfix"]//a[@class="j_icon_slot"]/@title').extract_first()
+                if authorlevel:
+                    tieba['authorlevel'] = authorlevel.strip()
+
+                item_items = item.xpath('.//div[@class="threadlist_detail clearfix"]')
+                if item_items:
+                    tieba['frescontent'] = None
+                    frescontent = item_items.xpath('./div/div/text()').extract_first()
+                    if frescontent:
+                        tieba['frescontent'] = frescontent.strip()
+
+                    tieba['frestime'] = None
+                    frestime = item_items.xpath('./div/span/text()').extract_first()
+                    if frestime:
+                        tieba['frestime'] = frestime.strip()
+
+                    tieba['fresuser'] = None
+                    fresuser = item_items.xpath('./div/span/a/text()').extract_first()
+                    if fresuser:
+                        tieba['fresuser'] = fresuser.strip()
+                yield tieba
 
         p_nextpage = r'(?<=href=\").*?(?=\" class=\"next pagination-item)'
         patten_nextpage = re.compile(p_nextpage)
@@ -20,17 +67,3 @@ class TiebaSpider(scrapy.Spider):
         print next_pages
         if next_pages:
             yield scrapy.Request(url='http:' + next_pages[0], callback=self.parse)
-
-    def parse_detail(self, response):
-        for item in response.xpath('//div[@class="t_con cleafix"]'):
-            tieba = WebspiderPipelineTieBaFilm()
-            tieba['responsenum'] = item.xpath('./div[@class="col2_left j_threadlist_li_left"]/span/text()').extract_first()
-            tieba['title'] = item.xpath('.//div[@class="threadlist_lz clearfix"]/div/a/text()').extract_first()
-            tieba['author'] = item.xpath('//span[@class="frs-author-name-wrap"]/a/text()').extract_first()
-            tieba['authorlevel'] = item.xpath('.//div[@class="threadlist_lz clearfix"]//a[@class="j_icon_slot"]/@title').extract_first()
-            item_items = item.xpath('.//div[@class="threadlist_detail clearfix"]')
-            if item_items:
-                tieba['frescontent'] = item_items.xpath('./div/div/text()').extract_first()
-                tieba['frestime'] = item_items.xpath('./div/span/text()').extract_first()
-                tieba['fresuser'] = item_items.xpath('./div/span/a/text()').extract_first()
-            yield tieba
