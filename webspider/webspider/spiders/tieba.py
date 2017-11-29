@@ -64,6 +64,6 @@ class TiebaSpider(scrapy.Spider):
         p_nextpage = r'(?<=href=\").*?(?=\" class=\"next pagination-item)'
         patten_nextpage = re.compile(p_nextpage)
         next_pages = patten_nextpage.findall(contents)
-        print next_pages
+        print "next ", next_pages
         if next_pages:
             yield scrapy.Request(url='http:' + next_pages[0], callback=self.parse)
