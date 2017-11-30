@@ -57,15 +57,16 @@ def genPoints(clusterCenterNumber, radius, dataFile):
             arrt_num = table.ncols
             points_num = table.nrows
             points_arr_num = points_num
-            points = [Point(clusterCenterNumber, arrt_num) for _ in range(2 * points_num)]
+            #points = [Point(clusterCenterNumber, arrt_num) for _ in range(2 * points_num)]
+            points = [Point(clusterCenterNumber, arrt_num) for _ in range(1 * points_num)]
             count = 0
             for point in points:
                 point.x = table.row_values(count)
                 if count == points_num - 1:
                     break
                 count += 1
-            for index in range(points_num, 2 * points_num):
-                points[index].x = [random.choice(points[0].x) for _ in xrange(arrt_num)]
+            #for index in range(points_num, 2 * points_num):
+            #    points[index].x = [random.choice(points[0].x) for _ in xrange(arrt_num)]
     except Exception as e:
         print "error {0}".format(e)
     return points
@@ -171,13 +172,15 @@ def showClusterAnalysisResults(points, clusterCenterTrace):
             color = colorStore[point.group]
         for i in xrange(len(point.x)):
             pylab.plot(point.x, color)
+
     for singleTrace in clusterCenterTrace:
-        for center in singleTrace:
-            pylab.plot(center.x, 'k')
+        if len(singleTrace) > 0:
+            print singleTrace[0].x
     pylab.show()
 
 if __name__ == '__main__':
     dataFile = './outer/fcm/data/user_vector.xlsx'
+    # 族的个数
     clusterCenterNumber = 5
     pointsNumber = 2000
     radius = 10
