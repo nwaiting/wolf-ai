@@ -13,27 +13,19 @@ import pylab
 try:
     import psyco
     psyco.full()
-except ImportError as e:
-    print "import error {0}".format(e)
-
-try:
-    import xlrd
-except Exception as e:
-    print "import error {0}".format(e)
+except ImportError:
+    pass
 
 FLOAT_MAX = 1e100
 
-points_arr_num = 0
-
 class Point:
-    #__slots__ = ["x", "y", "group", "membership"]
-    def __init__(self, clusterCenterNumber, attr_size = 1, x = 0, y = 0, group = 0):
-        self.x = [0.0 for _ in xrange(attr_size)]
-        self.group = group
+    __slots__ = ["x", "y", "group", "membership"]
+    def __init__(self, clusterCenterNumber, x = 0, y = 0, group = 0):
+        self.x, self.y, self.group = x, y, group
         self.membership = [0.0 for _ in range(clusterCenterNumber)]
 
 def generatePoints(pointsNumber, radius, clusterCenterNumber):
-    points = [Point(clusterCenterNumber, 1) for _ in range(2 * pointsNumber)]
+    points = [Point(clusterCenterNumber) for _ in range(2 * pointsNumber)]
     count = 0
     for point in points:
         count += 1
@@ -48,34 +40,9 @@ def generatePoints(pointsNumber, radius, clusterCenterNumber):
         points[index].y = 2 * radius * random.random() - radius
     return points
 
-def genPoints(clusterCenterNumber, radius, dataFile):
-    points = None
-    try:
-        with xlrd.open_workbook(dataFile) as xlfd:
-            table = xlfd.sheet_by_name(u'Sheet6')
-            print table.nrows, table.ncols
-            arrt_num = table.ncols
-            points_num = table.nrows
-            points_arr_num = points_num
-            points = [Point(clusterCenterNumber, arrt_num) for _ in range(2 * points_num)]
-            count = 0
-            for point in points:
-                point.x = table.row_values(count)
-                if count == points_num - 1:
-                    break
-                count += 1
-            for index in range(points_num, 2 * points_num):
-                points[index].x = [random.choice(points[0].x) for _ in xrange(arrt_num)]
-    except Exception as e:
-        print "error {0}".format(e)
-    return points
 
 def solveDistanceBetweenPoints(pointA, pointB):
-    total = 0.0
-    #print len(pointA.x), len(pointB.x)
-    for i in xrange(len(pointA.x)):
-        total += pow(pointA.x[i] - pointB.x[i], 2)
-    return total
+    return (pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y)
 
 def getNearestCenter(point, clusterCenterGroup):
     minIndex = point.group
@@ -104,28 +71,23 @@ def kMeansPlusPlus(points, clusterCenterGroup):
     return
 
 def fuzzyCMeansClustering(points, clusterCenterNumber, weight):
-    clusterCenterGroup = [Point(clusterCenterNumber, points_arr_num) for _ in range(clusterCenterNumber)]
+    clusterCenterGroup = [Point(clusterCenterNumber) for _ in range(clusterCenterNumber)]
     kMeansPlusPlus(points, clusterCenterGroup)
     clusterCenterTrace = [[clusterCenter] for clusterCenter in clusterCenterGroup]
     tolerableError, currentError = 1.0, FLOAT_MAX
     while currentError >= tolerableError:
         for point in points:
             getSingleMembership(point, clusterCenterGroup, weight)
-        currentCenterGroup = [Point(clusterCenterNumber, points_arr_num) for _ in range(clusterCenterNumber)]
+        currentCenterGroup = [Point(clusterCenterNumber) for _ in range(clusterCenterNumber)]
         for centerIndex, center in enumerate(currentCenterGroup):
-            upperSum = [0.0 for _ in xrange(len(points[0].x))]
-            lowerSum = 0.0
+            upperSumX, upperSumY, lowerSum = 0.0, 0.0, 0.0
             for point in points:
                 membershipWeight = pow(point.membership[centerIndex], weight)
-                for k in xrange(len(point.x)):
-                    upperSum[k] += point.x[k] * membershipWeight
+                upperSumX += point.x * membershipWeight
+                upperSumY += point.y * membershipWeight
                 lowerSum += membershipWeight
-
-            for k in xrange(len(center.x)):
-                try:
-                    center.x[k] = upperSum[k] / lowerSum
-                except ZeroDivisionError as e:
-                    print "erro {0} {1}".format(e, lowerSum)
+            center.x = upperSumX / lowerSum
+            center.y = upperSumY / lowerSum
         # update cluster center trace
         currentError = 0.0
         for index, singleTrace in enumerate(clusterCenterTrace):
@@ -169,20 +131,18 @@ def showClusterAnalysisResults(points, clusterCenterTrace):
             color = colorStore[-1]
         else:
             color = colorStore[point.group]
-        for i in xrange(len(point.x)):
-            pylab.plot(point.x, color)
+        pylab.plot(point.x, point.y, color)
     for singleTrace in clusterCenterTrace:
-        for center in singleTrace:
-            pylab.plot(center.x, 'k')
+        pylab.plot([center.x for center in singleTrace], [center.y for center in singleTrace], 'k')
     pylab.show()
 
-if __name__ == '__main__':
-    dataFile = './outer/fcm/data/user_vector.xlsx'
+def main():
     clusterCenterNumber = 5
     pointsNumber = 2000
     radius = 10
     weight = 2
-    #points = generatePoints(pointsNumber, radius, clusterCenterNumber)
-    points = genPoints(clusterCenterNumber, radius, dataFile)
+    points = generatePoints(pointsNumber, radius, clusterCenterNumber)
     _, clusterCenterTrace = fuzzyCMeansClustering(points, clusterCenterNumber, weight)
     showClusterAnalysisResults(points, clusterCenterTrace)
+
+main()
