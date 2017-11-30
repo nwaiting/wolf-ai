@@ -14,7 +14,8 @@ try:
     import psyco
     psyco.full()
 except ImportError as e:
-    print "import error {0}".format(e)
+    #print "import error {0}".format(e)
+    pass
 
 try:
     import xlrd
@@ -162,6 +163,10 @@ def getSingleMembership(point, clusterCenterGroup, weight):
             point.membership[centerIndex] = 1.0 / sum
 
 def showClusterAnalysisResults(points, clusterCenterTrace):
+    for singleTrace in clusterCenterTrace:
+        if len(singleTrace) > 0:
+            print singleTrace[0].x
+    """
     colorStore = ['or', 'og', 'ob', 'oc', 'om', 'oy', 'ok']
     pylab.figure(figsize=(9, 9), dpi = 80)
     for point in points:
@@ -177,11 +182,12 @@ def showClusterAnalysisResults(points, clusterCenterTrace):
         if len(singleTrace) > 0:
             print singleTrace[0].x
     pylab.show()
+    """
 
 if __name__ == '__main__':
     dataFile = './outer/fcm/data/user_vector.xlsx'
     # 族的个数
-    clusterCenterNumber = 5
+    clusterCenterNumber = 4
     pointsNumber = 2000
     radius = 10
     weight = 2
