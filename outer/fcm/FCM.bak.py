@@ -127,6 +127,7 @@ def showClusterAnalysisResults(points, clusterCenterTrace):
     pylab.figure(figsize=(9, 9), dpi = 80)
     for point in points:
         color = ''
+        print 'group ', point.group
         if point.group >= len(colorStore):
             color = colorStore[-1]
         else:

@@ -29,6 +29,7 @@ points_arr_num = 0
 class Point:
     #__slots__ = ["x", "y", "group", "membership"]
     def __init__(self, clusterCenterNumber, attr_size = 1, x = 0, y = 0, group = 0):
+        self.name = None
         self.x = [0.0 for _ in xrange(attr_size)]
         self.group = group
         self.membership = [0.0 for _ in range(clusterCenterNumber)]
@@ -53,16 +54,18 @@ def genPoints(clusterCenterNumber, radius, dataFile):
     points = None
     try:
         with xlrd.open_workbook(dataFile) as xlfd:
-            table = xlfd.sheet_by_name(u'Sheet6')
+            table = xlfd.sheet_by_name(u'user_matrix_data')
             print table.nrows, table.ncols
-            arrt_num = table.ncols
+            arrt_num = table.ncols - 1
             points_num = table.nrows
             points_arr_num = points_num
             #points = [Point(clusterCenterNumber, arrt_num) for _ in range(2 * points_num)]
             points = [Point(clusterCenterNumber, arrt_num) for _ in range(1 * points_num)]
             count = 0
             for point in points:
-                point.x = table.row_values(count)
+                rdata = table.row_values(count)
+                point.name = rdata[0]
+                point.x = rdata[1:]
                 if count == points_num - 1:
                     break
                 count += 1
@@ -163,10 +166,15 @@ def getSingleMembership(point, clusterCenterGroup, weight):
             point.membership[centerIndex] = 1.0 / sum
 
 def showClusterAnalysisResults(points, clusterCenterTrace):
-    for singleTrace in clusterCenterTrace:
-        if len(singleTrace) > 0:
-            print singleTrace[0].x
-    """
+    with open('result.data', 'wb') as f:
+        for point in points:
+            f.write("{0} {1} {2}\n".format(point.name, point.group, point.x))
+
+        for singleTrace in clusterCenterTrace:
+            if len(singleTrace) > 0:
+                f.write("{0} \n".format(singleTrace[0].name))
+    return
+
     colorStore = ['or', 'og', 'ob', 'oc', 'om', 'oy', 'ok']
     pylab.figure(figsize=(9, 9), dpi = 80)
     for point in points:
@@ -182,12 +190,11 @@ def showClusterAnalysisResults(points, clusterCenterTrace):
         if len(singleTrace) > 0:
             print singleTrace[0].x
     pylab.show()
-    """
 
 if __name__ == '__main__':
-    dataFile = './outer/fcm/data/user_vector.xlsx'
+    dataFile = './outer/fcm/data/user_matrix.xlsx'
     # 族的个数
-    clusterCenterNumber = 4
+    clusterCenterNumber = 8
     pointsNumber = 2000
     radius = 10
     weight = 2
