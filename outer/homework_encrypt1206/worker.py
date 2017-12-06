@@ -1,5 +1,25 @@
 #coding=utf-8
 
+chars = [chr(i) for i in xrange(97,123)]
+total_map = dict()
+map(lambda x:total_map.setdefault(x[0], 0), chars)
+
+def decodeme(decodebase, contents):
+    pass
+
+def codeme(encodebase, contents):
+    pass
+
+def analyze(contents):
+    contents = contents.lower()
+    for i in contents:
+        total_map[i] += 1
+    sorted(total_map.items(), lambda x,y: cmp(x[1],y[1]), reverse=True)
+    print total_map
+
+def assign(contents):
+    pass
+
 def main():
     # read the code from input
     codebook = input("Please enter the codebook: ")
@@ -27,6 +47,5 @@ def main():
             coded = decodeme(decode, dec)
             print(coded)
     print("This program will self destruct in 10 seconds...")
-
-if __name__ == '__main__':
-    main()
+#main()
+analyze('accd')
