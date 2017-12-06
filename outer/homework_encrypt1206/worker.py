@@ -14,8 +14,7 @@ def analyze(contents):
     contents = contents.lower()
     for i in contents:
         total_map[i] += 1
-    sorted(total_map.items(), lambda x,y: cmp(x[1],y[1]), reverse=True)
-    print total_map
+    return sorted(total_map.items(), key=lambda d: d[1], reverse=True)
 
 def assign(contents):
     pass
@@ -48,4 +47,4 @@ def main():
             print(coded)
     print("This program will self destruct in 10 seconds...")
 #main()
-analyze('accd')
+print analyze('accd')
