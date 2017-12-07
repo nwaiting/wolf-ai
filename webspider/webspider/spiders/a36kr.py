@@ -48,6 +48,10 @@ class A36krSpider(scrapy.Spider):
         return patten.findall(instr)
 
     def login(self, response):
+        print '==================='
+        print response.request.headers
+        print response.request.body
+        print '==================='
         print response
         for m,n in response.headers.items():
             if m == 'Set-Cookie':
@@ -70,10 +74,12 @@ class A36krSpider(scrapy.Spider):
                         if len(res) > 0:
                             self.cookie_jar['krid_user_id'] = res[0]
 
-        yield scrapy.Request(url=url,
-        
+        #print self.cookie_jar
+        request_url = 'https://rong.36kr.com/list/detail&?sortField=HOT_SCORE'
+        yield scrapy.Request(url=request_url,
+            cookies=self.cookie_jar,
             callback=self.parse_detail
             )
 
     def parse_detail(self, response):
-        pass
+        print response
