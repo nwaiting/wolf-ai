@@ -78,6 +78,7 @@ def genPoints(clusterCenterNumber, radius, dataFile):
                 rdata = table.row_values(count)
                 point.name = rdata[0]
                 point.x = rdata[1:]
+                point.group = count
                 if count == points_num - 1:
                     break
                 count += 1
@@ -90,15 +91,18 @@ def genPoints(clusterCenterNumber, radius, dataFile):
 def solveDistanceBetweenPoints(pointA, pointB):
     total = 0.0
     for i in xrange(len(pointA.x)):
-        total += pow(pointA.x[i] - pointB.x[i])
+        total += pow(pointA.x[i] - pointB.x[i], 2)
     return total
     #return (pointA.x - pointB.x) * (pointA.x - pointB.x) + (pointA.y - pointB.y) * (pointA.y - pointB.y)
 
 def isInPointBoundary(centerPoint, customPoint, halfScale):
-    flag = True
-    for i in xrange(len(centerPoint.x)):
-        flag &= customPoint.x[i] <= centerPoint.x[i] + halfScale and customPoint.x[i] >= centerPoint.x[i] - halfScale
-    return flag
+    if len(centerPoint.x) > 0 and len(customPoint.x) > 0:
+        flag = customPoint.x[0] <= centerPoint.x[0] + halfScale and customPoint.x[0] >= centerPoint.x[0] - halfScale
+        for i in xrange(1, len(centerPoint.x)):
+            flag &= (customPoint.x[i] <= centerPoint.x[i] + halfScale) and (customPoint.x[i] >= centerPoint.x[i] - halfScale)
+        return flag
+    print "error isInPointBoundary"
+    return False
     #return customPoint.x <= centerPoint.x + halfScale and customPoint.x >= centerPoint.x - halfScale and customPoint.y <= centerPoint.y + halfScale and customPoint.y >= centerPoint.y - halfScale
 
 def getPointsNumberWithinBoundary(points, halfScale):
@@ -142,40 +146,34 @@ def dbscan(points, pointsIndexGroupWithinBoundary, clusterCenterNumber):
             point.group = corePointGroupIndex
     countGroupsNumber = sorted(countGroupsNumber.iteritems(), key=lambda group: group[1], reverse=True)
     count = 0
+
+    tmp_groups = set()
     for key, _ in countGroupsNumber:
         count += 1
         for point in points:
+            #print "key ", key, point.group
             if point.group == key:
                 point.group = -1 * count
+                tmp_groups.add(point.group)
         if count >= clusterCenterNumber:
+            print "groups ", tmp_groups, len(tmp_groups)
             break
 
 def showClusterAnalysisResults(points):
+    groups = set()
     for item in points:
-        if item.group > 0:
-            print "====== {0} {1} {2}".format(item.group, item.name, item.x)
-        else:
-            print "{0} {1} {2}".format(item.group, item.name, item.x)
+        #print "{0} {1} {2}".format(item.group, item.name, item.x)
+        groups.add(item.group)
+    print len(groups)
     return
-    colorStore = ['or', 'og', 'ob', 'oc', 'om', 'oy', 'ok']
-    pylab.figure(figsize=(9, 9), dpi = 80)
-    for point in points:
-        color = ''
-        if point.group < 0:
-            color = colorStore[-1 * point.group - 1]
-        else:
-            color = colorStore[-1]
-        pylab.plot(point.x, point.y, color)
-    pylab.show()
-
 
 if __name__ == '__main__':
-    dataFile = './outer/fcm/data/user_matrix.xlsx'
-    clusterCenterNumber = 8
+    dataFile = './outer/dbscan/data/user_matrix.xlsx'
+    clusterCenterNumber = 6
     pointsNumber = 500
     radius = 10
     Eps = 2
-    minPointsNumber = 18
+    minPointsNumber = 2
     #points = generatePoints(pointsNumber, radius)
     points = genPoints(clusterCenterNumber, radius, dataFile)
     pointsIndexGroupWithinBoundary = getPointsNumberWithinBoundary(points, Eps)
