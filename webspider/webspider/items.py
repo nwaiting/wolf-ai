@@ -39,3 +39,15 @@ class WebspiderPipelineTieBaFilm(scrapy.Item):
     frescontent = scrapy.Field()
     fresuser = scrapy.Field()
     frestime = scrapy.Field()
+
+class WebspiderPipeline36krItem(scrapy.Item):
+    name = scrapy.Field()
+    brief = scrapy.Field()
+    #行业
+    industry = scrapy.Field()
+    # 第几轮
+    phase = scrapy.Field()
+    #所在地
+    city = scrapy.Field()
+    #成立时间
+    time = scrapy.Field()

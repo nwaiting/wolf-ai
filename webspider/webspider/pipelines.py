@@ -159,3 +159,39 @@ class WebspiderPipelineTieBaItem(object):
         except Exception as e:
             print "close file {0} error {1}".format(self.file_name, e)
         print('WebspiderPipelineTieBaItem close')
+
+class WebspiderPipeline36krItem(object):
+    def __init__(self):
+        self.file_name = '36kr.company.data'
+        self.savefile = None
+
+    def process_item(self, item, spider):
+        """
+        name = scrapy.Field()
+        brief = scrapy.Field()
+        #行业
+        industry = scrapy.Field()
+        # 第几轮
+        pphase = scrapy.Field()
+        #所在地
+        city = scrapy.Field()
+        #成立时间
+        time = scrapy.Field()
+        """
+        self.savefile.write(u"{0}-{1}-{2}-{3}-{4}-{5}\n".format(item['name'], item['industry'], item['phase'], item['city'], item['time'], item['brief']))
+        #raise DropItem()
+
+    def open_spider(self,spider):
+        try:
+            self.savefile = open(self.file_name, 'w')
+        except Exception as e:
+            print "open file {0} error {1}".format(self.file_name, e)
+
+        print('WebspiderPipeline36krItem open')
+
+    def close_spider(self,spider):
+        try:
+            self.savefile.close()
+        except Exception as e:
+            print "close file {0} error {1}".format(self.file_name, e)
+        print('WebspiderPipeline36krItem close')

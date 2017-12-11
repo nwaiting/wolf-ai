@@ -5,6 +5,8 @@ import re
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
+import json
+from webspider.items import WebspiderPipeline36krItem
 
 class A36krSpider(scrapy.Spider):
     name = '36kr'
@@ -22,7 +24,6 @@ class A36krSpider(scrapy.Spider):
                 for m2,n2 in n1.items():
                     if m2 in ['aliyungf_tc', 'krnewsfrontss', 'device-uid', 'M-XSRF-TOKEN']:
                         self.cookie_jar[m2] = n2.value
-        print self.cookie_jar
         """
         type:login
         bind:false
@@ -48,10 +49,6 @@ class A36krSpider(scrapy.Spider):
         return patten.findall(instr)
 
     def login(self, response):
-        print '==================='
-        print response.request.headers
-        print response.request.body
-        print '==================='
         print response
         for m,n in response.headers.items():
             if m == 'Set-Cookie':
@@ -75,11 +72,41 @@ class A36krSpider(scrapy.Spider):
                             self.cookie_jar['krid_user_id'] = res[0]
 
         #print self.cookie_jar
-        request_url = 'https://rong.36kr.com/list/detail&?sortField=HOT_SCORE'
-        yield scrapy.Request(url=request_url,
-            cookies=self.cookie_jar,
-            callback=self.parse_detail
-            )
+        #request_url = 'https://rong.36kr.com/list/detail&?sortField=HOT_SCORE'
+        #request_url = 'https://rong.36kr.com/n/api/column/0/company?sortField=HOT_SCORE&p=1'
+        for i in xrange(1, 100):
+            request_url = 'https://rong.36kr.com/n/api/column/0/company?sortField=HOT_SCORE&p={0}'.format(i)
+            yield scrapy.Request(url=request_url,
+                cookies=self.cookie_jar,
+                callback=self.parse_detail)
 
     def parse_detail(self, response):
         print response
+        json_contents = json.loads(response.text)
+        if json_contents.has_key('data') and json_contents['data'].has_key('pageData') and json_contents['data']['pageData'].has_key('data'):
+            for item in json_contents['data']['pageData']['data']:
+                i36kr_item = WebspiderPipeline36krItem()
+                i36kr_item['name'] = ''
+                if item.has_key('name'):
+                    i36kr_item['name'] = item['name']
+
+                i36kr_item['brief'] = ''
+                if item.has_key('brief'):
+                    i36kr_item['brief'] = item['brief']
+
+                i36kr_item['city'] = ''
+                if item.has_key('cityStr'):
+                    i36kr_item['city'] = item['cityStr']
+
+                i36kr_item['industry'] = ''
+                if item.has_key('industryStr'):
+                    i36kr_item['industry'] = item['industryStr']
+
+                i36kr_item['time'] = ''
+                if item.has_key('startDate'):
+                    i36kr_item['time'] =  item['startDate']
+
+                i36kr_item['phase'] = ''
+                if item.has_key('phase'):
+                    i36kr_item['phase'] =  item['phase']
+                yield i36kr_item
