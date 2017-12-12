@@ -9,9 +9,3 @@ class CsdnSpider(scrapy.Spider):
 
     def parse(self, response):
         pass
-
-
-if __name__ == '__main__':
-    import json
-    a = {'a':'b','c':'d'}
-    print json.dumps(a)
