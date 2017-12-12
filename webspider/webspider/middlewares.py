@@ -7,7 +7,7 @@
 import random
 import base64
 from scrapy import signals
-from webspider.useragent import PROXIES, USER_AGENTS
+from webspider.useragent import PROXIES, USER_AGENTS, MOBILE_USER_AGENT
 
 class WebspiderSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -66,7 +66,7 @@ class RandomUserAgentDownMiddleware(object):
             request.headers['Proxy-Authorization'] = 'Basic ' + encoded_user_pass
         else:
             request.meta['proxy'] = "http://%s" % proxy['ip_port']
-        request.headers.setdefault('User-Agent', random.choice(USER_AGENTS))
+        request.headers.setdefault('User-Agent', random.choice(MOBILE_USER_AGENT))
 
     def process_response(self, request, response, spider):
         return response
