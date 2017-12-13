@@ -128,7 +128,9 @@ def mergeGroup(points, fromIndex, toIndex):
         if point.group == fromIndex:
             point.group = toIndex
 
+tmp_groups = set()
 def dbscan(points, pointsIndexGroupWithinBoundary, clusterCenterNumber):
+    global tmp_groups
     countGroupsNumber = {index: 1 for index in range(len(points))}
     for index, point in enumerate(points):
         if point.pointType == CORE_POINT_TYPE:
@@ -147,7 +149,6 @@ def dbscan(points, pointsIndexGroupWithinBoundary, clusterCenterNumber):
     countGroupsNumber = sorted(countGroupsNumber.iteritems(), key=lambda group: group[1], reverse=True)
     count = 0
 
-    tmp_groups = set()
     for key, _ in countGroupsNumber:
         count += 1
         for point in points:
@@ -156,7 +157,7 @@ def dbscan(points, pointsIndexGroupWithinBoundary, clusterCenterNumber):
                 point.group = -1 * count
                 tmp_groups.add(point.group)
         if count >= clusterCenterNumber:
-            print "groups ", len(tmp_groups)
+            print "groups ", len(tmp_groups), tmp_groups
             break
 
 def showClusterAnalysisResults(points):
@@ -167,11 +168,15 @@ def showClusterAnalysisResults(points):
     groups_map = dict()
     for item in points:
         #print "{0} {1} {2}".format(item.group, item.name, item.x)
+        if item.group in tmp_groups:
+            print item.name, item.group, item.x
+    """
         groups.add(item.group)
         if not groups_map.has_key(item.group):
             groups_map[item.group] = 0
         groups_map[item.group] += 1
     print groups_map
+    """
     return
 
 if __name__ == '__main__':
