@@ -156,20 +156,27 @@ def dbscan(points, pointsIndexGroupWithinBoundary, clusterCenterNumber):
                 point.group = -1 * count
                 tmp_groups.add(point.group)
         if count >= clusterCenterNumber:
-            print "groups ", tmp_groups, len(tmp_groups)
+            print "groups ", len(tmp_groups)
             break
 
 def showClusterAnalysisResults(points):
+    global tmp_groups
+    #for i in tmp_groups:
+    #    print i.group, i.name
     groups = set()
+    groups_map = dict()
     for item in points:
         #print "{0} {1} {2}".format(item.group, item.name, item.x)
         groups.add(item.group)
-    print len(groups)
+        if not groups_map.has_key(item.group):
+            groups_map[item.group] = 0
+        groups_map[item.group] += 1
+    print groups_map
     return
 
 if __name__ == '__main__':
     dataFile = './outer/dbscan/data/user_matrix.xlsx'
-    clusterCenterNumber = 6
+    clusterCenterNumber = 8
     pointsNumber = 500
     radius = 10
     Eps = 2
