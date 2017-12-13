@@ -9,12 +9,13 @@ class BaidusearchSpider(scrapy.Spider):
     next_pre = 'https://www.baidu.com'
 
     def parse(self, response):
+        print "response ", response
         for item in response.xpath('//div[starts-with(@class,"result-op c-container") or starts-with(@class,"result c-container")]'):
             print '============ {0} {1}'.format(item.xpath('./h3/a/text()').extract_first(), item.xpath('//div[@class="c-abstract"]/text()').extract_first())
 
         next_page = response.xpath('//a[starts-with(@class,"n")]/@href').extract_first()
-        print "next_page"
+        print "next_page 1 ", next_page
         if next_page:
-            new_page = urlparse.urljoin(next_pre, next_page)
-            print "new_page ", new_page
+            new_page = urlparse.urljoin(self.next_pre, next_page)
+            print "new_page 2 ", new_page
             yield scrapy.Request(url=new_page, callback=self.parse)
