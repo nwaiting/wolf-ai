@@ -50,6 +50,30 @@ def main():
     sess = tf.Session()
     sess.run(init)
 
+    """
+    变量的保存或者恢复
+    tf.train.Saver  restore
+    初始化变量
+    init = tf.initialize_all_variables()
+    saver = tf.train.Saver()
+    默认把saver添加到所有变量上
+    如果定义保存哪些变量，则：
+    saver = tf.train.Saver({'key':变量名})
+    在sess的run之后添加save
+    save_path = saver.save(sess, 'filename.data')
+    print save_path 保存路径
+
+    恢复：
+        恢复的时候不要全部初始化，不需要初始化
+        saver = tf.train.Saver()
+        saver.restore('filename.data') 恢复
+    #创建计算图
+    with tf.Session() as sess:
+        #执行初始化节点
+        sess.run(init)
+        save_path = saver.save(sess, 'filename.data')
+    """
+
     #拟合平面
     for step in xrange(0, 200):
         sess.run(train)
