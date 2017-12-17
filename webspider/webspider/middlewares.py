@@ -68,7 +68,10 @@ class RandomUserAgentDownMiddleware(object):
         else:
             request.meta['proxy'] = "http://%s" % proxy['ip_port']
         """
-        request.headers.setdefault('User-Agent', random.choice(USER_AGENTS))
+        request.headers.setdefault('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36')
+        #request.headers.setdefault('Referer','https://ci.aizhan.com/')
+        #request.headers.setdefault('Host','ci.aizhan.com')
+        #request.headers.setdefault('Upgrade-Insecure-Requests',1)
 
     def process_response(self, request, response, spider):
         return response

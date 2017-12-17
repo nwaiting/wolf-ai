@@ -1,6 +1,7 @@
 #coding=utf8
 import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
 """
 """
@@ -75,10 +76,10 @@ def main():
     """
 
     #拟合平面
-    for step in xrange(0, 200):
+    for step in range(0, 200):
         sess.run(train)
         if step % 20 == 0:
-            print step, sess.run(W), sess.run(b)
+            print(step, sess.run(W), sess.run(b))
 
 if __name__ == "__main__":
     main()
