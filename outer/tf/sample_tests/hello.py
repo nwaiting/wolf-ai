@@ -1,7 +1,6 @@
 #coding=utf8
 import tensorflow as tf
 import numpy as np
-import tensorflow as tf
 
 """
 """
@@ -15,7 +14,7 @@ def main():
 
     # 1、 inference() 建立好图表 满足促使神经网络向前反馈并做出预测的要求
     # 构造线性模型 建模过程
-    # 初始化
+    # 初始化 为一个一维的tensor
     b = tf.Variable(tf.zeros([1]))
     # 1*2 matrix
     W = tf.Variable(tf.random_uniform([1,2], -1.0, 1.0))
@@ -41,7 +40,7 @@ def main():
     可以注册机制加入新的运算操作或者为已有的运算操作添加新的计算核
     """
 
-    # 定义biases为一维的零
+    # 定义biases为一维的零 创建一个一维的tensor
     biases = tf.Variable(tf.zeros([1]))
 
     #初始化变量
