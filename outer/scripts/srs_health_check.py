@@ -4,7 +4,7 @@ import time
 import logging
 import requests
 from optparse import OptionParser
-from apscheduler.schedulers.blocking import BlockingScheduler
+import sched
 import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from srs_health_check_config import *
@@ -22,7 +22,7 @@ logging.basicConfig(level=log_level,
                 filemode='a+')
 log = logging.getLogger()
 logging.getLogger("requests").setLevel(logging.ERROR)
-logging.getLogger("apscheduler").setLevel(logging.ERROR)
+scher = sched.scheduler(time.time, time.sleep)
 
 def notify_nginx_reload(notify_url):
     log.debug("notify nginx reload")
@@ -211,12 +211,12 @@ def daemon(stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
     os.dup2(stderr.fileno(), sys.stderr.fileno())
 
 def main():
+    global scher
     while True:
         try:
-            sched = BlockingScheduler()
-            sched.add_job(health_check, 'interval', seconds=health_check_frep)
-            sched.add_job(cross_speed_check, 'interval', seconds=cross_speed_check_frep)
-            sched.start()
+            scher.enter(health_check_frep, 1, health_check)
+            scher.enter(cross_speed_check_frep, 1, cross_speed_check)
+            scher.run()
         except Exception as e:
             log.error("{0}".format(e))
             time.sleep(0.1)
