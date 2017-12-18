@@ -2,7 +2,7 @@
 import scrapy
 from scrapy.http.request import Request
 from urlparse import urljoin
-from webspider.items import WebspiderPipelineIqiyiItem
+from webspider.items import WebspiderIqiyiItem
 import requests
 import re
 
@@ -21,7 +21,7 @@ class IqiyiSpider(scrapy.Spider):
             #print urljoin(self.page_pre, res[0])
             yield Request(url=urljoin(self.page_pre, res[0]), callback=self.parse)
 
-        webiqiyi = WebspiderPipelineIqiyiItem()
+        webiqiyi = WebspiderIqiyiItem()
         try:
             for item in response.xpath('//div[@class="wrapper-piclist"]//li'):
                 #print item.xpath('.//a[@class="site-piclist_pic_link"]/@href').extract_first()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy import Selector
-from webspider.items import WebspiderPipelineTieBaFilm
+from webspider.items import WebspiderTieBaFilm
 import re
 
 import sys
@@ -22,7 +22,7 @@ class TiebaSpider(scrapy.Spider):
         if first and second:
             hse = Selector(text=contents[first:second])
             for item in hse.xpath('//div[@class="t_con cleafix"]'):
-                tieba = WebspiderPipelineTieBaFilm()
+                tieba = WebspiderTieBaFilm()
                 tieba['responsenum'] = None
                 responsenum = item.xpath('./div[@class="col2_left j_threadlist_li_left"]/span/text()').extract_first()
                 if responsenum:

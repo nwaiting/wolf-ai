@@ -90,7 +90,7 @@ class WebspiderPipelineIqiyi(object):
             print "close file {0} error {1}".format(self.file_name, e)
         print('WebspiderPipelineIqiyi close')
 
-class WebspiderPipelinePPTVItem(object):
+class WebspiderPipelinePPTV(object):
     def __init__(self):
         self.file_name = 'pptv.data'
         self.savefile = None
@@ -127,7 +127,7 @@ class WebspiderPipelinePPTVItem(object):
             print "close file {0} error {1}".format(self.file_name, e)
         print('WebspiderPipelinePPTVItem close')
 
-class WebspiderPipelineTieBaItem(object):
+class WebspiderPipelineTieBa(object):
     def __init__(self):
         self.file_name = 'baidu.tieba.data'
         self.savefile = None
@@ -160,7 +160,7 @@ class WebspiderPipelineTieBaItem(object):
             print "close file {0} error {1}".format(self.file_name, e)
         print('WebspiderPipelineTieBaItem close')
 
-class WebspiderPipeline36krItem(object):
+class WebspiderPipeline36kr(object):
     def __init__(self):
         self.file_name = '36kr.company.data'
         self.savefile = None
@@ -195,3 +195,30 @@ class WebspiderPipeline36krItem(object):
         except Exception as e:
             print "close file {0} error {1}".format(self.file_name, e)
         print('WebspiderPipeline36krItem close')
+
+
+class WebspiderPipelineAizhan(object):
+    def __init__(self):
+        self.file_name = 'aizhan.allwords.data'
+        self.savefile = None
+
+    def process_item(self, item, spider):
+        """
+        """
+        self.savefile.write(u"{0}\n".format(item['word']))
+        #raise DropItem()
+
+    def open_spider(self,spider):
+        try:
+            self.savefile = open(self.file_name, 'w')
+        except Exception as e:
+            print "open file {0} error {1}".format(self.file_name, e)
+
+        print('WebspiderPipelineAizhan open')
+
+    def close_spider(self,spider):
+        try:
+            self.savefile.close()
+        except Exception as e:
+            print "close file {0} error {1}".format(self.file_name, e)
+        print('WebspiderPipelineAizhan close')

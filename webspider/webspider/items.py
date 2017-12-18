@@ -13,7 +13,7 @@ class WebspiderItem(scrapy.Item):
     # name = scrapy.Field()
     pass
 
-class WebspiderPipelineIqiyiItem(scrapy.Item):
+class WebspiderIqiyiItem(scrapy.Item):
     name = scrapy.Field()
     score = scrapy.Field()
     totalsee = scrapy.Field()
@@ -24,14 +24,14 @@ class WebspiderPipelineIqiyiItem(scrapy.Item):
     isvip = scrapy.Field()
     actors = scrapy.Field()
 
-class WebspiderPipelinePPTVItem(scrapy.Item):
+class WebspiderPPTVItem(scrapy.Item):
     name = scrapy.Field()
     fileurl = scrapy.Field()
     score = scrapy.Field()
     isvip = scrapy.Field()
     details = scrapy.Field()
 
-class WebspiderPipelineTieBaFilm(scrapy.Item):
+class WebspiderTieBaFilm(scrapy.Item):
     title = scrapy.Field()
     author = scrapy.Field()
     authorlevel = scrapy.Field()
@@ -40,7 +40,7 @@ class WebspiderPipelineTieBaFilm(scrapy.Item):
     fresuser = scrapy.Field()
     frestime = scrapy.Field()
 
-class WebspiderPipeline36krItem(scrapy.Item):
+class Webspider36krItem(scrapy.Item):
     name = scrapy.Field()
     brief = scrapy.Field()
     #行业
@@ -51,3 +51,6 @@ class WebspiderPipeline36krItem(scrapy.Item):
     city = scrapy.Field()
     #成立时间
     time = scrapy.Field()
+
+class WebspiderAizhanItem(scrapy.Item):
+    word = scrapy.Field()

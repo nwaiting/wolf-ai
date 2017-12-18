@@ -83,9 +83,10 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
    #'webspider.pipelines.WebspiderPipeline': 300,
    #'webspider.pipelines.WebspiderPipelineIqiyi': 400,
-   #'webspider.pipelines.WebspiderPipelinePPTVItem': 400,
-   #'webspider.pipelines.WebspiderPipelineTieBaItem': 400
-   'webspider.pipelines.WebspiderPipeline36krItem': 400
+   #'webspider.pipelines.WebspiderPipelinePPTV': 400,
+   #'webspider.pipelines.WebspiderPipelineTieBa': 400
+   #'webspider.pipelines.WebspiderPipeline36kr': 400
+   'webspider.pipelines.WebspiderPipelineAizhan': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

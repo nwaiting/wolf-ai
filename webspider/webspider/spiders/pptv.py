@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from webspider.items import WebspiderPipelinePPTVItem
+from webspider.items import WebspiderPPTVItem
 
 class PptvSpider(scrapy.Spider):
     name = 'pptv'
@@ -11,7 +11,7 @@ class PptvSpider(scrapy.Spider):
     def parse(self, response):
         print response
         for pitem in response.xpath('//ul[@class="cf"]/li'):
-            pptvitem = WebspiderPipelinePPTVItem()
+            pptvitem = WebspiderPPTVItem()
             item = pitem.xpath('./a[@class="ui-list-ct"]')
             parseres = item.xpath('.//em[@class="cover ico_4 cf"]').extract()
             pptvitem['isvip'] = "0"
@@ -38,7 +38,7 @@ class PptvSpider(scrapy.Spider):
     def parse_addpage(self, response):
         print response
         for pitem in response.xpath('//li'):
-            pptvitem = WebspiderPipelinePPTVItem()
+            pptvitem = WebspiderPPTVItem()
             item = pitem.xpath('./a[@class="ui-list-ct"]')
             parseres = item.xpath('.//em[@class="cover ico_4 cf"]').extract()
             pptvitem['isvip'] = "0"

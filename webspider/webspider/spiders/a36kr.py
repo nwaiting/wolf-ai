@@ -6,7 +6,7 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 import json
-from webspider.items import WebspiderPipeline36krItem
+from webspider.items import Webspider36krItem
 
 class A36krSpider(scrapy.Spider):
     name = '36kr'
@@ -85,7 +85,7 @@ class A36krSpider(scrapy.Spider):
         json_contents = json.loads(response.text)
         if json_contents.has_key('data') and json_contents['data'].has_key('pageData') and json_contents['data']['pageData'].has_key('data'):
             for item in json_contents['data']['pageData']['data']:
-                i36kr_item = WebspiderPipeline36krItem()
+                i36kr_item = Webspider36krItem()
                 i36kr_item['name'] = ''
                 if item.has_key('name'):
                     i36kr_item['name'] = item['name']

@@ -35,7 +35,7 @@ def toHex(s):
         lst.append(hv)
 
     return reduce(lambda x,y:x+y, lst)
-print toHex(u'啊')
+print 'aaaaa ', toHex(unicode('啊', 'utf-8'))
 print ' 771f76844e0d597d ======='
 print toHex(u'真的不好')
 
