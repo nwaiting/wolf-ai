@@ -73,5 +73,5 @@ if __name__ == '__main__':
     print "============== urllib"
     import urllib
     res = urllib.urlopen('http://download.firefox.com.cn/releases-sha2/stub/official/zh-CN/Firefox-latest.exe')
-    print res.getcode()
+    print type(res.getcode()), res.getcode()  //int 200
     print len(res.read())
