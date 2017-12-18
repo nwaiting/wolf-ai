@@ -10,6 +10,11 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from srs_health_check_config import *
 import subprocess
 
+"""
+import threading
+threading.Timer(1, health_check)
+"""
+
 logging.basicConfig(level=log_level,
                 format='[%(levelname)s] [%(asctime)s] [%(filename)s:%(lineno)d] %(message)s',
                 datefmt='%Y-%m-%d %H:%M:%S',
