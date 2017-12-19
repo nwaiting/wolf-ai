@@ -8,10 +8,11 @@
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
+from aizhanb.settings import WORDS_RESULTS
 
 class WebspiderPipelineAizhan(object):
     def __init__(self):
-        self.file_name = 'aizhan.allwords.data'
+        self.file_name = WORDS_RESULTS
         self.savefile = None
 
     def process_item(self, item, spider):

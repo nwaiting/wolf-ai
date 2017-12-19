@@ -100,5 +100,6 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
 #WARNING: Got data loss in http://list.iqiyi.com/. If you want to process broken responses set the setting DOWNLOAD_FAIL_ON_DATALOSS = False -- This message won't be shown in further requests
 DOWNLOAD_FAIL_ON_DATALOSS = False
 
-WORDS_SOURCE_DIR = './data.data'
-USERS_COOKIE = './users.txt'
+WORDS_SOURCE_DIR = '../data/data.data'
+USERS_COOKIE_INFO = '../data/users.txt'
+WORDS_RESULTS = '../data/aizhan.allwords.data'
