@@ -16,6 +16,8 @@ class AizhanSpider(scrapy.Spider):
     start_urls = ['https://ci.aizhan.com/']
     cookie_jar = {}
     cookie_user_sec = ''
+    cookie_user_id = ''
+    cookie_user_name = ''
     def toHex(self,s):
         lst = list()
         for ch in s:
@@ -48,12 +50,30 @@ class AizhanSpider(scrapy.Spider):
             contens = f.read()
             first_index = contens.find('userSecure')
             if first_index != -1:
-                contens = contens[first_index:]
-                second_index = contens.find('=')
-                third_index = contens.find(';')
+                first_contents = contens[first_index:]
+                second_index = first_contents.find('=')
+                third_index = first_contents.find(';')
                 if second_index != -1:
-                    self.cookie_user_sec = contens[second_index+1:third_index]
+                    self.cookie_user_sec = first_contents[second_index+1:third_index]
                     print "user secret ", self.cookie_user_sec
+
+            first_index = contens.find('userId')
+            if first_index != -1:
+                first_contents = contens[first_index:]
+                second_index = first_contents.find('=')
+                third_index = first_contents.find(';')
+                if second_index != -1:
+                    self.cookie_user_id = first_contents[second_index+1:third_index]
+                    print "user id ", self.cookie_user_id
+
+            first_index = contens.find('userName')
+            if first_index != -1:
+                first_contents = contens[first_index:]
+                second_index = first_contents.find('=')
+                third_index = first_contents.find(';')
+                if second_index != -1:
+                    self.cookie_user_name = first_contents[second_index+1:third_index]
+                    print "user name ", self.cookie_user_name
 
         with open(WORDS_SOURCE_DIR, 'rb') as f:
             for line in f.xreadlines():
@@ -64,8 +84,8 @@ class AizhanSpider(scrapy.Spider):
                     url = self.start_urls[0] + trans_code + '/'
                     """
                     """
-                    self.cookie_jar={'userId':'1018843'
-                                ,'userName':'798990255%40qq.com'
+                    self.cookie_jar={'userId':'{0}'.format(self.cookie_user_id)
+                                ,'userName':'{0}'.format(self.cookie_user_name)
                                 ,'userGroup':'1'
                                 ,'userSecure':'{0}'.format(self.cookie_user_sec)
                                 }
