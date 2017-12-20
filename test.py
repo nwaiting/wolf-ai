@@ -55,7 +55,11 @@ def show2():
     scher.enter(3, 1, show2)
 
 if __name__ == '__main__':
-
+    import platform
+    print(platform.python_version())
+    import sys
+    sys.exit(0)
+    """
     import sched
     import time
     scher = sched.scheduler(time.time, time.sleep)
@@ -73,5 +77,6 @@ if __name__ == '__main__':
     print "============== urllib"
     import urllib
     res = urllib.urlopen('http://download.firefox.com.cn/releases-sha2/stub/official/zh-CN/Firefox-latest.exe')
-    print type(res.getcode()), res.getcode()  //int 200
+    print type(res.getcode()), res.getcode()  #int 200
     print len(res.read())
+    """

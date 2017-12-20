@@ -44,7 +44,8 @@ def main():
     biases = tf.Variable(tf.zeros([1]))
 
     #初始化变量
-    init = tf.initialize_all_variables()
+    #init = tf.initialize_all_variables()
+    init = tf.global_variables_initializer()
 
     #启动图
     sess = tf.Session()
