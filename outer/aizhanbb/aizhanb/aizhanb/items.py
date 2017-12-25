@@ -9,3 +9,4 @@ import scrapy
 
 class WebspiderAizhanItem(scrapy.Item):
     word = scrapy.Field()
+    item_pc_mobile = scrapy.Field()

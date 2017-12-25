@@ -96,24 +96,50 @@ class AizhanSpider(scrapy.Spider):
                             callback=self.parse)
 
     def parse(self, response):
-        #print response
-        for item_word in response.xpath('//td[@class="title"]/a/@title').extract():
+        print response
+        for item in response.xpath('//tr'):
+            item_word = item.xpath('./td[@class="title"]/a/@title').extract_first()
             if item_word:
                 item_word = item_word.strip()
-                print u'{0}'.format(item_word)
-                if self.maybeTieba(item_word):
-                    aizhanitem = WebspiderAizhanItem()
-                    aizhanitem['word'] = item_word.strip()
-                    yield aizhanitem
+            item_pc_mobile = item.xpath('./td[@class="center"]/span/text()').extract_first()
+            if item_pc_mobile:
+                item_pc_mobile = item_pc_mobile.strip()
+            print u'{0} {1}'.format(item_word, item_pc_mobile)
+            if self.maybeTieba(item_word):
+                aizhanitem = WebspiderAizhanItem()
+                aizhanitem['word'] = item_word
+                aizhanitem['item_pc_mobile'] = item_pc_mobile
+                yield aizhanitem
         yield scrapy.Request(url=response.url + "2/", cookies=self.cookie_jar, callback=self.pase_next)
 
     def pase_next(self, response):
-        #print response
-        for item_word in response.xpath('//td[@class="title"]/a/@title').extract():
+        print response
+        for item in response.xpath('//tr'):
+            item_word = item.xpath('./td[@class="title"]/a/@title').extract_first()
             if item_word:
                 item_word = item_word.strip()
-                print u'{0}'.format(item_word)
-                if self.maybeTieba(item_word):
-                    aizhanitem = WebspiderAizhanItem()
-                    aizhanitem['word'] = item_word.strip()
-                    yield aizhanitem
+            item_pc_mobile = item.xpath('./td[@class="center"]/span/text()').extract_first()
+            if item_pc_mobile:
+                item_pc_mobile = item_pc_mobile.strip()
+            print u'{0} {1}'.format(item_word, item_pc_mobile)
+            if self.maybeTieba(item_word):
+                aizhanitem = WebspiderAizhanItem()
+                aizhanitem['word'] = item_word
+                aizhanitem['item_pc_mobile'] = item_pc_mobile
+                yield aizhanitem
+
+    def parse_itemhtml(self, response):
+        print 'parse_itemhtml {0}'.format(len(response.text))
+        for item in response.xpath('//tr'):
+            item_word = item.xpath('./td[@class="title"]/a/@title').extract_first()
+            if item_word:
+                item_word = item_word.strip()
+            item_pc_mobile = item.xpath('./td[@class="center"]/span/text()').extract_first()
+            if item_pc_mobile:
+                item_pc_mobile = item_pc_mobile.strip()
+            print u'{0} {1}'.format(item_word, item_pc_mobile)
+            if self.maybeTieba(item_word):
+                aizhanitem = WebspiderAizhanItem()
+                aizhanitem['word'] = item_word
+                aizhanitem['item_pc_mobile'] = item_pc_mobile
+                yield aizhanitem
