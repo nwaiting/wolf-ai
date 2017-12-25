@@ -23,7 +23,9 @@ class AizhanSpider(scrapy.Spider):
         for ch in s:
             hv = hex(ord(ch)).replace('0x', '')
             if len(hv) == 1:
-                hv = '0'+hv
+                hv = '0' + hv
+            if len(hv) == 2:
+                hv = 'n' + hv
             lst.append(hv)
         return reduce(lambda x,y:x+y, lst)
 
