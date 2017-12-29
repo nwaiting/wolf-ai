@@ -88,6 +88,100 @@ def function_5():
         print(var_b, sess.run(var_b))
 
 def function_6():
+    """
+    tf.nn.embedding_lookup(embedding, input_ids)
+    根据input_ids中的索引，寻找embedding中对应的元素
+    比如：input_ids=[1,3,5]，则找到embedding中下标为1,3,5的向量组成一个矩阵返回
+    """
+    tensor = tf.Variable(tf.random_normal([5,5], dtype=tf.float32))
+    tensor_int = tf.cast(tensor, dtype=tf.int32)
+    input_ids = tf.placeholder(dtype=tf.int32, shape=[None, None])
+    embedding = tf.Variable(tensor_int)
+    input_embedding = tf.nn.embedding_lookup(embedding, input_ids)
+
+    input_ids_2 = tf.Variable([1,2,3])
+    input2_embedding = tf.nn.embedding_lookup(embedding, input_ids_2)
+    input_ids_3 = tf.Variable([[0,1], [1,2]])
+    input3_embedding = tf.nn.embedding_lookup(embedding, input_ids_3)
+    init = tf.global_variables_initializer()
+    with tf.Session() as sess:
+        sess.run(init)
+        print(sess.run(embedding))
+        #print(sess.run(input_embedding, feed_dict={input_ids:[1,2,3]}))
+        print('========= input_embedding')
+        print(sess.run(input_embedding, feed_dict={input_ids:[[0,1], [0,1]]}))
+        print('========= input2_embedding')
+        print(sess.run(input2_embedding))
+        print('========== input3_embedding')
+        print(sess.run(input3_embedding))
+
+def function_7():
+    """
+    tf.gradients(ys, xs)
+    计算梯度的函数tf.gradients(ys, xs)，注意xs中的x必须与ys相关，不相关的话会报错
+
+    matmul()矩阵相乘;
+    multiply()实数相乘
+    """
+    w1 = tf.Variable([[1,2]])
+    w2 = tf.Variable([[3,4]])
+    res = tf.matmul(w1, [[2], [1]])
+    grads = tf.gradients(res, [w1])
+
+    a = tf.constant(2., dtype=tf.float32)
+    b = tf.constant(3, dtype=tf.float32)
+    c = tf.pow(a, b) # 表示 a^b
+    grad = tf.gradients(ys=c, xs=a) #一阶对a导数
+    grad_2 = tf.gradients(ys=grad[0], xs=a) #二阶对a求导
+    grad_3 = tf.gradients(ys=grad_2[0], xs=a) #三阶对a求导
+
+    grad_b = tf.gradients(ys=c, xs=b) #一阶对b求导
+
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        print(sess.run(grads))
+        print(sess.run(c))
+        print(sess.run(grad))
+        print(sess.run(grad_2))
+        print(sess.run(grad_3))
+        print(sess.run(grad_b)) # (a^b)' = (a^b)lna
+
+def function_8():
+    """
+    tf.linspace()
+    tf.range()
+    """
+    line_tensor = tf.linspace(1., 5., 10) #等差数列
+    range_tensor = tf.range(1, 10) #rang序列
+    with tf.Session() as sess:
+        print(sess.run(line_tensor))
+        print(sess.run(range_tensor))
+
+def function_9():
+    """
+    tf.assign(a, b) 用b赋值给a
+    """
+    h_a = tf.Variable(1., dtype=tf.float32)
+    h_b = tf.Variable(2., dtype=tf.float32)
+    h_c = tf.Variable(0., dtype=tf.float32)
+    h_add = tf.add(h_a, h_b)
+    h_update = tf.assign(h_c, h_add)
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        print(sess.run(h_c))
+        print(sess.run(h_update))
+        print(sess.run(h_c))
+
+def function_10():
+    """
+    另类执行run的写法
+    """
+    tensor_a = tf.constant('hello world')
+    with tf.Session() as sess:
+        tensor_a_val = tensor_a.eval(session=sess)
+        print(tensor_a_val)
+
+def function_bak():
     # 将一个数字序列ids转化为embedding序列
     tf.nn.embedding_lookup()
 
@@ -126,3 +220,8 @@ if __name__ == '__main__':
     #function_3()
     #function_4()
     #function_5()
+    #function_6()
+    #function_7()
+    #function_8()
+    #function_9()
+    function_10()
