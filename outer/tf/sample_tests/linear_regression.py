@@ -50,11 +50,12 @@ def multi_linear_regression():
     """
     多项式回归
     """
-    x_s = tf.Variable(tf.random_uniform([300], -5.0, 5.0, dtype=tf.float32), dtype=tf.float32, name='X')
-    y_s = tf.add(tf.cos(x_s), tf.random_uniform([300], -1.0, 1.0, dtype=tf.float32), name='Y')
+    n_observation = 300
+    x_s = tf.Variable(tf.random_uniform([n_observation], -5.0, 5.0, dtype=tf.float32), dtype=tf.float32, name='X')
+    y_s = tf.add(tf.cos(x_s), tf.random_uniform([n_observation], -1.0, 1.0, dtype=tf.float32), name='Y')
 
-    X = tf.placeholder(dtype=tf.float32)
-    Y = tf.placeholder(dtype=tf.float32)
+    X = tf.placeholder(tf.float32)
+    Y = tf.placeholder(tf.float32)
 
     W = tf.Variable(tf.random_normal([1], dtype=tf.float32), dtype=tf.float32)
     b = tf.Variable(tf.random_normal([1], dtype=tf.float32), dtype=tf.float32)
@@ -72,10 +73,13 @@ def multi_linear_regression():
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         for i in range(1000):
-            sess.run(train,feed_dict={X:x_s, Y:y_s})
+            total_loss = 0
+            for tmpx, tmpy in zip(sess.run(x_s), sess.run(y_s)):
+                _,l = sess.run([train, loss], feed_dict={X:tmpx, Y:tmpy})
+                print('======== ', l)
+                total_loss += l
             if i % 50 == 0:
-                print(sess.run(loss))
-
+                print(total_loss, total_loss/n_observation)
 
 if __name__ == '__main__':
     #main()

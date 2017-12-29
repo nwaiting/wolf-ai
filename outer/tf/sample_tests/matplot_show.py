@@ -54,6 +54,7 @@ def main():
         # 绘制曲线，使用蓝色的、连续的、宽度为 1 （像素）的线条
         # plot(X, C, color="blue", linewidth=1.0, linestyle="-")
         plt.plot(sess.run(x_data), sess.run(y_data), 'ro')
+        # 多个曲线画在一个图上
         #plt.legend()
         plt.show()
 
