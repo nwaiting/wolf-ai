@@ -80,6 +80,9 @@ def function_4():
         print(tf.shape(y), sess.run(y))
 
 def function_5():
+    """
+    tf.reshape()
+    """
     var_a = tf.Variable(tf.random_uniform([3,4], 1., 5., dtype=tf.float32))
     var_b = tf.reshape(var_a, [2,6])
     with tf.Session() as sess:
@@ -177,9 +180,23 @@ def function_10():
     另类执行run的写法
     """
     tensor_a = tf.constant('hello world')
+    tensor_b = tf.Variable(tf.random_uniform([10], 0., 5., dtype=tf.float32))
     with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        print(tensor_a.eval())
+        print(type(tensor_b.eval()))
         tensor_a_val = tensor_a.eval(session=sess)
         print(tensor_a_val)
+
+def function_reduce():
+    """
+    求平均值 可以指定求第一维、指定维数的平均值
+    tf.reduce_mean()
+    求最大值 可以指定位维度
+    tf.reduce_max()
+    求和 可以指定维度
+    tf.reduce_sum()
+    """
 
 def function_bak():
     # 将一个数字序列ids转化为embedding序列

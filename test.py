@@ -55,6 +55,12 @@ def show2():
     scher.enter(3, 1, show2)
 
 if __name__ == '__main__':
+    import random
+    print(random.random()%1)
+    print(random.random()%1)
+    print(random.random()%1)
+    print(random.random()%1)
+    print([0.] * 4)
     import platform
     print(platform.python_version())
     import sys
