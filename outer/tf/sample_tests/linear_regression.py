@@ -127,7 +127,7 @@ def module(w, x, c):
 def multi_linear_regression2():
     learn_rate = 0.01
     training_step = 50
-    data_number = 200
+    data_number = 100
     num_coeffs = 4
     source_data = np.linspace(-2, 3, data_number)
     x_data = tf.Variable(source_data, dtype=tf.float32)
@@ -142,25 +142,86 @@ def multi_linear_regression2():
     loss = tf.reduce_mean(tf.square(y_pre - Y))
     train = tf.train.GradientDescentOptimizer(learn_rate).minimize(loss)
 
-    pre_x = np.linspace(-2, 3, data_number)
+    #pre_x = np.linspace(-2, 3, data_number)
     pre_x = tf.Variable(tf.random_uniform([data_number], -2., 3., dtype=tf.float32), dtype=tf.float32)
+
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
 
-        for i in range(2000):
-            _,l = sess.run([train, loss], feed_dict={X:sess.run(x_data), Y:sess.run(y_data)})
-            if i % training_step == 0:
-                print(l, sess.run(W))
+        for i in range(100):
+            for m,n in zip(sess.run(x_data), sess.run(y_data)):
+                _,l = sess.run([train, loss], feed_dict={X:m, Y:n})
+                if i % training_step == 0:
+                    print(l, sess.run(W))
         plt.plot(sess.run(x_data), sess.run(y_data), 'ro', label='real_data')
-        pre_d = 0
+        pre_d = list()
+        #pre_x = sorted(sess.run(pre_x))
         for i in range(num_coeffs):
-            pre_d += tf.multiply(W[i], tf.pow(pre_x, i))
+            pre_d.append(tf.multiply(W[i], tf.pow(pre_x, i)))
+        pre_d = tf.add_n(pre_d)
         plt.plot(sess.run(pre_x), sess.run(pre_d), 'g', label='predict_data')
         plt.legend()
         plt.show()
 
 
+def multi_linear_regression3():
+    learning_rate = 0.01
+    training_epochs = 40
+    rng = np.random.RandomState(1)
+
+    def inner_fun(x):
+        a0,a1,a2,a3,e = 0.1,-0.02,0.03,-0.04,0.05
+        y = a0 + a1 * x + a2 * (x**2) + a3 * (x**3)+ e
+        y += 0.03 * rng.rand(1)
+        return y
+
+    trX = np.linspace(-1, 1, 30)
+    arrY = [inner_fun(x) for x in trX]
+    num_coeffs = 4
+    trY = np.array(arrY).reshape(-1,1)
+
+    X = tf.placeholder("float")
+    Y = tf.placeholder("float")
+
+    def inner_model(X, w):
+        terms = []
+        for i in range(num_coeffs):
+            term = tf.multiply(w[i], tf.pow(X, i))
+            terms.append(term)
+        return tf.add_n(terms)
+
+    w = tf.Variable([0.] * num_coeffs, name="parameters")
+    y_model = inner_model(X, w)
+
+    cost = tf.reduce_sum(tf.square(Y-y_model))
+    train_op = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost)
+
+    with tf.Session() as sess :
+        init = tf.global_variables_initializer()
+        sess.run(init)
+
+        for epoch in range(training_epochs):
+            for (x, y) in zip(trX, trY):
+                sess.run(train_op, feed_dict={X: x, Y: y})
+
+        w_val = sess.run(w)
+        print(w_val)
+
+    plt.figure()
+    plt.xlabel('x')
+    plt.ylabel('y')
+    plt.grid(True)
+    plt.title('polynomial regression(tensorflow)')
+    plt.scatter(trX, trY)
+    trX2 = np.linspace(-1, 2, 100)
+    trY2 = 0
+    for i in range(num_coeffs):
+        trY2 += w_val[i] * np.power(trX2, i)
+    plt.plot(trX2, trY2, 'r-')
+    plt.show()
+
 if __name__ == '__main__':
     #main()
     #multi_linear_regression()
     multi_linear_regression2()
+    #multi_linear_regression3()
