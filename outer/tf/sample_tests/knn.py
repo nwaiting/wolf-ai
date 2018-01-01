@@ -25,10 +25,10 @@ def func_knn():
             #knn算法 测试集和训练集对比 返回误差最小的下表
             nn_index = sess.run(predict, feed_dict={X_tr:X_train, X_te:X_test[i,:]})
             # #np.argmax  返回标签Y中最大数下标（既数值为1的下标），也就是该标签所对应的数字
-            print("Test : ", i, " Prection : ", tf.argmax(Y_train[nn_index]), " True class : ", tf.argmax(Y_test[i]))
+            print("Test : ", i, " Prection : ", sess.run(tf.argmax(Y_train[nn_index])), " True class : ", sess.run(tf.argmax(Y_test[i])))
 
             #计算准确率
-            if np.argmax(Y_train(nn_index)) == np.argmax(Y_test[i]):
+            if np.argmax(Y_train[nn_index]) == np.argmax(Y_test[i]):
                 accuracy += 1/len(X_test)
         print("accuracy : ", accuracy)
 
