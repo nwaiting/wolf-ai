@@ -64,7 +64,7 @@ def multi_linear_regression():
     """
     多项式回归
     """
-    n_observation = 100
+    n_observation = 30
     x_s = tf.Variable(tf.random_uniform([n_observation], -3.0, 3.0, dtype=tf.float32), dtype=tf.float32, name='X')
     y_s = tf.add(tf.sin(x_s), tf.random_uniform([n_observation], -0.5, 0.5, dtype=tf.float32), name='Y')
 
@@ -127,7 +127,7 @@ def module(w, x, c):
 def multi_linear_regression2():
     learn_rate = 0.01
     training_step = 50
-    data_number = 100
+    data_number = 30
     num_coeffs = 4
     source_data = np.linspace(-2, 3, data_number)
     x_data = tf.Variable(source_data, dtype=tf.float32)
@@ -148,12 +148,19 @@ def multi_linear_regression2():
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
 
-        for i in range(100):
+        for i in range(50):
             for m,n in zip(sess.run(x_data), sess.run(y_data)):
                 _,l = sess.run([train, loss], feed_dict={X:m, Y:n})
                 if i % training_step == 0:
                     print(l, sess.run(W))
-        plt.plot(sess.run(x_data), sess.run(y_data), 'ro', label='real_data')
+
+        plt.figure()
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.grid(True)
+        plt.title('polynomial regression(tensorflow)')
+        #plt.scatter(trX, trY)
+        plt.scatter(sess.run(x_data), sess.run(y_data))
         pre_d = list()
         #pre_x = sorted(sess.run(pre_x))
         for i in range(num_coeffs):
