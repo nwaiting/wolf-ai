@@ -198,6 +198,17 @@ def function_reduce():
     tf.reduce_sum()
     """
 
+def function_11():
+    """
+    如果机器中有多块GPU，tensorflow会默认吃掉所有能用的显存，
+    如果实验室多人公用一台服务器，希望指定使用特定某块GPU。
+    可以在文件开头加入如下代码：
+    import os
+    os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+    指定使用第二块GPU（从0开始）
+    """
+
 def function_bak():
     # 将一个数字序列ids转化为embedding序列
     tf.nn.embedding_lookup()

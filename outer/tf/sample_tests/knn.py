@@ -13,7 +13,7 @@ def func_knn():
     X_te = tf.placeholder(tf.float32, shape=[784])
 
     #计算测试数据与训练数据L1范数大小（1表示从横轴进行降维）
-    distance = tf.reduce_sum(tf.abs(tf.add(X_tr, tf.negative(X_te,))), 1)
+    distance = tf.reduce_sum(tf.abs(tf.add(X_tr, tf.negative(X_te,))), reduction_indices=1)
     #求distance最小的下标
     predict = tf.argmin(distance, 0)
 
