@@ -4,6 +4,8 @@ from consts import SIZE
 
 def terrainCollision(hero,bound,terrain): #[0不碰-1左碰1右碰,0不碰-1上碰1下碰]
     l,r,u,d = bound
+    print('bound ', bound)
+    l,r,u,d = int(l),int(r),int(u),int(d)
     result = [0,0]
     if l < 0 or r >= len(terrain[0]) or u < 0 or d >= len(terrain):
         return result
@@ -24,8 +26,8 @@ def terrainCollision(hero,bound,terrain): #[0不碰-1左碰1右碰,0不碰-1上�
     elif hero.vx < 0:
         lx = (l+1)*SIZE
         lyu = lyd = 0
-        for i in range(u,d-hero.land+1):
-            if terrain[i][l] and not terrain[i][l+1]:
+        for i in range(int(u),int(d-hero.land+1)):
+            if terrain[i][int(l)] and not terrain[i][int(l)+1]:
                 if not lyu: lyu = (i)*SIZE
                 lyd = (i+1)*SIZE
         if lyd and lineCollision((px,hero.y-hero.height/2),
@@ -35,8 +37,8 @@ def terrainCollision(hero,bound,terrain): #[0不碰-1左碰1右碰,0不碰-1上�
     elif hero.vx > 0:
         rx = r*SIZE
         ryu = ryd = 0
-        for i in range(u,d-hero.land+1):
-            if terrain[i][r] and not terrain[i][r-1]:
+        for i in range(int(u),int(d-hero.land+1)):
+            if terrain[i][int(r)] and not terrain[i][int(r)-1]:
                 if not ryu: ryu = (i)*SIZE
                 ryd = (i+1)*SIZE
         if ryd and lineCollision((px,hero.y-hero.height/2),
@@ -45,8 +47,8 @@ def terrainCollision(hero,bound,terrain): #[0不碰-1左碰1右碰,0不碰-1上�
             result[0] = 1
 
     if hero.vy < 0 and not hero.vx:
-        for j in range(l,r+1):
-            if terrain[u][j]:
+        for j in range(int(l),int(r)+1):
+            if terrain[int(u)][j]:
                 result[1] = -1
                 break
     elif hero.vy < 0:

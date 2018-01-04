@@ -9,14 +9,20 @@ class Sprite:
     def __init__(self,_id,x,y,w,h):
         self.children = []
         self.parent = None
-        self.x, self.y = x, y
+        self.x, self.y = int(x), int(y)
         self.id = _id
         self.type = canvas.type(_id)
-        self.width = w
-        self.height = h
+        self.width = int(w)
+        self.height = int(h)
     def getBound(self):
-        return int(self.x-self.width/2)/SIZE, int(self.x+self.width/2)/SIZE,\
-               int(self.y-self.height/2)/SIZE, int(self.y+self.height/2)/SIZE
+        with open('py3_my_getBound.txt', 'ab') as f:
+            f.write(('{0} {1} {2} {3} {4} {5} {6} {7}\n'.format(int(self.x-self.width/2)/SIZE,
+                int(self.x+self.width/2)/SIZE,
+                int(self.y-self.height/2)/SIZE,
+                int(self.y+self.height/2)/SIZE,
+                self.x, self.y, self.width, self.height)).encode())
+        return int(int(self.x-self.width/2)/SIZE), int(int(self.x+self.width/2)/SIZE),\
+               int(int(self.y-self.height/2)/SIZE), int(int(self.y+self.height/2)/SIZE)
     def move(self):
         if not self.parent:
             self.ax, self.ay = self.x, self.y

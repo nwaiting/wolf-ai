@@ -55,11 +55,6 @@ def show2():
     scher.enter(3, 1, show2)
 
 if __name__ == '__main__':
-    teacher_index = {'701011': {'ZHU': ['7010115060']}, '701012': {'WANG': []}, '701021': {'TAN': []}, '701022': {'YANG': []}, '701031': {'SUN': []}, '701032': {'QIAN': []}, '701041': {'LIU': []}, '701042': {'SUN': []}, '701051': {'ZHANG': []}, '701052': {'TANG': []}}
-    for i,j in teacher_index.items():
-        print(j, len(list(j.values())[0]))
-    res = sorted(teacher_index.items(), key=lambda x:len(list(x[1].values())[0]),reverse=False)
-    print(res)
     import platform
     print(platform.python_version())
     import sys

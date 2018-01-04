@@ -221,7 +221,7 @@ def main(_root):
 
 def startGame(level):
     #���ӷ���
-    for i in range(WIDTH/SIZE):
+    for i in range(int(WIDTH/SIZE)):
         if random() < 0.4 or not blocks and i == WIDTH/SIZE-1:
             block = Block(i*SIZE+SIZE/2,-SIZE/2,level+1)
             blocks.append(block)
@@ -376,7 +376,7 @@ def loop(pos,level):
             return nextPos,balls[-1]
 
 def toColor(color):
-    return '#%06x'%sum(color[i]<<(i*8) for i in range(3))
+    return '#%06x'%sum(int(color[i])<<(i*8) for i in range(3))
 
 def wait(t,func=None):
     for i in range(int(t/INTERVAL)):

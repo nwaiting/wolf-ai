@@ -57,9 +57,30 @@ def func3():
         reverse是一个布尔值。如果设置为True，列表元素将被倒序排列，默认为False
         key接受一个函数，这个函数只接受一个元素，默认为None
     """
+    teacher_index = {'701011': {'ZHU': ['7010115060']}, '701012': {'WANG': []}, '701021': {'TAN': []}, '701022': {'YANG': []}, '701031': {'SUN': []}, '701032': {'QIAN': []}, '701041': {'LIU': []}, '701042': {'SUN': []}, '701051': {'ZHANG': []}, '701052': {'TANG': []}}
+    for i,j in teacher_index.items():
+        print(j, len(list(j.values())[0]))
+    res = sorted(teacher_index.items(), key=lambda x:len(list(x[1].values())[0]),reverse=False)
+    print(res)
+
+def func4():
+    import sched
+    import time
+    scher = sched.scheduler(time.time, time.sleep)
+    def inner_func4():
+        print('inner_func4')
+        scher.enter(1, 1, inner_func4)
+    def inner_fun4_2():
+        print('inner_fun4_2')
+        scher.enter(1, 1, inner_fun4_2)
+
+    scher.enter(1, 1, inner_func4)
+    scher.enter(1, 1, inner_fun4_2)
+    scher.run()
 
 if __name__ == '__main__':
     import sys
     print(len(sys.argv), sys.argv[0])
     #func1()
-    func2()
+    #func2()
+    func4()
