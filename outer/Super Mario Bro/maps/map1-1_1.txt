@@ -1,0 +1,16 @@
+dark
+  {             
+                
+x   xxxxxxx    |
+x              |
+x              |
+x    *****     |
+x              |
+x   *******    |
+x              |
+x   *******    |
+x   xxxxxxx    |
+x   xxxxxxx    |
+x   xxxxxxx  >-2
+0000000000000000
+0000000000000000

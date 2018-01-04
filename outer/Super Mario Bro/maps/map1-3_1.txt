@@ -1,0 +1,50 @@
+dark
+ {                        
+   xAAAAAAAAAAAAAAAAAAA  |
+   xxxxxxxxxxxxxxxxxxxx  |
+   x  AAAAAAAAAAAAAAAAAAA|
+   x  xxxxxxxxxxxxxxxxxxx|
+   xAAAAAAAAAAAAAAAA  x>-2
+   xxxxxxxxxxxxxxxxx  xxxx
+                          
+                        C 
+                        | 
+                        2 
+                      xxxx
+        D       D     x  ^
+ xxxxxx xxxxx  xxxx  xx  |
+        x    DDx  x      |
+        x  xxxxx Cx      2
+        xDD    x |x   x  x
+        xxxxx  x 2x   x  x
+        x    DDxxxxxxxx  x
+        x  xxxxx ********x
+        xDD    x xxxxxxxxx
+        xxxxx  x******** x
+        x    DDxxxxxxxxx x
+        x  xxxxx ********x
+        xDD    x xxxxxxxxx
+        xxxxx  x  AAAAAAAx
+        x    DDx  AAAAAAAx
+        x  xxxxx  AAAAAAAx
+        xDD    x xxxxxxxxx
+        xxxxx  x x        
+        x    DDx x        
+        x  xxxxx x        
+        xDD    x x        
+        xxxxx  x x        
+        x    DDx x        
+        x  xxxxx x        
+        xDD    x x        
+        xxxxx  x x        
+        x    DDx x        
+        x  xxxx  x        
+        xDD   xb xxx      
+        xxxxx x    x      
+        xxxxxxxxxxxx      
+                          
+                          
+                          
+                          
+0000000000000000000000000 
+0000000000000000000000000 

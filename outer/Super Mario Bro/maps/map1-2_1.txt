@@ -1,0 +1,16 @@
+dark
+  {                                                                                                                                                                        
+                                                                                                                                                                           
+x     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxdxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx                       xxxxxxxx|xxxxx
+x                                                     xx  xxxxxx  xxxx      xxxx                                                                                     |xxxxx
+x                                                     xx  xxxxxx  xxxx  A   xxxx                                                                                     |xxxxx
+x                                        ****       xx        xx   x    xx         ******                                                                            |xxxxx
+x                                                   xx        xx   x    xx                                                                                           |xxxxx
+x                                      x xxxx x     xx        xx   x    xx         xxxxxx                                                                            |xxxxx
+x                            c         x*x  x*x     xx    ****xx   x*x  xx  AA     xxxxxx                                           AA       xxxxxx                  |xxxxx
+x         baaaa        1 1             xxx  xxx     xxxx  xxxxxx   xxx  xx  xxxx                             C                      11                            >--2xxxxx
+x                    1 1 1 1   1                      xx                                               C     |        xx           111                      xxxxxxxxxxxxxxx
+x                  1 1 1 1 1   1 1                                                                     |     |     C  xx          1111  xxx            xxx  xxxxxxxxxxxxxxx
+x              AA1 1 1 1 1 1 A 1 1             BB          B  A A                                   AAA2     2  A  2  xx         11111         D            xxxxxxxxxxxxxxx
+00000000000000000000000000000000000000000000000000000000000000000000000000000000   000000000000000000000000000000000  00  000000000000       00000000       000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000   000000000000000000000000000000000  00  000000000000       00000000       000000000000000
