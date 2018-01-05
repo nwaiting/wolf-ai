@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# 引用到的库
 import pygame,sys,time,random
 from pygame.locals import *
 # 定义颜色变量
@@ -23,9 +24,11 @@ def gameOver(playSurface):
 def main():
     # 初始化pygame
     pygame.init()
+    # 控制游戏快慢的时间对象
     fpsClock = pygame.time.Clock()
     # 创建pygame显示层
     playSurface = pygame.display.set_mode((640,480))
+    # 设置标题
     pygame.display.set_caption('Raspberry Snake')
 
     # 初始化变量
