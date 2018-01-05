@@ -17,7 +17,7 @@ def main():
     full_data_x = mnist.train.images
 
     # total steps to train
-    num_steps = 50
+    num_steps = 200
     # number of per batch
     batch_size = 1024
     # number of clusters
@@ -55,7 +55,23 @@ def main():
             if i % 10 == 0:
                 print("step {0} avg distance: {1}".format(i, d))
 
+        # assign a label to each centroid
+        # count total number of labels per centroid, using the label of each training
+        # sample to their closest centroid
+        counts = np.zeros(shape=(k, num_classes))
+        for i in range(len(idx)):
+            counts[idx[i]] += mnist.train.labels[i]
+        # assign the most frequent label to the centroid
+        labels_map = [np.argmax(c) for c in counts]
+        labels_map = tf.convert_to_tensor(labels_map)
 
+        # evaluation ops
+        cluster_label = tf.nn.embedding_lookup(labels_map, cluster_idx)
+        # computer accuracy
+        correct_prediction = tf.equal(cluster_label, tf.cast(tf.argmax(Y, 1), tf.int32))
+        accuracy_op = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+        test_x, test_y = mnist.test.images, mnist.test.labels
+        print('test accuracy : ', sess.run(accuracy_op, feed_dict={X:test_x, Y:test_y}))
 
 if __name__ == '__main__':
     main()
