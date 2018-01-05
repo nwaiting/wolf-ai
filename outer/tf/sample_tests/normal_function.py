@@ -100,8 +100,27 @@ def negative_function():
         nega_a_res = sess.run(nega_a)
         print(tf.shape(nega_a_res), nega_a_res)
 
+def func1():
+    """
+    tf.reduce_mean()中的reduction_indices参数表示函数的处理维度
+    reduction_indices默认的参数是None，当传入0或者1或者[0,1]或者[1,0]时 转成的维度见如下：
+    1 1 1
+    1 1 1      ->(1)    3 3
+
+      |(0)      \([0,1]或者[1,0])
+                 \
+    2 2 2               6
+    """
+    tensor_a = tf.Variable(tf.ones([2,3], dtype=tf.int32), dtype=tf.int32)
+    res1 = tf.reduce_mean(tensor_a,reduction_indices=None)
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        print(sess.run(tensor_a))
+        print(sess.run(res1))
+
 if __name__ == '__main__':
     #main()
     #matrix_function()
     #combin_tensor()
-    negative_function()
+    #negative_function()
+    func1()
