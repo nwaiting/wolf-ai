@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # 引用到的库
+from tkinter import *
 import pygame,sys,time,random
 from pygame.locals import *
 # 定义颜色变量
@@ -98,6 +99,9 @@ def main():
         # 判断是否死亡
         if snakePosition[0] > 620 or snakePosition[0] < 0:
             gameOver(playSurface)
+        if snakePosition[1] > 440 or snakePosition[1] < 0:
+            gameOver(playSurface)
+        print(snakePosition[1])
         if snakePosition[1] > 460 or snakePosition[1] < 0:
             for snakeBody in snakeSegments[1:]:
                 if snakePosition[0] == snakeBody[0] and snakePosition[1] == snakeBody[1]:
