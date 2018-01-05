@@ -1,148 +1,109 @@
-#coding=utf-8
+#!/usr/bin/env python
+# 引用到的库
+import pygame,sys,time,random
+from pygame.locals import *
+# 定义颜色变量
+redColour = pygame.Color(255,0,0)
+blackColour = pygame.Color(0,0,0)
+whiteColour = pygame.Color(255,255,255)
+greyColour = pygame.Color(150,150,150)
 
+# 定义gameOver函数
+def gameOver(playSurface):
+    gameOverFont = pygame.font.Font('./outer/snake/arial.ttf',72)
+    gameOverSurf = gameOverFont.render('Game Over', True, greyColour)
+    gameOverRect = gameOverSurf.get_rect()
+    gameOverRect.midtop = (320, 10)
+    playSurface.blit(gameOverSurf, gameOverRect)
+    pygame.display.flip()
+    time.sleep(5)
+    pygame.quit()
+    sys.exit()
+
+# 定义main函数
 def main():
-    # by root
-    # small fixes by Phil
+    # 初始化pygame
+    pygame.init()
+    # 控制游戏快慢的时间对象
+    fpsClock = pygame.time.Clock()
+    # 创建pygame显示层
+    playSurface = pygame.display.set_mode((640,480))
+    # 设置标题
+    pygame.display.set_caption('Raspberry Snake')
 
-    # our game imports
-    import pygame, sys, random, time
-
-    # check for initializing errors
-    check_errors = pygame.init()
-    if check_errors[1] > 0:
-        print("(!) Had {0} initializing errors, exiting...".format(check_errors[1]))
-        sys.exit(-1)
-    else:
-        print("(+) PyGame successfully initialized!")
-
-    # Play surface
-    playSurface = pygame.display.set_mode((720, 460))
-    pygame.display.set_caption('Snake game!')
-
-    # Colors
-    red = pygame.Color(255, 0, 0) # gameover
-    green = pygame.Color(0, 255, 0) #snake
-    black = pygame.Color(0, 0, 0) #score
-    white = pygame.Color(255, 255, 255) #background
-    brown = pygame.Color(165, 42, 42) #food
-
-    # FPS controller
-    fpsController = pygame.time.Clock()
-
-    # Important varibles
-    snakePos = [100, 50]
-    snakeBody = [[100,50], [90,50], [80,50]]
-
-    foodPos = [random.randrange(1,72)*10,random.randrange(1,46)*10]
-    foodSpawn = True
-
-    direction = 'RIGHT'
-    changeto = direction
-
-    score = 0
-
-    # Game over function
-    def gameOver():
-        myFont = pygame.font.SysFont('monaco', 72)
-        GOsurf = myFont.render('Game over!', True, red)
-        GOrect = GOsurf.get_rect()
-        GOrect.midtop = (360, 15)
-        playSurface.blit(GOsurf,GOrect)
-        showScore(0)
-        pygame.display.flip()
-
-        time.sleep(4)
-        pygame.quit() #pygame exit
-        sys.exit() #console exit
-
-    def showScore(choice=1):
-        sFont = pygame.font.SysFont('monaco', 24)
-        Ssurf = sFont.render('Score : {0}'.format(score) , True, black)
-        Srect = Ssurf.get_rect()
-        if choice == 1:
-            Srect.midtop = (80, 10)
-        else:
-            Srect.midtop = (360, 120)
-        playSurface.blit(Ssurf,Srect)
-
-
-    # Main Logic of the game
+    # 初始化变量
+    snakePosition = [100,100]
+    snakeSegments = [[100,100],[80,100],[60,100]]
+    raspberryPosition = [300,300]
+    raspberrySpawned = 1
+    direction = 'right'
+    changeDirection = direction
     while True:
+        # 检测例如按键等pygame事件
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT or event.key == ord('d'):
-                    changeto = 'RIGHT'
-                if event.key == pygame.K_LEFT or event.key == ord('a'):
-                    changeto = 'LEFT'
-                if event.key == pygame.K_UP or event.key == ord('w'):
-                    changeto = 'UP'
-                if event.key == pygame.K_DOWN or event.key == ord('s'):
-                    changeto = 'DOWN'
-                if event.key == pygame.K_ESCAPE:
-                    pygame.event.post(pygame.event.Event(pygame.QUIT))
-
-        # validation of direction
-        if changeto == 'RIGHT' and not direction == 'LEFT':
-            direction = 'RIGHT'
-        if changeto == 'LEFT' and not direction == 'RIGHT':
-            direction = 'LEFT'
-        if changeto == 'UP' and not direction == 'DOWN':
-            direction = 'UP'
-        if changeto == 'DOWN' and not direction == 'UP':
-            direction = 'DOWN'
-
-        # Update snake position [x,y]
-        if direction == 'RIGHT':
-            snakePos[0] += 10
-        if direction == 'LEFT':
-            snakePos[0] -= 10
-        if direction == 'UP':
-            snakePos[1] -= 10
-        if direction == 'DOWN':
-            snakePos[1] += 10
-
-
-        # Snake body mechanism
-        snakeBody.insert(0, list(snakePos))
-        if snakePos[0] == foodPos[0] and snakePos[1] == foodPos[1]:
-            score += 1
-            foodSpawn = False
+            elif event.type == KEYDOWN:
+                # 判断键盘事件
+                if event.key == K_RIGHT or event.key == ord('d'):
+                    changeDirection = 'right'
+                if event.key == K_LEFT or event.key == ord('a'):
+                    changeDirection = 'left'
+                if event.key == K_UP or event.key == ord('w'):
+                    changeDirection = 'up'
+                if event.key == K_DOWN or event.key == ord('s'):
+                    changeDirection = 'down'
+                if event.key == K_ESCAPE:
+                    pygame.event.post(pygame.event.Event(QUIT))
+        # 判断是否输入了反方向
+        if changeDirection == 'right' and not direction == 'left':
+            direction = changeDirection
+        if changeDirection == 'left' and not direction == 'right':
+            direction = changeDirection
+        if changeDirection == 'up' and not direction == 'down':
+            direction = changeDirection
+        if changeDirection == 'down' and not direction == 'up':
+            direction = changeDirection
+        # 根据方向移动蛇头的坐标
+        if direction == 'right':
+            snakePosition[0] += 20
+        if direction == 'left':
+            snakePosition[0] -= 20
+        if direction == 'up':
+            snakePosition[1] -= 20
+        if direction == 'down':
+            snakePosition[1] += 20
+        # 增加蛇的长度
+        snakeSegments.insert(0,list(snakePosition))
+        # 判断是否吃掉了树莓
+        if snakePosition[0] == raspberryPosition[0] and snakePosition[1] == raspberryPosition[1]:
+            raspberrySpawned = 0
         else:
-            snakeBody.pop()
+            snakeSegments.pop()
+        # 如果吃掉树莓，则重新生成树莓
+        if raspberrySpawned == 0:
+            x = random.randrange(1,32)
+            y = random.randrange(1,24)
+            raspberryPosition = [int(x*20),int(y*20)]
+            raspberrySpawned = 1
+        # 绘制pygame显示层
+        playSurface.fill(blackColour)
+        for position in snakeSegments:
+            pygame.draw.rect(playSurface,whiteColour,Rect(position[0],position[1],20,20))
+            pygame.draw.rect(playSurface,redColour,Rect(raspberryPosition[0], raspberryPosition[1],20,20))
 
-        #Food Spawn
-        if foodSpawn == False:
-            foodPos = [random.randrange(1,72)*10,random.randrange(1,46)*10]
-        foodSpawn = True
-
-        #Background
-        playSurface.fill(white)
-
-        #Draw Snake
-        for pos in snakeBody:
-            pygame.draw.rect(playSurface, green, pygame.Rect(pos[0],pos[1],10,10))
-
-        pygame.draw.rect(playSurface, brown, pygame.Rect(foodPos[0],foodPos[1],10,10))
-
-        # Bound
-        if snakePos[0] > 710 or snakePos[0] < 0:
-            gameOver()
-        if snakePos[1] > 450 or snakePos[1] < 0:
-            gameOver()
-
-        # Self hit
-        for block in snakeBody[1:]:
-            if snakePos[0] == block[0] and snakePos[1] == block[1]:
-                gameOver()
-
-        #common stuff
-        showScore()
+        # 刷新pygame显示层
         pygame.display.flip()
+        # 判断是否死亡
+        if snakePosition[0] > 620 or snakePosition[0] < 0:
+            gameOver(playSurface)
+        if snakePosition[1] > 460 or snakePosition[1] < 0:
+            for snakeBody in snakeSegments[1:]:
+                if snakePosition[0] == snakeBody[0] and snakePosition[1] == snakeBody[1]:
+                    gameOver(playSurface)
+        # 控制游戏速度
+        fpsClock.tick(5)
 
-        fpsController.tick(24)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
