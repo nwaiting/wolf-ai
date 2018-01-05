@@ -78,9 +78,31 @@ def func4():
     scher.enter(1, 1, inner_fun4_2)
     scher.run()
 
+def func5():
+    """
+    python3中：
+    bytes -> str decode()
+    str -> bytes encode()
+    """
+    str_str = 'hello'
+    print(type(str_str), str_str)
+    print(type(str_str.encode()), str_str.encode())
+    bytes_str = b'hello'
+    print(type(bytes_str), bytes_str)
+    print(bytes_str.decode())
+
+def func6():
+    """
+    输出py版本
+    """
+    import platform
+    print(platform.python_version())
+
 if __name__ == '__main__':
     import sys
     print(len(sys.argv), sys.argv[0])
     #func1()
     #func2()
-    func4()
+    #func4()
+    #func5()
+    func6()

@@ -4,6 +4,8 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
 
+# 参考 https://github.com/aymericdamien/TensorFlow-Examples/blob/master/examples/2_BasicModels/nearest_neighbor.py#L24
+
 def main():
     mnist = input_data.read_data_sets('./outer/tf/sample_tests/data', one_hot=True)
     # 5000 for training(nn candidates)

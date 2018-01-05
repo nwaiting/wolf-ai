@@ -118,9 +118,19 @@ def func1():
         print(sess.run(tensor_a))
         print(sess.run(res1))
 
+def func2():
+    tensor_a = tf.constant('hello world')
+    # 指定操作的设备，设备可以本地的CPU或者GPU，也可以是某一台远程的服务器
+    with tf.device('/cpu:0'):
+        # 设置在运行时输出运行的设备
+        with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
+            res = sess.run(tensor_a)
+            print(type(res), res, res.decode())
+
 if __name__ == '__main__':
     #main()
     #matrix_function()
     #combin_tensor()
     #negative_function()
-    func1()
+    #func1()
+    func2()
