@@ -98,6 +98,98 @@ def func6():
     import platform
     print(platform.python_version())
 
+def func7():
+    dict_a = {'a':1,'b':2, 'c':3}
+    print(type(dict_a).__name__)
+    for inst in dict_a:
+        print(type(inst), inst)  #输出a b c
+    for inst in dict_a.items():
+        print(inst)
+
+def func8():
+    """
+    operator.itemgetter函数
+    operator模块提供的itemgetter函数用于获取对象的哪些维的数据，参数为一些序号（即需要获取的数据在对象中的序号）
+
+    sorted函数也可以进行多级排序，例如要根据第二个域和第三个域进行排序，可以这么写：
+    sorted(students, key=operator.itemgetter(1,2))  即先根据第二个域排序，再根据第三个域排序
+    """
+    from operator import itemgetter
+    a = [1,2,3]
+    c = [[1,2,3],[2,3,4],[3,4,5]]
+    b = itemgetter(0)
+    print(b(a))
+    print(b(c))
+
+def func9():
+    """
+    表格处理
+    """
+
+    """
+    from texttable import Texttable, get_color_string, bcolors
+    table = Texttable()
+    table.set_cols_align(["l", "r", "c"])
+    table.set_cols_valign(["t", "m", "b"])
+    table.add_rows([ [table.get_color_string(bcolors.GREEN, "Name Of Person"), "Age", "Nickname"],
+                 ["Mr\nXavier\nHuon", 32, "Xav'"],
+                 [table.get_color_string(bcolors.BLUE,"Mr\nBaptiste\nClement"), 1, table.get_color_string(bcolors.RED,"Baby")] ])
+    print(table.draw() + "\n")
+
+    table = Texttable()
+    table.set_deco(Texttable.HEADER)
+    table.set_cols_dtype(['t',  # text
+                          'f',  # float (decimal)
+                          'e',  # float (exponent)
+                          'i',  # integer
+                          'a']) # automatic
+    table.set_cols_align(["l", "r", "r", "r", "l"])
+    table.add_rows([["text",    "float", "exp", "int", "auto"],
+                    ["abcd",    "67",    654,   89,    128.001],
+                    ["efghijk", 67.5434, .654,  89.6,  12800000000000000000000.00023],
+                    ["lmn",     5e-78,   5e-78, 89.4,  .000000000000128],
+                    ["opqrstu", .023,    5e+78, 92.,   12800000000000000000000]])
+    print(table.draw())
+    """
+
+    from texttable import Texttable
+    table = Texttable()
+    table.set_cols_align(["l", "r", "c"])
+    table.set_cols_valign(["t", "m", "b"])
+    table.add_rows([["Name", "Age", "Nickname"],
+                    ["Mr\nXavier\nHuon", 32, "Xav'"],
+                    ["Mr\nBaptiste\nClement", 1, "Baby"],
+                    ["Mme\nLouise\nBourgeau", 28, "Lou\n \nLoue"]])
+    print(table.draw() + "\n")
+
+    table = Texttable()
+    table.set_deco(Texttable.HEADER)
+    table.set_cols_dtype(['t',  # text
+                          'f',  # float (decimal)
+                          'e',  # float (exponent)
+                          'i',  # integer
+                          'a']) # automatic
+    table.set_cols_align(["l", "r", "r", "r", "l"])
+    table.add_rows([["text",    "float", "exp", "int", "auto"],
+                    ["abcd",    "67",    654,   89,    128.001],
+                    ["efghijk", 67.5434, .654,  89.6,  12800000000000000000000.00023],
+                    ["lmn",     5e-78,   5e-78, 89.4,  .000000000000128],
+                    ["opqrstu", .023,    5e+78, 92.,   12800000000000000000000]])
+    print(table.draw())
+
+def func10():
+    """
+    字符串操作：
+        删除字符 translate
+        先制作翻译表，然后删除相关字符
+    """
+    input_str = 'abcd!@#$1234%^&*5678'
+    out_str = 'abcd!@#$1234%^&*5678'
+    str.maketrans(input_str, out_str)
+    print(input_str.translate('ab'))
+
+    print(input_str.replace('a',''))
+
 if __name__ == '__main__':
     import sys
     print(len(sys.argv), sys.argv[0])
@@ -105,4 +197,8 @@ if __name__ == '__main__':
     #func2()
     #func4()
     #func5()
-    func6()
+    #func6()
+    #func7()
+    #func8()
+    #func9()
+    func10()
