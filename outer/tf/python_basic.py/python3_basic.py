@@ -190,9 +190,31 @@ def func10():
 
     print(input_str.replace('a',''))
 
-if __name__ == '__main__':
+def func11():
+    import urlparse
+    print(urlparse.urljoin('http://baidu.com/home', 'test')) #http://baidu.com/test
+
+def func12():
+    """
+        参数 解析
+        1、sys.argv
+        2、from optparse import OptionParser
+    """
     import sys
     print(len(sys.argv), sys.argv[0])
+
+    from optparse import OptionParser
+    opt = OptionParser()
+    opt.add_option('-d',
+                    action="store_true",
+                    dest="is_daemon",
+                    default=False,
+                    help="run the scripts daemon")
+    opts, args = opt.parse_args()
+    if args.is_daemon:
+        pass
+
+if __name__ == '__main__':
     #func1()
     #func2()
     #func4()
@@ -201,4 +223,6 @@ if __name__ == '__main__':
     #func7()
     #func8()
     #func9()
-    func10()
+    #func10()
+    #func11()
+    #func12()
