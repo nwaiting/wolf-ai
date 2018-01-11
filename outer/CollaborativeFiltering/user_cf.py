@@ -130,10 +130,17 @@ class CF:
 
     def showResult(self, user):
         with open('./outer/CollaborativeFiltering/data/result.data', 'ab+') as f:
+            source_list = [(i[0], i[1]*5.0) for i in self.userDict[user]]
+            f.write(('{0} {1}\n'.format(user, source_list)).encode())
             f.write(('{0} recommand list : \n'.format(user)).encode())
-            f.write(('{0} {1}\n'.format(user, self.userDict[user])).encode())
-            for item in self.neighbors:
-                f.write(('{0} {1}\n'.format(item, self.userDict[item[1]])).encode())
+            new_list = []
+            recom_list = [(i[0], i[1]*5.0) for i in self.userDict[self.neighbors[0][1]]]
+            for index in range(len(recom_list)):
+                if abs(source_list[index][1]) <= 0.000000000000001:
+                    new_list.append(recom_list[index])
+                else:
+                    new_list.append(source_list[index])
+            f.write(('{0}\n'.format(new_list)).encode())
 
 def readxlrdFile(filename):
     data = []
