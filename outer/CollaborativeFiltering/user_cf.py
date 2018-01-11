@@ -128,8 +128,8 @@ class CF:
                     count += 1.0
             self.cost = count / len(user)
 
-    def showResult(self, user):
-        with open('./outer/CollaborativeFiltering/data/result.data', 'ab+') as f:
+    def showResult(self, user, results_file):
+        with open(results_file, 'ab+') as f:
             source_list = [(i[0], i[1]*5.0) for i in self.userDict[user]]
             f.write(('{0} {1}\n'.format(user, source_list)).encode())
             f.write(('{0} recommand list : \n'.format(user)).encode())
@@ -168,13 +168,17 @@ def readxlrdFile2(filename):
     return data
 
 def main():
-    ratings = readxlrdFile('./outer/CollaborativeFiltering/data/train_data.xlsx')
-    test_ratings = readxlrdFile2('./outer/CollaborativeFiltering/data/test_data.xlsx')
-    itemIds = [[i,None] for i in range(1,len(ratings[0]))]
-    for result_item in test_ratings:
-        demo = CF(itemIds, ratings + [result_item], k=5)
+    train_file_name = './outer/CollaborativeFiltering/data/train_data.xlsx'
+    test_file_name = './outer/CollaborativeFiltering/data/test_data.xlsx'
+    result_file = './outer/CollaborativeFiltering/data/result.data'
+    
+    train_data = readxlrdFile(train_file_name)
+    test_data = readxlrdFile2(test_file_name)
+    itemIds = [[i,None] for i in range(1,len(train_data[0]))]
+    for result_item in test_data:
+        demo = CF(itemIds, train_data + [result_item], k=5)
         demo.recommendByUser(result_item[0])
-        demo.showResult(result_item[0])
+        demo.showResult(result_item[0], result_file)
 
 if __name__ == '__main__':
     main()
