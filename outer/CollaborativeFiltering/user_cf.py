@@ -134,12 +134,15 @@ class CF:
             f.write(('{0} {1}\n'.format(user, source_list)).encode())
             f.write(('{0} recommand list : \n'.format(user)).encode())
             new_list = []
+            """
             recom_list = [(i[0], i[1]*5.0) for i in self.userDict[self.neighbors[0][1]]]
             for index in range(len(recom_list)):
-                if abs(source_list[index][1]) <= 0.000000000000001:
+                if abs(source_list[index][1]) <= 0.000001:
                     new_list.append(recom_list[index])
                 else:
                     new_list.append(source_list[index])
+            """
+            new_list = [(i[0], i[1]*5.0) for i in self.userDict[self.neighbors[0][1]]]
             f.write(('{0}\n'.format(new_list)).encode())
 
 def readxlrdFile(filename):
@@ -171,7 +174,7 @@ def main():
     train_file_name = './outer/CollaborativeFiltering/data/train_data.xlsx'
     test_file_name = './outer/CollaborativeFiltering/data/test_data.xlsx'
     result_file = './outer/CollaborativeFiltering/data/result.data'
-    
+
     train_data = readxlrdFile(train_file_name)
     test_data = readxlrdFile2(test_file_name)
     itemIds = [[i,None] for i in range(1,len(train_data[0]))]
