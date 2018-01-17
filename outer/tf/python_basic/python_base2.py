@@ -60,8 +60,69 @@ def func4():
     print(res.group())
     print(re.match(patt, s4).group())
 
+    s5 = 'abbbc'
+    patt = re.compile(r'ab*')
+    print(re.match(patt, s5).group())
+
+def func5():
+    """
+    import re
+    正则匹配
+    贪婪匹配：总是尝试匹配尽可能多的字符
+    非贪婪匹配：总是尝试匹配尽可能少的字符
+    例子：
+        正则表达式”ab*”如果用于查找”abbbc”
+        贪婪：将找到”abbb”
+        使用非贪婪的数量词”ab*?”，将找到”a”将找到”a”
+    Python默认是贪婪匹配（在少数语言里也可能是默认非贪婪）
+
+    """
+    import re
+    patt = re.compile(r'ab*')
+    s1 = 'abbbc'
+    print(re.match(patt, s1).group())
+    patt = re.compile(r'ab*?')
+    s2 = 'abbbc'
+    print(re.match(patt, s2).group())
+
+    s1 = '1234'
+    s2 = '12.34'
+    s3 = '1.2.3.4.5 好不好'
+    s4 = '1. '
+    print(s1.isdigit())
+    print(s2.isdigit())
+    patt = re.compile(r"^(-?\d+)(\.\d*)?(\.\d*)?")
+    patt = re.compile(r"^(-?\d+)(\.\d*)+?")
+    patt = re.compile(r"^(-?\d+)((\.\d*){1,})? ")
+    res = re.match(patt, s3)
+    print(res.group())
+    #print(re.match(patt, s4).group())
+
+    s5 = 'abbbc'
+    patt = re.compile(r'ab*')
+    print(re.match(patt, s5).group())
+    s6 = '2015-09-11发布2016-05-01实施'
+    patt = re.compile(r"^(-?\d+)((\.\d*){1,})?")
+    res = re.match(patt, s6)
+    if res:
+        print(type(res.group(0)), res.group(0))
+    s3 = '1.2.3.4.5 好不好'
+    res = re.match(patt, s3)
+    if res:
+        print(type(res.group(0)), res.group(0))
+
+    s3 = '1.2.3.4.5.6.7 好不好'
+    res = patt.match(s3)
+    if res:
+        print(type(res.group(0)), res.group(0))
+
+    # 替换字符串
+    text = "JGood is a handsome boy, he is cool, clever, and so on..."
+    print(re.sub(r'\s+', '-', text))
+
 if __name__ == '__main__':
     #func1()
     #func2()
     #func3()
-    func4()
+    #func4()
+    func5()
