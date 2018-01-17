@@ -41,7 +41,24 @@ def func3():
     print([list_a[0]+'-'+list_a[1]]+list_a[2:])
 
 def func4():
-    pass
+    """
+    isdigit()
+    判断是不是数字
+    但是只能判断 整数 如果需要判断小数的话 需要自己做处理
+    """
+    import re
+    s1 = '1234'
+    s2 = '12.34'
+    s3 = '1.2.3 好不好'
+    s4 = '1.'
+    print(s1.isdigit())
+    print(s2.isdigit())
+    patt = re.compile(r"^(-?\d+)(\.\d*)?(\.\d*)?")
+    patt = re.compile(r"^(-?\d+)(\.\d*)+?")
+    patt = re.compile(r"^(-?\d+)((\.\d*){1,})?")
+    res = re.match(patt, s3)
+    print(res.group())
+    print(re.match(patt, s4).group())
 
 if __name__ == '__main__':
     #func1()
