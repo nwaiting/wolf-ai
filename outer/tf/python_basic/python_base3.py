@@ -66,8 +66,25 @@ def func3():
         a.setDaemon(True)
         b.setDaemon(True)
 
+def func4():
+    """
+    if条件太长时：
+        1、添加斜杠\
+        2、使用括号
+    """
+    a = 1
+    b = 2
+    c = 3
+    d = 4
+    if a == 1 or \
+        b == 2:
+        print('test if')
+
+    if (a == 1 or b == 2):
+        print('test if 2')
 
 if __name__ == '__main__':
     #func1()
     #func2()
-    func3()
+    #func3()
+    func4()
