@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def main():
-    tf.contrib.learn.
+    pass
 
 if __name__ == '__main__':
     main()
