@@ -83,8 +83,46 @@ def func4():
     if (a == 1 or b == 2):
         print('test if 2')
 
+def func5():
+    #返回浮点数x的四舍五入值
+    print(round(3.456789))
+    print(round(3.456789, 1))
+    print(round(3.456789, 2))
+    print(round(3.456789, 3))
+
+    import numpy as np
+    print(np.array([1,2,3.5]))
+
+    # set求差集
+    a = {1,2,3,4,5,6}
+    b = {1,3,5}
+    c = a-b
+    print(c)
+    print(type(c), list(c))
+
+def func6():
+    import numpy as np
+    """
+        transpose就是改变高维数组的形状
+    """
+    # 一个数组中有2个元素，每个元素中有3个元素，每个元素中有5个元素
+    array_a = np.array(range(30)).reshape(2,3,5)
+    print(np.shape(array_a))
+    array_b = np.transpose([array_a])
+    print(np.shape(array_b))
+
+def func7():
+    import numpy as np
+    """
+        linspace 创建等差数列 在指定的间隔内返回均匀间隔的数字
+    """
+    print(np.linspace(1,10))
+
 if __name__ == '__main__':
     #func1()
     #func2()
     #func3()
-    func4()
+    #func4()
+    #func5()
+    #func6()
+    func7()

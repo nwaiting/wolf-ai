@@ -6,6 +6,8 @@ tensorflow 架构分析：
     http://www.cnblogs.com/ningskyer/articles/6481898.html TensorFlow 架构与设计-四大组件【转】 原文：刘光聪·简书
     http://www.tensorfly.cn/tfdoc/how_tos/overview.html TensorFlow的中文社区
 
+    http://www.cnblogs.com/libinggen/p/7399339.html 学习笔记TF044:TF.Contrib组件、统计分布、Layer、性能分析器tfprof
+    
 TensorFlow源码：
     http://gonewithgt.github.io/2017/04/20/Tensorflow%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/  Tensorflow源码解析
     https://github.com/yao62995/tensorflow   图解tensorflow 源码
