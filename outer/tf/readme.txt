@@ -7,13 +7,17 @@ tensorflow 架构分析：
     http://www.tensorfly.cn/tfdoc/how_tos/overview.html TensorFlow的中文社区
 
     http://www.cnblogs.com/libinggen/p/7399339.html 学习笔记TF044:TF.Contrib组件、统计分布、Layer、性能分析器tfprof
-    
+
+    https://www.w3cschool.cn/tensorflow_python/tensorflow_python-3szt2c8q.html    TensorFlow全面的中文文档
+
 TensorFlow源码：
     http://gonewithgt.github.io/2017/04/20/Tensorflow%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/  Tensorflow源码解析
     https://github.com/yao62995/tensorflow   图解tensorflow 源码
     https://mp.weixin.qq.com/s/wC2EKp14lShUf5tAIBg5ow   『深度长文』Tensorflow代码解析（一）
 
-
+NLP相关：
+    http://mindhacks.cn/2008/09/21/the-magical-bayesian-method/  数学之美番外篇：平凡而又神奇的贝叶斯方法
+    http://www.omegaxyz.com/2017/12/26/python_check_word/   Python机器学习与拼写检查器
 
 NLP的相关：
     http://www.jthinking.com/news/all/detail/17411.html  回望2017，基于深度学习的NLP研究大盘点
