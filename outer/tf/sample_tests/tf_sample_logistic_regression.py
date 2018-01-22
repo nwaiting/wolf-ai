@@ -56,5 +56,24 @@ def logistic_func1():
         print("train accuracy : ", sess.run(accuracy, feed_dict={X:minist.train.images, Y:minist.train.labels}))
         print("test accuracy : ", sess.run(accuracy, feed_dict={X:minist.test.images, Y:minist.test.labels}))
 
+def func2():
+    # 对数几率回归
+    W = tf.Variable(tf.zeros([5,1]),dtype=tf.float32, name='weigths')
+    b = tf.Variable(0., dtype=tf.float32, name='biasis')
+    Y = tf.Variable()
+
+    #输入合并
+    combine_inputs = tf.add(tf.matmul(X, W), b)
+    loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=combine_inputs, labels=Y))
+
+    learn_rate = 0.01
+    optimizer = tf.train.GradientDescentOptimizer(learn_rate).minimize(loss)
+
+    #评估训练模型
+    #调用概率分布函数
+    tfsig = tf.sigmoid(tf.add(tf.matmul(X,W),b))
+    predicted = tf.cast(tfsig>0.5, tf.float32)
+    result = tf.reduce_mean(tf.cast(tf.equal(predicted, Y), tf.float32))
+
 if __name__ == '__main__':
     logistic_func1()
