@@ -94,17 +94,41 @@ def func5():
 def func6():
     """
     输出py版本
+    realpath 返回的是 使用软链 的真实地址
+    abspath 返回目标地址
     """
     import platform
     print(platform.python_version())
 
+    import os
+    print(os.getcwd())
+    print(os.path.realpath(__file__))
+    print(os.path.abspath(__file__))
+    file_path = os.path.realpath(__file__)
+    print(os.path.dirname(file_path))
+    print(os.path.basename(file_path))
+
 def func7():
+    """
+        一行多个for循环
+    """
     dict_a = {'a':1,'b':2, 'c':3}
     print(type(dict_a).__name__)
     for inst in dict_a:
         print(type(inst), inst)  #输出a b c
     for inst in dict_a.items():
         print(inst)
+
+    def produce_list(p):
+        if isinstance(p, int):
+            res = [p]
+            return res
+        return list(p)
+
+    a = {1,2,3,4}
+    b = [1,3,5]
+    c = set(e1 for e2 in produce_list(a) for e1 in produce_list(e2) if e1 in b)
+    print(c)
 
 def func8():
     """
