@@ -3,6 +3,7 @@
 """
 拼写检查：
     http://www.omegaxyz.com/2017/12/26/python_check_word/
+    http://norvig.com/spell-correct.html  原文
 """
 
 import collections,re,os
