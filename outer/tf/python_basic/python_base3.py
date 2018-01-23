@@ -118,6 +118,26 @@ def func7():
     """
     print(np.linspace(1,10))
 
+def func8():
+    """
+    实现tail -f 功能
+    fileObject.seek(offset[, whence])
+    参数：
+        offset -- 开始的偏移量，也就是代表需要移动偏移的字节数
+        whence：可选，默认值为 0。给offset参数一个定义，表示要从哪个位置开始偏移；0代表从文件开头开始算起，1代表从当前位置开始算起，2代表从文件末尾算起。
+    """
+    import time
+    with open(filename, 'rb') as fd:
+        fd.seek(0,2)
+        while True:
+            current_position = fd.tell()
+            line = fd.readline()
+            if line:
+                print(line)
+            else:
+                fd.seek(curr_position)
+            time.sleep(1)
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -125,4 +145,5 @@ if __name__ == '__main__':
     #func4()
     #func5()
     #func6()
-    func7()
+    #func7()
+    func8()
