@@ -138,6 +138,21 @@ def func8():
                 fd.seek(curr_position)
             time.sleep(1)
 
+def func9():
+    """
+        traceback 打印异常
+        traceback.print_exc()
+        功能同：print(traceback.format_exc())
+    """
+    import traceback
+    try:
+        a = 1 + 2
+        b = 1/0
+        c = 2 + 3
+    except Exception as e:
+        print(traceback.format_exc())
+        traceback.print_exc()
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -146,4 +161,5 @@ if __name__ == '__main__':
     #func5()
     #func6()
     #func7()
-    func8()
+    #func8()
+    func9()

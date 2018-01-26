@@ -120,6 +120,13 @@ def func5():
     text = "JGood is a handsome boy, he is cool, clever, and so on..."
     print(re.sub(r'\s+', '-', text))
 
+    #找出以数字结尾的行
+    ssss = '缩略语20'
+    res = re.match(r'^.*?\d$', ssss)
+    "^[a-zA-Z].*?\d$"
+    #找出字符串中的数字
+    print(re.findall('\d+', ssss))
+
 if __name__ == '__main__':
     #func1()
     #func2()
