@@ -152,6 +152,7 @@ def func9():
     except Exception as e:
         print(traceback.format_exc())
         traceback.print_exc()
+        traceback.print_exc(file=open('test.txt','w+'))
 
 if __name__ == '__main__':
     #func1()
