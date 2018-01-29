@@ -13,7 +13,8 @@ import os
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
 def main():
-    mnist = input_data.read_data_sets('./outer/tf/sample_tests/data', one_hot=True)
+    data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
+    mnist = input_data.read_data_sets(data_path, one_hot=True)
     full_data_x = mnist.train.images
 
     # total steps to train
