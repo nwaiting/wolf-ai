@@ -1,8 +1,11 @@
 #coding=utf-8
 
+from __future__ import print_function
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
-minist = input_data.read_data_sets('./data', one_hot=True)
+import os
+data_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
+minist = input_data.read_data_sets(data_path, one_hot=True)
 
 def logistic_func1():
     learn_rate = 0.01
@@ -26,7 +29,7 @@ def logistic_func1():
     tf.reduce_sum(-Y * tf.log(pred), 1) 返回每个实例的交叉熵(向量)，1代表水平方向求和
     tf.reduce_mean() 返回所有交叉熵的平均值(实数)
     '''
-    loss = tf.reduce_mean(tf.reduce_sum(-Y * tf.log(pred), 1))
+    loss = tf.reduce_mean(tf.reduce_sum(-Y * tf.log(pred),reduction_indices=1))
 
     optimizer = tf.train.GradientDescentOptimizer(learn_rate).minimize(loss=loss)
     with tf.Session() as sess:
@@ -75,5 +78,43 @@ def func2():
     predicted = tf.cast(tfsig>0.5, tf.float32)
     result = tf.reduce_mean(tf.cast(tf.equal(predicted, Y), tf.float32))
 
+def func3():
+    learning_rate = 0.01
+    training_epochs = 25
+    batch_size = 100
+    display_step = 1
+    X = tf.placeholder(tf.float32, shape=[None, 784])
+    Y = tf.placeholder(tf.float32, shape=[None, 10])
+
+    # set model weigths
+    W = tf.Variable(tf.zeros([784, 10]))
+    b = tf.Variable(tf.zeros([10]))
+
+    # construct model
+    prediction = tf.nn.softmax(tf.add(tf.matmul(X, W), b)) #softmax
+
+    # loss
+    loss = tf.reduce_mean(-tf.reduce_sum(Y * tf.log(prediction), reduction_indices=1))
+
+    #optimizer
+    optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(loss=loss)
+
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        for epoch in range(training_epochs):
+            avg_cost = 0
+            total_batch = int(minist.train.num_examples/batch_size)
+            for i in range(total_batch):
+                batch_x, batch_y = minist.train.next_batch(batch_size)
+                _, c = sess.run([optimizer, loss], feed_dict={X:batch_x, Y:batch_y})
+                avg_cost += c / total_batch
+            if (epoch+1) % display_step == 0:
+                print('epoch {0} cost {1}'.format(epoch+1, avg_cost))
+        print('optimizer done')
+        correct_prediction = tf.equal(tf.argmax(prediction, 1), tf.argmax(Y, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+        print('accuracy {0}'.format(accuracy.eval({X:minist.test.images, Y:minist.test.labels})))
+
 if __name__ == '__main__':
-    logistic_func1()
+    #logistic_func1()
+    func3()
