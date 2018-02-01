@@ -23,7 +23,7 @@
         自动机结合DoubleArrayTrie极速多模式匹配：http://www.hankcs.com/program/algorithm/aho-corasick-double-array-trie.html
 - **中国人名识别**
     >相关算法：
-        有一定的误命中率，比如误命中关键年，则可以通过在data/dictionary/person/nr.txt加入一条关键年 A 1来排除关键年作为人名的可能性
+        有一定的误命中率，比如误命中关键年，则可以通过在data/dictionary/person/nr.txt加入一条关键年 A1来排除关键年作为人名的可能性
         HMM-Viterbi角色标注中国人名识别：http://www.hankcs.com/nlp/chinese-name-recognition-in-actual-hmm-viterbi-role-labeling.html
 - **音译人名识别、日本人名识别**
     >相关算法
@@ -57,4 +57,8 @@
     >相关算法
         基于神经网络的高性能依存句法分析器：http://www.hankcs.com/nlp/parsing/neural-network-based-dependency-parser.html
         最大熵依存句法分析器的实现：http://www.hankcs.com/nlp/parsing/to-achieve-the-maximum-entropy-of-the-dependency-parser.html
+            依存句法分析算法：自顶向下算法、 自底向上算法、 最大生成树算法
         基于CRF序列标注的中文依存句法分析器的Java实现：http://www.hankcs.com/nlp/parsing/crf-sequence-annotation-chinese-dependency-parser-implementation-based-on-java.html
+- **相关新技术**
+    >相关应用
+        FastText,Word2Vec和WordRank 三种词嵌入模型

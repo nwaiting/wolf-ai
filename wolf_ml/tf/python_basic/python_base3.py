@@ -154,6 +154,13 @@ def func9():
         traceback.print_exc()
         traceback.print_exc(file=open('test.txt','w+'))
 
+def func10():
+    """
+    subprocess.Popen()
+    异步开启线程接收返回数据
+    https://code.i-harness.com/zh-CN/q/5ba83
+    """
+
 if __name__ == '__main__':
     #func1()
     #func2()
