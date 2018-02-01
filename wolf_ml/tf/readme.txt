@@ -13,7 +13,9 @@ tensorflow 架构分析：
 TensorFlow源码：
     http://gonewithgt.github.io/2017/04/20/Tensorflow%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/  Tensorflow源码解析
     https://github.com/yao62995/tensorflow   图解tensorflow 源码
-    https://mp.weixin.qq.com/s/wC2EKp14lShUf5tAIBg5ow   『深度长文』Tensorflow代码解析（一）
+
+    ** 源码解析作者博客
+    http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/  Tensorflow常用函数、博客资料、源码及应用
 
 NLP相关：
     http://mindhacks.cn/2008/09/21/the-magical-bayesian-method/  数学之美番外篇：平凡而又神奇的贝叶斯方法
@@ -70,3 +72,6 @@ NLP的相关：
 
     微博feed系统
     http://doc.ruesin.com/?p=10
+
+    [转]高并发性能调试经验分享
+    https://www.cppfans.org/2167.html

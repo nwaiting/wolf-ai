@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-from __future__ import unicode_literals
+#from __future__ import unicode_literals
 
 text = '''
 如果你是一位教师，那么不管你的工作单位是高中、大学还是职业培训等教育机构，你都能在MOOC上找到对学生有用的内容。近期许多MOOC实验项目的目标都是建设一个课堂教学支持系统。我们根据研究结果、采访和我们参与的课程整理出以下建议，希望能够指导教师将MOOC的经验和资源运用到传统课堂教学中。
@@ -42,9 +42,9 @@ MOOC的一个缺陷就是无法组建高效的学习小组，而教师在这方�
 from snownlp import normal
 from snownlp import seg
 from snownlp.summary import textrank
+from snownlp import SnowNLP
 
-
-if __name__ == '__main__':
+def main():
     t = normal.zh2hans(text)
     sents = normal.get_sentences(t)
     doc = []
@@ -60,3 +60,125 @@ if __name__ == '__main__':
     keyword_rank.solve()
     for w in keyword_rank.top_index(5):
         print(w)
+
+
+test_text = '如果你是一位教师，那么不管你的工作单位是高中、大学还是职业培训等教育机构，你都能在MOOC上找到对学生有用的内容。'
+def func1():
+    """
+    分词
+    """
+    s = SnowNLP(test_text)
+    print(s.words)
+
+def func2():
+    """
+    词性标注
+    """
+    s = SnowNLP(test_text)
+    print([x for x in s.tags])
+
+    """
+    断句
+    """
+    print(s.sentences)
+
+def func3():
+    """
+    情绪判断
+        SnowNLP().sentiments 表示正面情绪的概率
+        越接近1表示正面情绪
+        接近0表示负面情绪
+    """
+    t1 = u'这个人脾气真坏，动不动就骂人'
+    s1 = SnowNLP(t1)
+    t2 = u'这个人脾气真好，经常笑'
+    s2 = SnowNLP(t2)
+    #tt1 = t1.encode('utf8').decode('gbk')
+    #tt2 = t2.encode('utf8').decode('gbk')
+    print(t1, s1.sentiments)
+    print(t2, s2.sentiments)
+
+def func4():
+    """
+    汉字转拼音
+    """
+    s1 = SnowNLP(test_text)
+    print(s1.pinyin)
+
+def func5():
+    """
+    """
+    test_text = '輸入簡體字,點下面繁體字按鈕進行在線轉換'
+    s1 = SnowNLP(test_text)
+    print(s1.han)
+
+def func6():
+    """
+    关键词抽取
+    """
+    s1 = SnowNLP(text)
+    print(s1.keywords(limit=5))
+
+def func7():
+    """
+    概括总结文意
+    """
+    s1 = SnowNLP(text)
+    print(s1.summary(limit=5))
+
+def func8():
+    """
+    TF-IDF是一种统计方法，用以评估一字词对于一个文件集或一个语料库中的其中一份文件的重要程度。
+    TF词频越大越重要，但是文中会的“的”，“你”等无意义词频很大，却信息量几乎为0，这种情况导致单纯看词频评价词语重要性是不准确的。因此加入了idf
+    IDF的主要思想是：如果包含词条t的文档越少，也就是n越小，IDF越大，则说明词条t越重要
+    TF-IDF综合起来，才能准确的综合的评价一词对文本的重要性
+    """
+    test_text = [['性格','善良'],
+                ['善良','温柔','温柔'],
+                ['温柔','善良'],
+                ['好人'],
+                ['性格','善良']]
+    s1 = SnowNLP(test_text)
+    print(s1.tf)
+    print(s1.idf)
+
+def func9():
+    """
+    文本相似度
+    """
+    test_text = [['性格','善良'],
+                ['善良','温柔','温柔'],
+                ['温柔','善良'],
+                ['好人'],
+                ['性格','善良']]
+    s1 = SnowNLP(test_text)
+    print(s1.sim(['温柔']))
+    print(s1.sim(['善良']))
+    print(s1.sim(['好人']))
+
+def func10():
+    """
+    训练：
+        现在提供训练的包括分词，词性标注，情感分析，而且都提供了我用来训练的原始文件 以分词为例 分词在snownlp/seg目录下
+        from snownlp import seg
+        seg.train('data.txt')
+        seg.save('seg.marshal')
+        # from snownlp import tag
+        # tag.train('199801.txt')
+        # tag.save('tag.marshal')
+        # from snownlp import sentiment
+        # sentiment.train('neg.txt', 'pos.txt')
+        # sentiment.save('sentiment.marshal')
+        这样训练好的文件就存储为seg.marshal了，之后修改snownlp/seg/__init__.py里的data_path指向刚训练好的文件即可
+    """
+
+if __name__ == '__main__':
+    #func1()
+    #func2()
+    #func3()
+    #func4()
+    #func5()
+    #func6()
+    #func7()
+    #func8()
+    func9()
