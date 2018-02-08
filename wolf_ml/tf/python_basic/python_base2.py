@@ -127,6 +127,28 @@ def func5():
     #找出字符串中的数字
     print(re.findall('\d+', ssss))
 
+    print('==================')
+    re_zh = re.compile('([\u4E00-\u9FA5]+)')
+    sss = """
+        如果你是一位教师，那么不管你的工作单位是高中、大学还是职业培训等教育机构，你都能在MOOC上找到对学生有用的内容。近期许多MOOC实验项目的目标都是建设一个课堂教学支持系统。我们根据研究结果、采访和我们参与的课程整理出以下建议，希望能够指导教师将MOOC的经验和资源运用到传统课堂教学中。
+        1900年挪威特隆赫姆的科学课，图片来自WikiMedia。
+        """
+    """
+    for ss in re_zh.split(sss):
+        print(ss)
+        if re_zh.match(ss):
+            print('match')
+    """
+
+    print('....................')
+    s1 = '..............(2)'
+    s2 = '.........(A.1)'
+    patt = re.compile(r".*?[A-Z]\.[0-9]")
+    if re.match(patt, s1):
+        print('s1')
+    if re.match(patt, s2):
+        print('s2')
+
 if __name__ == '__main__':
     #func1()
     #func2()

@@ -55,6 +55,16 @@ def show2():
     scher.enter(3, 1, show2)
 
 if __name__ == '__main__':
+    s = ['abcd1','abcd2','abcd3','abcd4','abcd5','abcd6']
+    last_line = None
+    for ss in s:
+        line = ss.strip()
+        if line.endswith('4'):
+            print(line)
+            if last_line:
+                print(last_line)
+        last_line = line
+
     import platform
     print(platform.python_version())
     import sys

@@ -184,6 +184,19 @@ def func11():
     except smtplib.SMTPException:
         print ("Error: 无法发送邮件")
 
+def func12():
+    class TestProb():
+        def __init__(self):
+            pass
+
+        @property
+        def test1(self):
+            return 'return test1'
+
+    t = TestProb()
+    print(t.test1)
+    print(t.test1()) #错误调用 已经属性化
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -195,4 +208,5 @@ if __name__ == '__main__':
     #func8()
     #func9()
     #func10()
-    func11()
+    #func11()
+    func12()
