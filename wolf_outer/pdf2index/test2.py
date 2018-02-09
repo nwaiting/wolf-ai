@@ -171,13 +171,14 @@ def PDFstruct(input_file):
                         line = line.strip()
     #                   print(line)
                         if re.match(re.compile(r"[图][0-9]{1}"),line):
-                            print (line)
+                            print('before ===================================================================', line)
                             if last_line:
                                 #找到上一行
                                 print(last_line)
+                            print('last ====================================================================', last_line)
                         else:
                             temp = line
-                            print(temp)
+                            #print(temp)
                         last_line = line
 #                            print (y.y0)
 #                            print (y.y1)
@@ -271,5 +272,5 @@ def PDFstruct(input_file):
 
 ##---------------------------------------------------输入输出----------------------------------------------------
 if __name__ == '__main__':
-    input_file = r'7.pdf'
-    PDFstruct(input_file)
+    input_file = '7.pdf'
+    PDFstruct(os.path.join(os.path.dirname(os.path.realpath(__file__)), input_file))
