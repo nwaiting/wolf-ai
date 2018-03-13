@@ -17,6 +17,36 @@ def func2():
     """
     print(len(s))
 
+def func3():
+    import MySQLdb
+
+    mysql_host='10.200.218.224'
+    mysql_user='root'
+    mysql_passwd='docs'
+    def main():
+        db = None
+        try:
+            db = MySQLdb.connect(host=mysql_host,user=mysql_user,passwd=mysql_passwd,db="excloud_info" )
+        except Exception as ec:
+            print("db connec error {0}".format(ec))
+        cursor = db.cursor()
+        for i in xrange(2, 1001):
+            sql = "INSERT INTO conf_domain(ID,CUSID,PLANTID,DOMAIN,MUL_DOMAIN,SOURCE_CONF,SOURCE_TYPE,MAIN_UT,BACK_UT,MAIN_UC,BACK_UC,MAIN_UM,BACK_UM,HTTPS_CONF,SSL_CERT,SSL_CERT_KEY,CHECK_URL,created_time,last_modified_time) values(NULL,168,7,'test{0}.pptv.com',1,1,1,'10.200.21.117','10.200.11.149','10.200.21.117','10.200.11.149','10.200.21.117','10.200.11.149',1,'pptv.com.pem','pptv.com.key','','2018-03-13 12:47:26','2018-03-13 12:47:26')".format(i)
+            try:
+                cursor.execute(sql)
+            except Exception as ec:
+                print('mysql execute {0} error {1}'.format(sql, ec))
+                db.rollback()
+
+            if i%10 == 0:
+                try:
+                    db.commit()
+                except Exception as ec:
+                    print('mysql execute {0} error {1}'.format(sql, ec))
+                    db.rollback()
+                print('done {0}'.format(i))
+
 if __name__ == '__main__':
     #func1()
-    func2()
+    #func2()
+    func3()
