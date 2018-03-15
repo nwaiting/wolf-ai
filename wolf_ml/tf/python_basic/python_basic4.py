@@ -46,7 +46,25 @@ def func3():
                     db.rollback()
                 print('done {0}'.format(i))
 
+
+def func4():
+    s = 'xxxxxx{0}yyy{1}zzzzz{1}vvvvvv{2}'
+    print(s.format(3,6,9))
+
+def func5():
+    test_map = dict()
+    test_map['a'] = 'aaa'
+    test_map['b'] = 4
+    test_map['c'] = 6
+    print(test_map.get('a', 0))
+    print(test_map.get('d'))
+    print(test_map.get('b') + 0.0)
+    test_map['d'] += 1 # !!!!!!!!!!!报错
+    print(test_map.get('d', 0) + 1)
+
 if __name__ == '__main__':
     #func1()
     #func2()
-    func3()
+    #func3()
+    #func4()
+    func5()
