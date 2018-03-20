@@ -12,7 +12,7 @@ def func1():
                       request_body_size = 0
                request_body = environ['wsgi.input'].read(request_body_size)
                d = parse_qs(request_body)
-               age = d.get('age', [''])[0] # 返回第一个age值。
+               age = d.get('age', [''])[0] # 返回第一个age值。 ['']是默认值，如果在QUERY_STRING中没找到age则返回默认值
                hobbies = d.get('hobbies', []) # 返回一个hobbies列表。
 
         解析 get请求的URL参数： d = parse_qs(environ['QUERY_STRING'])
@@ -24,6 +24,9 @@ def func1():
                # 总是对用户输入进行转义来避免脚本注入
                age = escape(age)
                hobbies = [escape(hobby) for hobby in hobbies]
+
+        environ是一个dict字典：
+            response_body = ['%s: %s' % (key, value) for key, value in sorted(environ.items())]
 
     """
 
@@ -85,14 +88,19 @@ def func5():
 def func6():
     """
     map函数使用
+    map(function, iterable, ...)
     """
     a = [1,2,3]
     b = [[1,],[2,],[3,]]
     print(list(map(lambda x:x+1, a))) #[2, 3, 4]
     print(list(map(lambda x:x[0]*x[0], b))) #[1, 4, 9]
     print(list(enumerate(a))) # [(0, 1), (1, 2), (2, 3)]
+    # lambda 中多个参数
     print(list(map(lambda x,y,z:x*y*z, a,a,a))) #[1, 8, 27]
+
     print(list(map(lambda x : x * 2,range(1,10,1))))
+
+    map(str, [1, 2, 3, 4]) # ['1', '2', '3', '4']
 
 def func7():
     """
@@ -108,6 +116,42 @@ def func7():
     new_students[2] = 'aaaaaa'
     print(new_students, students)
 
+def func8():
+    """
+    filter函数使用
+    filter(function, iterable)
+    """
+    import math
+
+    new_list = filter(lambda x: x%2 == 0, range(10))
+    print(list(new_list)) # [0, 2, 4, 6, 8]
+    new_list = ['test', None, '', 'str', '  ', 'END']
+    new_list = list(filter(lambda x:x and len(x) > 0, new_list))
+    print(new_list) # ['test', 'str', '  ', 'END']
+    new_list = list(filter(lambda x:math.sqrt(x) % 1 == 0, range(30)))
+    print(new_list) # [0, 1, 4, 9, 16, 25]
+    #map正常 可以有三个参数
+    new_list = list(map(lambda x,y:(x%2==0)*(y%2==1), range(10), range(10)))
+
+    # filter错误 多余两个参数
+    new_list = list(filter(lambda x,y:(x%2==0)*(y%2==1), range(10), range(10)))
+    print(new_list)
+
+def func9():
+    from functools import reduce
+    """
+    reduce函数使用
+    reduce(function, iterable[, initializer])
+    reduce把一个函数作用在一个序列[x1, x2, x3...]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算，其效果就是：
+    reduce(f, [x1, x2, x3, x4]) = f(f(f(x1, x2), x3), x4)
+    """
+    def add(x,y):
+        return x+y
+    print(reduce(add, range(1,6))) # 1+2+3+4+5
+    print(reduce(lambda x,y:x+y, [1,2,3,4,5])) # 1+2+3+4+5
+    # 这个例子要好好理解
+    print(reduce(lambda x,y:x*10+y, range(5))) # 1234
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -115,4 +159,6 @@ if __name__ == '__main__':
     #func4()
     #func5()
     #func6()
-    func7()
+    #func7()
+    #func8()
+    func9()
