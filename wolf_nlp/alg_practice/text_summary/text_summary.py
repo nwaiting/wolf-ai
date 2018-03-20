@@ -45,16 +45,80 @@ BM25算法：
         N就是索引中的全部文档，n(qi)为包含qi的文档数
         根据公式可以看出，对于给定的文档集合，包含qi的文档越多，qi的权重越低
 
+TextRank提取摘要即提取关键句子：
+    1、将文本分成很多句子
+    2、将句子分词
+    3、计算每个句子之间的权值，有多种方法，
+        a:  similarity(si,sj) = ((tk ∈ si)&(tk ∈ sj)) / (log(si) + log(sj))
+            在si和sj中都有的单词与分母的比值，分母是si和sj词数量的对数
+        b:  使用BM25算法计算两个句子的权值
+    4、迭代计算，最后排序，将重要度最高的句子选取出来作为文摘
+
+
+    PageRank公式：
+        S(vi) = (1 - d) + d * ∑(1 / |out(vj)|) * S(vj)
+                             j∈in(vi)
+        阻尼系数，代表从某一点指向其他任意点的概率，一般取值为0.85
+        in(vi)--为指向改顶点的点集合(比如单词A跟着单词B，则A属于in(B))
+        out(vi)--为vi指向的点集合
+
+    TextRank公式：
+        S(vi) = (1 - d) + d * ∑(wji / ∑vk∈out(vj) wjk) * S(vj)
+                             j∈in(vi)
+        阻尼系数，代表从某一点指向其他任意点的概率，一般取值为0.85
+        wij就是节点vi到vj的边的权值
+        in(vi)--为指向vi顶点的点集合(比如单词A跟着单词B，则A属于in(B))
+        out(vi)--为vi指向的点集合 从节点vi出发的节点
+        s(vj)代表上次迭代到j的权重
 """
+
+class TextRank(object):
+    def __init__(self, docs):
+        self.docs = docs
+        self.D = len(docs)
+        self.bm25 = BM25(docs)
+        self.d = 0.85
+        self.weight = []
+        self.weight_sum = []
+        self.vertex = []
+        self.max_iter = 200
+        self.min_diff = 0.001
+        self.top = []
+
+    def text_rank(self, text):
+        for i,doc in enumerate(self.docs):
+            scores = self.bm25.simall(doc)
+            self.weight.append(scores)
+            # 求分母
+            self.weight_sum.append(sum(scores) - scores[i])
+            #初始化所有的TextRank值
+            self.vertex.append(1.0)
+        for _ in range(self.max_iter):
+            m = []
+            max_diff = 0.0
+            for i in range(self.D):
+                m.append(1 - self.d)
+                for j in range(self.D):
+                    if j == i and self.weight_sum[j] == 0:
+                        continue
+                    m[-1] += (self.d * self.weight[j][i] / self.weight_sum[j] * self.vertex[j])
+                if abs(m[-1] - self.vertex[i]) > max_diff:
+                    max_diff = abs(m[-1] - self.vertex[i])
+            self.vertex = m
+            if max_diff <= self.min_diff:
+                #收敛 退出循环
+                break
+            self.top = list(enumerate(self.vertex))
+            self.top = sorted(self.top, key=lambda x: x[1], reverse=True)
+
+    def top(self, limit):
+        return list(map(lambda x:self.docs[x[0]], self.top))
+
+    def top_index(self, limit):
+        return list(map(lambda x:x[0], self.top))[:limit]
 
 def main():
     pass
-
-
-
-
-
-
 
 
 

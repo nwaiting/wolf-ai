@@ -4,7 +4,27 @@ def func1():
     """
     wsgi解析URL参数的时候:
         解析 post请求中的参数：d = parse_qs(request_body)
+               # 当请求方法为POST时查询字符串被放在HTTP请求体中进行传递。它被WSGI服务器具体存放在名为wsgi.input的一个类文件环境变量中。
+               # 环境变量CONTENT_LENGTH可能为空值或缺失，采用try/except来防错
+                try:
+                    request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+                except (ValueError):
+                      request_body_size = 0
+               request_body = environ['wsgi.input'].read(request_body_size)
+               d = parse_qs(request_body)
+               age = d.get('age', [''])[0] # 返回第一个age值。
+               hobbies = d.get('hobbies', []) # 返回一个hobbies列表。
+
         解析 get请求的URL参数： d = parse_qs(environ['QUERY_STRING'])
+               # 解析后直接返回一个字典，每个值都是一个列表，包含了查询字符串中所有对应于该键的值
+               d = parse_qs(environ['QUERY_STRING'])
+               # 调用字典的get方法并传入一个key不存在时返回的默认值，这样可以在第一次显示表单时也给出合理的值
+               age = d.get('age', [''])[0] # 返回第一个age值.
+               hobbies = d.get('hobbies', []) # 返回一个hobbies列表.
+               # 总是对用户输入进行转义来避免脚本注入
+               age = escape(age)
+               hobbies = [escape(hobby) for hobby in hobbies]
+
     """
 
 def func2():
@@ -62,9 +82,37 @@ def func5():
     test_map['d'] += 1 # !!!!!!!!!!!报错
     print(test_map.get('d', 0) + 1)
 
+def func6():
+    """
+    map函数使用
+    """
+    a = [1,2,3]
+    b = [[1,],[2,],[3,]]
+    print(list(map(lambda x:x+1, a))) #[2, 3, 4]
+    print(list(map(lambda x:x[0]*x[0], b))) #[1, 4, 9]
+    print(list(enumerate(a))) # [(0, 1), (1, 2), (2, 3)]
+    print(list(map(lambda x,y,z:x*y*z, a,a,a))) #[1, 8, 27]
+    print(list(map(lambda x : x * 2,range(1,10,1))))
+
+def func7():
+    """
+    sorted 函数使用
+    sorted(需要排序的队列，key=排序的字段, 是否逆序)
+        注：返回的队列和原理的队列不再是同一个队列 !!!!!!
+    """
+    a = [1,2,3,4]
+    print(sorted(a, key=lambda x:x, reverse=True))
+    students = [('jane', 'B', 12), ('john', 'A', 15), ('dave', 'B', 10)]
+    new_students = sorted(students, key=lambda x:x[2], reverse=True)
+    print(new_students, students)
+    new_students[2] = 'aaaaaa'
+    print(new_students, students)
+
 if __name__ == '__main__':
     #func1()
     #func2()
     #func3()
     #func4()
-    func5()
+    #func5()
+    #func6()
+    func7()

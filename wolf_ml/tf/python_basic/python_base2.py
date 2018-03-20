@@ -13,8 +13,8 @@ def func1():
             d = parse_qs(request_body)
 
             # 获取数据
-            age = d.get('age', [])
-            hobbies = d.get('hobbies', [])
+            age = d.get('age', [''])[0]  #返回第一个值
+            hobbies = d.get('hobbies', []) #返回一个列表
             response_status = '200 OK'
             response_headers = [('Content-Type', 'text/plain')]
             with open('/home/jiexu/work/wsgi_async/proxy/uwsgi/test.log', 'ab+') as f:
