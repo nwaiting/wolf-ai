@@ -238,6 +238,22 @@ def func12():
     if args.is_daemon:
         pass
 
+def func13():
+    """
+    find 返回值
+    """
+    s = '1234'
+    print(s.find('1')) # 0
+    print(s.find('0')) # -1
+
+    s = '1 2 3'
+    a,b,c = s.split()
+    print(a,b,c) # 1 2 3
+
+    s = 'abcd'
+    r = s.split('.')
+    print(len(r), r) # 1 ['abcd']
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -250,3 +266,4 @@ if __name__ == '__main__':
     #func10()
     #func11()
     #func12()
+    func13()

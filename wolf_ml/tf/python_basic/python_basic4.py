@@ -152,6 +152,19 @@ def func9():
     # 这个例子要好好理解
     print(reduce(lambda x,y:x*10+y, range(5))) # 1234
 
+def func10():
+    """
+    strip() 方法能用于删除开始或结尾的字符。
+
+    lstrip() 和 rstrip() 分别从左和从右执行删除操作， 遇到不符合的则停止继续搜索
+    默认情况下，这些方法会去除空白字符，但是你也可以指定其他字符
+    """
+    t = '-----hello====='
+    print(t.strip('-=')) # hello
+    t = '-------hello------'
+    print(t.lstrip('-')) # hello------
+    print(t.rstrip('-')) # -------hello
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -161,4 +174,5 @@ if __name__ == '__main__':
     #func6()
     #func7()
     #func8()
-    func9()
+    #func9()
+    func10()
