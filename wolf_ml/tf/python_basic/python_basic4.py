@@ -165,6 +165,23 @@ def func10():
     print(t.lstrip('-')) # hello------
     print(t.rstrip('-')) # -------hello
 
+def func11():
+    class A(object):
+        def __init__(self):
+            pass
+    a_list = [A() for _ in range(10)]
+    for i in a_list:
+        print(id(i))  #队列中每个对象的地址不一样
+
+def func12():
+    import queue
+    q = queue.Queue()
+    q.put(0)
+    q.put(1)
+    q.put(2)
+    while not q.empty():
+        print(q.get())  # 0 1 2 先进先出
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -175,4 +192,6 @@ if __name__ == '__main__':
     #func7()
     #func8()
     #func9()
-    func10()
+    #func10()
+    #func11()
+    func12()
