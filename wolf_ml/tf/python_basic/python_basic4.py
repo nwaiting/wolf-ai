@@ -116,6 +116,10 @@ def func7():
     new_students[2] = 'aaaaaa'
     print(new_students, students)
 
+    #多字段排序
+    #优先按照x[1]比较，如果一样，继续比较x[0]
+    max(dag[i], key=lambda x:(x[1],x[0]))
+
 def func8():
     """
     filter函数使用
@@ -182,6 +186,13 @@ def func12():
     while not q.empty():
         print(q.get())  # 0 1 2 先进先出
 
+def func13():
+    import socket
+    print(socket.gethostname())
+    print(socket.gethostbyname(socket.gethostname()))
+    print(socket.gethostbyname_ex(socket.gethostname()))
+    print(socket.gethostbyname_ex(socket.gethostname())[2][-1])
+
 if __name__ == '__main__':
     #func1()
     #func2()
@@ -194,4 +205,5 @@ if __name__ == '__main__':
     #func9()
     #func10()
     #func11()
-    func12()
+    #func12()
+    func13()
