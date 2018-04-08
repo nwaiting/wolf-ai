@@ -65,6 +65,7 @@ class NShort(object):
         next = 0
         i = 0
         word_list = list()
+        #print(route)
         while i < len(sentence):
             next = route[i]
             word_list.append(sentence[i:next])
@@ -73,11 +74,13 @@ class NShort(object):
 
     def predict(self, sentence):
         dag = self.buildTag(sentence)
+        # print(dag)
         slen = len(sentence)
         route = [0] * slen
         for i in range(slen):
             # 多个字段比较 先比较x[1] 然后比较x[0]
             route[i] = max(dag[i], key=lambda x:(x[1],x[0]))[0]
+        # print(route) # [1, 3, 3, 5, 5, 7, 7, 9, 9, 10, 12, 12]
         return route
 
 
@@ -87,12 +90,12 @@ if __name__ == "__main__":
     nshort = NShort(f)
     cases = [
         "给你们传授一点人生的经验",
-        "我来到北京清华大学",
-        "长春市长春节讲话",
-        "我们在野生动物园玩",
-        "我只是做了一些微小的工作",
-        "国庆节我在研究中文分词",
-        "比起生存还是死亡来忠诚与背叛可能更是一个问题"
+        #"我来到北京清华大学",
+        #"长春市长春节讲话",
+        #"我们在野生动物园玩",
+        #"我只是做了一些微小的工作",
+        #"国庆节我在研究中文分词",
+        #"比起生存还是死亡来忠诚与背叛可能更是一个问题"
     ]
     for case in cases:
         print(nshort.cut(case))
