@@ -35,13 +35,15 @@ def cal_texts(text_1, text_2):
     return cal_cosine(text_1_vec, text_2_vec)
 
 if __name__ == '__main__':
-    file_1 = 'a.txt'
-    file_2 = 'b.txt'
+    file_1 = 'C:\Windows\a.txt'
+    file_2 = 'C:\Windows\b.txt'
+    """
     file_dir_path = os.path.dirname(os.path.realpath(__file__))
     file_1 = os.path.join(file_dir_path, file_1)
     file_2 = os.path.join(file_dir_path, file_2)
+    """
     if not os.path.exists(file_1):
         print('error file {0} not exists'.format(file_1))
     if not os.path.exists(file_2):
-        print('error file {1} not exists'.format(file_2))
+        print('error file {0} not exists'.format(file_2))
     print(cal_texts(file_1, file_2))

@@ -31,7 +31,8 @@ class AizhanSpider(scrapy.Spider):
 
     def maybeTieba(self, checkword):
         requests_baidu_pre = 'https://www.baidu.com/s?wd={0}&cl=3'
-        req_headers = {'user-agent':'Mozilla/5.0 (Linux; U; Android 3.0; en-us; Xoom Build/HRI39) AppleWebKit/525.10  (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2'}
+        req_headers = {'user-agent':'Mozilla/5.0 (Linux; U; Android 3.0; en-us; Xoom Build/HRI39) AppleWebKit/525.10  (KHTML, like Gecko) Version/3.0.4 Mobile Safari/523.12.2',
+                       'Connection':'close'}
 
         new_url = requests_baidu_pre.format(checkword)
         res = requests.get(url=new_url, headers=req_headers)
