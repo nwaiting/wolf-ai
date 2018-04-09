@@ -82,9 +82,10 @@ def ViterbiComputePy(obs, states, start_p, trans_p, emit_p):
         v.append({})
         newpath = {}
         for k in states:
-            #概率 隐状态 = 昨天的概率 * 转换概率 * 活动概率
+            #概率 隐状态 = 昨天的概率 * 转移概率 * 发射概率
             prob,state = max((v[t-1][m]*trans_p[m][k]*emit_p[k][obs[t]],m) for m in states)
             v[t][k] = prob
+            #上一时刻最优状态和当前状态
             newpath[k] = path[state] + [k]
         path = newpath
     prob,state = max((v[len(obs)-1][m],m) for m in states)
@@ -97,7 +98,7 @@ if __name__ == '__main__':
     s_p = [0.6,0.4] #开始概率 比如：开始是天晴或者是下雨的概率
     t_p = [[0.7,0.3],[0.6,0.4]] #转移概率 比如：今天是晴天转成明天是晴天的概率
     e_p = [[0.1,0.4,0.5],[0.6,0.3,0.1]] #隐状态表现为显状态的概率 比如：天晴出去散步、购物等的概率
-    
+
     print ViterbiCompute(o, s, s_p, t_p, e_p)
     print ViterbiComputePy(o, s, s_p, t_p, e_p)
 

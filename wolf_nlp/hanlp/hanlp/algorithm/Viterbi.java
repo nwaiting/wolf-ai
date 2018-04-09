@@ -43,25 +43,34 @@ public class Viterbi
             _max_states_value = Math.max(_max_states_value, s);
         }
         ++_max_states_value;
+        // [时刻][隐状态] = 概率 每一列存储第一列不同隐状态下的概率
         double[][] V = new double[obs.length][_max_states_value];
+        // 中间变量代表当前状态是哪个隐状态 每一行存储V对应的路径
         int[][] path = new int[_max_states_value][obs.length];
 
+        //初始状态
         for (int y : states)
         {
+            // 对数概率的时候是相加 概率直接相乘
             V[0][y] = start_p[y] + emit_p[y][obs[0]];
             path[y][0] = y;
         }
 
+        // 时刻 t=1,...,len(obs)-1
         for (int t = 1; t < obs.length; ++t)
         {
             int[][] newpath = new int[_max_states_value][obs.length];
 
+            //当前时刻所处的各种状态
             for (int y : states)
             {
                 double prob = Double.MAX_VALUE;
                 int state;
+                // 对应上一时刻 可能的状态 计算概率
                 for (int y0 : states)
                 {
+                    // 当前概率 = 上一时刻可能状态下的概率 * 可能状态转移到当前状态的概率 * 当前状态到观测状态的发射概率
+                    // 转换为对数为对数相加
                     double nprob = V[t - 1][y0] + trans_p[y0][y] + emit_p[y][obs[t]];
                     if (nprob < prob)
                     {

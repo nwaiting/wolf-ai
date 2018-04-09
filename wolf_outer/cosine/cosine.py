@@ -7,12 +7,14 @@ def cal_cosine(vec_1, vec_2):
     d1 = 0.0
     na = 0.0
     nb = 0.0
+    #公式 cos = (d1) / (na**(1/2) * nb**(1/2))
     for ia,ib in zip(vec_1, vec_2):
         d1 += ia * ib
         na += math.pow(ia, 2)
         nb += math.pow(ib, 2)
     if na == 0.0 or nb == 0.0:
         return None
+    # cos公式 (d1) / ()
     return float(d1)/(math.sqrt(na) * math.sqrt(nb))
 
 
