@@ -30,7 +30,6 @@ class WebspiderPPTVItem(scrapy.Item):
     score = scrapy.Field()
     isvip = scrapy.Field()
     details = scrapy.Field()
-
 class WebspiderTieBaFilm(scrapy.Item):
     title = scrapy.Field()
     author = scrapy.Field()
@@ -54,3 +53,6 @@ class Webspider36krItem(scrapy.Item):
 
 class WebspiderAizhanItem(scrapy.Item):
     word = scrapy.Field()
+
+class WebspiderJDItem(scrapy.Item):
+    comments = scrapy.Field()

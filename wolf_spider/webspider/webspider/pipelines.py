@@ -222,3 +222,29 @@ class WebspiderPipelineAizhan(object):
         except Exception as e:
             print "close file {0} error {1}".format(self.file_name, e)
         print('WebspiderPipelineAizhan close')
+
+class WebspiderPipelineJD(object):
+    def __init__(self):
+        self.file_name = 'jd.allwords.data'
+        self.savefile = None
+
+    def process_item(self, item, spider):
+        """
+        """
+        self.savefile.write(u"{0}\n".format(item['word']))
+        #raise DropItem()
+
+    def open_spider(self,spider):
+        try:
+            self.savefile = open(self.file_name, 'w')
+        except Exception as e:
+            print "open file {0} error {1}".format(self.file_name, e)
+
+        print('WebspiderPipelineJD open')
+
+    def close_spider(self,spider):
+        try:
+            self.savefile.close()
+        except Exception as e:
+            print "close file {0} error {1}".format(self.file_name, e)
+        print('WebspiderPipelineJD close')

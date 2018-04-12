@@ -49,7 +49,7 @@ class A36krSpider(scrapy.Spider):
         return patten.findall(instr)
 
     def login(self, response):
-        print response
+        print(response)
         for m,n in response.headers.items():
             if m == 'Set-Cookie':
                 for contents in n:
@@ -81,7 +81,7 @@ class A36krSpider(scrapy.Spider):
                 callback=self.parse_detail)
 
     def parse_detail(self, response):
-        print response
+        print(response)
         json_contents = json.loads(response.text)
         if json_contents.has_key('data') and json_contents['data'].has_key('pageData') and json_contents['data']['pageData'].has_key('data'):
             for item in json_contents['data']['pageData']['data']:

@@ -56,12 +56,12 @@ public class Viterbi
             path[y][0] = y;
         }
 
-        // 时刻 t=1,...,len(obs)-1
+        // 时刻 t=1,...,len(obs)-1 因为初始化的时候对0已经处理过了
         for (int t = 1; t < obs.length; ++t)
         {
             int[][] newpath = new int[_max_states_value][obs.length];
 
-            //当前时刻所处的各种状态
+            //当前时刻所处的各种状态 遍历可能的状态
             for (int y : states)
             {
                 double prob = Double.MAX_VALUE;
