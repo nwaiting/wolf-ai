@@ -27,10 +27,10 @@ class JDSpider(scrapy.Spider):
         url = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv19694&productId=5821455&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0&rid=0'
         for i in range(101):
             new_url = url.format(i)
-            yield Request(url=url, callback=self.parse)
+            yield Request(url=new_url, callback=self.parse)
 
     def parse(self, response):
-        contents = response.body
+        contents = response.body.decode(response.encoding)
         first_index = contents.find('{')
         last_index = contents.rfind('}')
         if first_index != -1 and last_index != -1:
@@ -48,22 +48,3 @@ class JDSpider(scrapy.Spider):
                     jditem = WebspiderJDItem()
                     jditem['comments'] = item['content']
                     yield jditem
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-a

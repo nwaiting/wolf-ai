@@ -87,7 +87,7 @@ ITEM_PIPELINES = {
    #'webspider.pipelines.WebspiderPipelineTieBa': 400
    #'webspider.pipelines.WebspiderPipeline36kr': 400
    #'webspider.pipelines.WebspiderPipelineAizhan': 400
-   'webspider.pipelines.WebspiderPipelineAizhan': 400
+   'webspider.pipelines.WebspiderPipelineJD': 400
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

@@ -231,7 +231,7 @@ class WebspiderPipelineJD(object):
     def process_item(self, item, spider):
         """
         """
-        self.savefile.write(u"{0}\n".format(item['word']))
+        self.savefile.write(u"{0}\n".format(item['comments']))
         #raise DropItem()
 
     def open_spider(self,spider):
