@@ -52,7 +52,17 @@ class JDSpider(scrapy.Spider):
             return
         if json_content.has_key('comments'):
             for item in json_content['comments']:
+                jditem = WebspiderJDItem()
+                jditem['comments'] = ''
                 if item.has_key('content'):
-                    jditem = WebspiderJDItem()
                     jditem['comments'] = item['content']
-                    yield jditem
+                jditem['referenceName'] = ''
+                if item.has_key('referenceName'):
+                    jditem['referenceName'] = item['referenceName']
+                jditem['productColor'] = ''
+                if item.has_key('productColor'):
+                    jditem['productColor'] = item['productColor']
+                jditem['productSize'] = ''
+                if item.has_key('productSize'):
+                    jditem['productSize'] = item['productSize']
+                yield jditem

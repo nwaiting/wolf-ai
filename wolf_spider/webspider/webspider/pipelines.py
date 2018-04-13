@@ -230,8 +230,19 @@ class WebspiderPipelineJD(object):
 
     def process_item(self, item, spider):
         """
+            comments = scrapy.Field()
+            referenceName = scrapy.Field()
+            referenceTime = scrapy.Field()
+            productColor = scrapy.Field()
+            productSize = scrapy.Field()
         """
-        self.savefile.write(u"{0}\n".format(item['comments']))
+        tmp_dict = {}
+        tmp_dict['comments'] = item['comments']
+        tmp_dict['referenceName'] = item['referenceName']
+        tmp_dict['referenceTime'] = item['referenceTime']
+        tmp_dict['productColor'] = item['productColor']
+        tmp_dict['productSize'] = item['productSize']
+        self.savefile.write(u"{0}\n".format(json.dumps(tmp_dict)))
         #raise DropItem()
 
     def open_spider(self,spider):

@@ -56,3 +56,7 @@ class WebspiderAizhanItem(scrapy.Item):
 
 class WebspiderJDItem(scrapy.Item):
     comments = scrapy.Field()
+    referenceName = scrapy.Field()
+    referenceTime = scrapy.Field()
+    productColor = scrapy.Field()
+    productSize = scrapy.Field()
