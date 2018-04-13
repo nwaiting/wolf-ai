@@ -59,6 +59,9 @@ class JDSpider(scrapy.Spider):
                 jditem['referenceName'] = ''
                 if item.has_key('referenceName'):
                     jditem['referenceName'] = item['referenceName']
+                jditem['referenceTime'] = ''
+                if item.has_key('referenceTime'):
+                    jditem['referenceTime'] = item['referenceTime']
                 jditem['productColor'] = ''
                 if item.has_key('productColor'):
                     jditem['productColor'] = item['productColor']
