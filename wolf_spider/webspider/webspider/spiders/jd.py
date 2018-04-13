@@ -3,9 +3,13 @@
 """
 荣耀v10，oppo r15， vivo x21，小米mix2 销量最好的
 'http://item.jd.com/5821455.html',
+'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv19694&productId=5821455&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0&rid=0'
 'http://item.jd.com/6773559.html',
+'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv1870&productId=6773559&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
 'http://item.jd.com/6708229.html',
+'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv4587&productId=6708229&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
 'http://item.jd.com/5001209.html'
+'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv53841&productId=5001209&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
 """
 
 import scrapy
@@ -16,6 +20,10 @@ import json
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
+url_v10 = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv19694&productId=5821455&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0&rid=0'
+url_r15 = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv1870&productId=6773559&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
+url_x21 = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv4587&productId=6708229&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
+url_mix2 = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv53841&productId=5001209&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
 
 class JDSpider(scrapy.Spider):
     name = 'jd'
@@ -24,7 +32,7 @@ class JDSpider(scrapy.Spider):
     start_urls = ['http://item.jd.com/5821455.html',]
 
     def start_requests(self):
-        url = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv19694&productId=5821455&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0&rid=0'
+        url = url_v10
         for i in range(101):
             new_url = url.format(i)
             yield Request(url=new_url, callback=self.parse)
