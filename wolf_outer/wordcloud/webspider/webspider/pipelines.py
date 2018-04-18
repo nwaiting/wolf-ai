@@ -7,8 +7,8 @@
 from scrapy.exceptions import DropItem
 import json
 import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+#reload(sys)
+#sys.setdefaultencoding('utf8')
 
 class WebspiderPipeline(object):
     def process_item(self, item, spider):
@@ -40,7 +40,7 @@ class WebspiderPipelineJD(object):
         try:
             self.savefile = open(self.file_name, 'w')
         except Exception as e:
-            print "open file {0} error {1}".format(self.file_name, e)
+            print("open file {0} error {1}".format(self.file_name, e))
 
         print('WebspiderPipelineJD open')
 
@@ -48,5 +48,5 @@ class WebspiderPipelineJD(object):
         try:
             self.savefile.close()
         except Exception as e:
-            print "close file {0} error {1}".format(self.file_name, e)
+            print("close file {0} error {1}".format(self.file_name, e))
         print('WebspiderPipelineJD close')

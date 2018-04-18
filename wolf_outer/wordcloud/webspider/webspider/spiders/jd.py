@@ -18,8 +18,8 @@ from webspider.items import WebspiderJDItem
 import json
 
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 url_v10 = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv19694&productId=5821455&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0&rid=0'
 url_r15 = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv1870&productId=6773559&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
 url_x21 = 'http://sclub.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98vv4587&productId=6708229&score=3&sortType=5&page={0}&pageSize=10&isShadowSku=0'
@@ -50,22 +50,22 @@ class JDSpider(scrapy.Spider):
         except Exception as e:
             print('json error {0}'.format(e))
             return
-        if json_content.has_key('comments'):
+        if 'comments' in json_content:
             for item in json_content['comments']:
                 jditem = WebspiderJDItem()
                 jditem['comments'] = ''
-                if item.has_key('content'):
+                if 'content' in item:
                     jditem['comments'] = item['content']
                 jditem['referenceName'] = ''
-                if item.has_key('referenceName'):
+                if 'referenceName' in item:
                     jditem['referenceName'] = item['referenceName']
                 jditem['referenceTime'] = ''
-                if item.has_key('referenceTime'):
+                if 'referenceTime' in item:
                     jditem['referenceTime'] = item['referenceTime']
                 jditem['productColor'] = ''
-                if item.has_key('productColor'):
+                if 'productColor' in item:
                     jditem['productColor'] = item['productColor']
                 jditem['productSize'] = ''
-                if item.has_key('productSize'):
+                if 'productSize' in item:
                     jditem['productSize'] = item['productSize']
                 yield jditem
