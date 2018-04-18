@@ -20,7 +20,7 @@ except ImportError as e:
 try:
     import xlrd
 except Exception as e:
-    print "import error {0}".format(e)
+    print("import error {0}".format(e))
 
 FLOAT_MAX = 1e100
 
@@ -55,7 +55,7 @@ def genPoints(clusterCenterNumber, radius, dataFile):
     try:
         with xlrd.open_workbook(dataFile) as xlfd:
             table = xlfd.sheet_by_name(u'user_matrix_data')
-            print table.nrows, table.ncols
+            print(table.nrows, table.ncols)
             arrt_num = table.ncols - 1
             points_num = table.nrows
             points_arr_num = points_num
@@ -72,7 +72,7 @@ def genPoints(clusterCenterNumber, radius, dataFile):
             #for index in range(points_num, 2 * points_num):
             #    points[index].x = [random.choice(points[0].x) for _ in xrange(arrt_num)]
     except Exception as e:
-        print "error {0}".format(e)
+        print("error {0}".format(e))
     return points
 
 def solveDistanceBetweenPoints(pointA, pointB):
@@ -130,7 +130,7 @@ def fuzzyCMeansClustering(points, clusterCenterNumber, weight):
                 try:
                     center.x[k] = upperSum[k] / lowerSum
                 except ZeroDivisionError as e:
-                    print "erro {0} {1}".format(e, lowerSum)
+                    print("erro {0} {1}".format(e, lowerSum))
         # update cluster center trace
         currentError = 0.0
         for index, singleTrace in enumerate(clusterCenterTrace):
@@ -188,7 +188,7 @@ def showClusterAnalysisResults(points, clusterCenterTrace):
 
     for singleTrace in clusterCenterTrace:
         if len(singleTrace) > 0:
-            print singleTrace[0].x
+            print(singleTrace[0].x)
     pylab.show()
 
 if __name__ == '__main__':
