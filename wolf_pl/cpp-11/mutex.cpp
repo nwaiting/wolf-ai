@@ -40,6 +40,11 @@ std::promise：
     保存某一类型T的值，可被future对象读取(可能在另外线程)
     promise提供了一种线程同步手段，promise对象构造时可以和一个共享状态future关联
 
+    std::promise::get_future()  
+    std::promise::set_value()
+    void set_value (const T& val);
+    void set_value (T&& val);
+
 */
 
 volatile int counter = 0;
@@ -109,6 +114,47 @@ void func6(future<int>& state)
     cout << "share state value " << n << endl;
 }
 
+//使用默认构造函数构造一个空共享状态的promise对象
+promise<int> prom;
+void func7()
+{
+    future<int> ft = prom.get_future();
+    cout << "wait for future" << endl;
+    // 这里会等待 其他线程设置 prom.set_value(10086)
+    int fint = ft.get();
+    cout << "future share int " << fint << endl;
+}
+
+void func8(promise<int>& p)
+{
+    int n{ 0 };
+    cout << "please input an integer : ";
+    //设置如试图从不能解析为整数的字符串里想要读一个整数等，顺便说下eof也会造成failbit被置位，则产生异常
+    cin.exceptions(ios::failbit);
+    try
+    {
+        cin >> n;
+        p.set_value(n);
+    }
+    catch (exception&)
+    {
+        p.set_exception(current_exception());
+    }
+}
+
+void func9(future<int>& f)
+{
+    try
+    {
+        int n = f.get();
+        cout << "get future value is "<< n << endl;
+    }
+    catch (exception& e)
+    {
+        cout << "exception current:{" << e.what() << "}" << endl;
+    }
+}
+
 int main()
 {
     thread threads[10];
@@ -169,6 +215,7 @@ int main()
     cout << "counter is " << counter << endl;
     */
 
+    /*
     promise<int> prom;
     //和future关联
     future<int> fut = prom.get_future();
@@ -178,8 +225,34 @@ int main()
     prom.set_value(10086);
     cout << "set value 10086" << endl;
     t.join();
+    */
+
+    /*
+    thread t1(func7);
+    this_thread::sleep_for(chrono::milliseconds(1000));
+    prom.set_value(10086);
+    cout << "set value 10086 end" << endl;
+    t1.join();
+    //promise<int>()创建一个匿名空的promise对象，使用移动拷贝构造函数给prom
+    prom = promise<int>();
+
+    thread t2(func7);
+    prom.set_value(10010);
+    cout << "set value 10010 end" << endl;
+    t2.join();
+    */
+
+    /**/
+    promise<int> prom;
+    future<int> ft = prom.get_future();
+    //这里t1和t2不能都用 func8重载函数
+    thread t1(func8, ref(prom));
+    thread t2(func9, ref(ft));
+    t1.join();
+    t2.join();
 
     cout << "threads end" << endl;
+    cin.get();
     cin.get();
     return 0;
 }
