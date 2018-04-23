@@ -26,10 +26,13 @@ def TextProcessing(file_path, test_size=0.2):
                     tag_flag = line
                 else:
                     if tag_flag:
-                        snow = snownlp.SnowNLP(line)
-                        word_list = snow.words
-                        data_list.append(word_list)
-                        class_list.append(tag_flag)
+                        find_index = line.find('?——?')
+                        if find_index != -1:
+                            line = line[:find_index]
+                            snow = snownlp.SnowNLP(line)
+                            word_list = snow.words
+                            data_list.append(word_list)
+                            class_list.append(tag_flag)
 
     # 随机取测试机和训练集
     data_class_list = list(zip(data_list, class_list))
@@ -54,7 +57,7 @@ def TextProcessing(file_path, test_size=0.2):
 def words_dict(all_words_list, deleteN, stopwords_set=set()):
     feature_words = []
     n = 1
-    for t in range(deleteN, len(all_words_list), 1):
+    for t in range(0, len(all_words_list), 1):
         if n > 1000: # feature_words的维度1000
             break
         if not all_words_list[t].isdigit() and all_words_list[t] not in stopwords_set and 1<len(all_words_list[t])<5:
@@ -74,7 +77,7 @@ def TextFeatures(train_data_list, test_data_list, feature_words):
     return train_feature_list, test_feature_list
 
 
-def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, deleteN=None, result_file=None):
+def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, result_file=None):
     # sklearn分类器
     classifier = MultinomialNB().fit(train_feature_list, train_class_list)
     predicts = classifier.predict(test_feature_list)
@@ -98,21 +101,20 @@ if __name__ == '__main__':
     all_words_list, train_data_list, test_data_list, train_class_list, test_class_list = TextProcessing(file_path, test_size=0.2)
 
     # 生成stopwords_set
-    stop_file_path = './stopwords.txt'
+    stop_file_path = 'stopwords.txt'
     stop_file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), stop_file_path)
     stopwords_set = MakeWordsSet(stop_file_path)
 
     # 文本特征提取和分类
     result_file = 'poems_results.txt'
     result_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), result_file)
-    deleteNs = range(0, len(all_words_list), 10)
+    deleteNs = range(0, len(all_words_list), 20)
     test_accuracy_list = []
     for deleteN in deleteNs:
         feature_words = words_dict(all_words_list, deleteN, stopwords_set)
         if feature_words:
             train_feature_list, test_feature_list = TextFeatures(train_data_list, test_data_list, feature_words)
-            test_accuracy = TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, deleteN=deleteN, result_file=result_file)
+            test_accuracy = TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, result_file=result_file)
             test_accuracy_list.append(test_accuracy)
-    print(test_accuracy_list)
 
     print("end bayes classifier")
