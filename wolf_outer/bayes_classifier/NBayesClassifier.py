@@ -14,9 +14,26 @@ def MakeWordsSet(words_file):
                 words_set.add(word)
     return words_set
 
+def TextPro(file_path):
+    test_class_list = []
+    test_sentiments_list = []
+    with open(file_path, encoding='utf-8') as fp:
+        for line in fp.readlines():
+            line = line.strip('\r\n ')
+            find_index = line.find('?——?')
+            if find_index != -1:
+                line = line[:find_index]
+                snow = snownlp.SnowNLP(line)
+                word_list = snow.words
+                data_list.append(word_list)
+                class_list.append(tag_flag)
+                sentiments_list.append(snow.sentiments)
+        return test_class_list, test_sentiments_list
+
 def TextProcessing(file_path, test_size=0.2):
     data_list = []
     class_list = []
+    sentiments_list = []
     with open(file_path, encoding='utf-8') as fp:
         tag_flag = None
         for line in fp.readlines():
@@ -33,15 +50,16 @@ def TextProcessing(file_path, test_size=0.2):
                             word_list = snow.words
                             data_list.append(word_list)
                             class_list.append(tag_flag)
+                            sentiments_list.append(snow.sentiments)
 
     # 随机取测试机和训练集
-    data_class_list = list(zip(data_list, class_list))
+    data_class_list = list(zip(data_list, class_list, sentiments_list))
     random.shuffle(data_class_list)
     index = int(len(data_class_list)*test_size)+1
     train_list = data_class_list[index:]
     test_list = data_class_list[:index]
-    train_data_list, train_class_list = zip(*train_list)
-    test_data_list, test_class_list = zip(*test_list)
+    train_data_list, train_class_list, train_sentiments_list = zip(*train_list)
+    test_data_list, test_class_list, test_sentiments_list = zip(*test_list)
 
     # 统计词频
     all_words_dict = {}
@@ -52,7 +70,7 @@ def TextProcessing(file_path, test_size=0.2):
     all_words_tuple_list = sorted(all_words_dict.items(), key=lambda f:f[1], reverse=True)
     all_words_list = list(list(zip(*all_words_tuple_list))[0])
 
-    return all_words_list, train_data_list, test_data_list, train_class_list, test_class_list
+    return all_words_list, train_data_list, test_data_list, train_class_list, test_class_list, test_sentiments_list
 
 def words_dict(all_words_list, deleteN, stopwords_set=set()):
     feature_words = []
@@ -77,16 +95,17 @@ def TextFeatures(train_data_list, test_data_list, feature_words):
     return train_feature_list, test_feature_list
 
 
-def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, result_file=None):
+def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, result_file=None):
     # sklearn分类器
     classifier = MultinomialNB().fit(train_feature_list, train_class_list)
     predicts = classifier.predict(test_feature_list)
     if result_file:
         with open(result_file, 'wb') as fp:
-            res = zip(test_data_list,test_class_list,test_feature_list,predicts)
+            res = zip(test_data_list,test_class_list,test_feature_list,predicts,test_sentiments_list)
             for item in res:
                 fp.write(('test data： {0}\n'.format(item[0])).encode('utf-8'))
                 fp.write(('feature： {0}\n'.format(item[2])).encode('utf-8'))
+                fp.write(('sentiment {0}\n'.format(item[4])).encode('utf-8'))
                 fp.write(('test class： {0}\n'.format(item[1])).encode('utf-8'))
                 fp.write(('predict： {0}\n\n'.format(item[3])).encode('utf-8'))
     test_accuracy = classifier.score(test_feature_list, test_class_list)
@@ -98,7 +117,17 @@ if __name__ == '__main__':
     # 读取数据
     file_path = 'poems.txt'
     file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), file_path)
-    all_words_list, train_data_list, test_data_list, train_class_list, test_class_list = TextProcessing(file_path, test_size=0.2)
+    all_words_list, train_data_list, test_data_list, train_class_list, test_class_list, test_sentiments_list = TextProcessing(file_path, test_size=0.2)
+
+    #测试数据
+    file_path = 'poems_test.txt'
+    file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), file_path)
+    if os.path.exists(file_path):
+        t_test_class_list, t_test_sentiments_list = TextPro(file_path)
+        if len(t_test_class_list) > 0 and len(t_test_sentiments_list) > 0:
+            test_class_list = t_test_class_list[:]
+            test_sentiments_list = t_test_sentiments_list[:]
+            train_class_list = [None for _ in range(len(test_class_list))]
 
     # 生成stopwords_set
     stop_file_path = 'stopwords.txt'
@@ -114,7 +143,7 @@ if __name__ == '__main__':
         feature_words = words_dict(all_words_list, deleteN, stopwords_set)
         if feature_words:
             train_feature_list, test_feature_list = TextFeatures(train_data_list, test_data_list, feature_words)
-            test_accuracy = TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, result_file=result_file)
+            test_accuracy = TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, result_file=result_file)
             test_accuracy_list.append(test_accuracy)
 
     print("end bayes classifier")
