@@ -79,4 +79,5 @@ if __name__ == '__main__':
     if not os.path.exists(model_file):
         print('error file {0} not exists'.format(model_file))
 
-    print(cal_texts(file_1, file_2, load_word2vec_model(model_file)))
+    dis = cal_texts(file_1, file_2, load_word2vec_model(model_file))
+    print('{0} and {1} distance {2}'.format(file_1, file_2, dis))
