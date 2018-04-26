@@ -40,10 +40,10 @@ def read_file_cut():
 
     result = open(resName, 'wb')
 
-    for num in range(1,2001):
-        name = "%04d" % num
-        fileName = pathBaidu + str(name) + ".txt"
+    for name in os.listdir(pathBaidu):
+        fileName = os.path.join(pathBaidu, name)
         if os.path.exists(fileName):
+            print('fileName ', fileName)
             with open(fileName, 'r', encoding='utf-8') as source:
                 for line in source.readlines():
                     line = line.strip('\r\n ')
