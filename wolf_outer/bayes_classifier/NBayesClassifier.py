@@ -162,11 +162,11 @@ def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_
         plt.savefig('{0}.{1}'.format(result_file, 'sentiments.jpg'))
         plt.show()
 
-        print(test_class_results)
+        print('test_class_results ', test_class_results)
         mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
         tick_l = test_class_results.keys()
         tick_l = [i.replace('tag-', '') for i in tick_l if i]
-        print(tick_l)
+        print('tick_l ', tick_l)
         plt.bar(range(len(test_class_results)), test_class_results.values(), color='rgb', tick_label=tick_l)
         plt.savefig('{0}.{1}'.format(result_file, 'classes.jpg'))
         plt.title(u'唐诗宋词建筑分类分布图')
@@ -198,7 +198,7 @@ if __name__ == '__main__':
     # 文本特征提取和分类
     result_file = 'poems_results.txt'
     # 分类概率值  如果低于这个值那么分类为其他类
-    predict_prob = 0.000000
+    predict_prob = 0.0000001
     result_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), result_file)
     test_accuracy_list = []
     feature_words = WordsDict(all_words_list, stopwords_set)
