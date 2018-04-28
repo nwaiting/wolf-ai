@@ -7,6 +7,14 @@ from sklearn.naive_bayes import MultinomialNB
 from matplotlib import pyplot as plt
 from pylab import mpl
 
+#去除标点符号
+pointwords = ['，', '、', '[', ']', '（', '）', '：',
+    '、', '。', '@', '’', '%', '《', '》', '“', '”', '.', '；',
+    '′', '°', '″', '-', ',', '！', '？','～', '\'', '\"', ':',
+    '(', ')', '【', '】', '~', '/', ';', '→', '\\', '·', '℃']
+pt = set(pointwords)
+pointWordsFilter = lambda s: ''.join(filter(lambda x: x not in pt, s))
+
 def MakeWordsSet(words_file):
     words_set = set()
     with open(words_file, 'r', encoding='utf-8') as fp:
@@ -27,6 +35,7 @@ def TextPro(file_path):
                 find_index = line.find('——')
             if find_index != -1:
                 line = line[:find_index]
+                line = pointWordsFilter(line)
                 try:
                     snow = snownlp.SnowNLP(line)
                     test_data_list.append(snow.words)
@@ -53,6 +62,7 @@ def TextProcessing(file_path, test_size=0.2):
                             find_index = line.find('——')
                         if find_index != -1:
                             line = line[:find_index]
+                            line = pointWordsFilter(line)
                             snow = snownlp.SnowNLP(line)
                             word_list = snow.words
                             data_list.append(word_list)
@@ -79,7 +89,7 @@ def TextProcessing(file_path, test_size=0.2):
 
     return all_words_list, train_data_list, test_data_list, train_class_list, test_class_list, test_sentiments_list
 
-def WordsDict(all_words_list, deleteN, stopwords_set=set()):
+def WordsDict(all_words_list, stopwords_set=set()):
     feature_words = []
     n = 1
     for t in range(0, len(all_words_list), 1):
@@ -120,24 +130,28 @@ def SplitSentiment(sent):
     return flag_sent
 
 
-def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, result_file=None):
+def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, predict_prob=None, result_file=None):
     # sklearn分类器
-    classifier = MultinomialNB().fit(train_feature_list, train_class_list)
+    classifier = MultinomialNB()
+    classifier.fit(train_feature_list, train_class_list)
     predicts = classifier.predict(test_feature_list)
+    predicts_prob = classifier.predict_proba(test_feature_list)
     test_class_results = {}
     test_sentiments_results = {}
     if result_file:
         with open(result_file, 'wb') as fp:
-            res = zip(test_data_list,test_class_list,test_feature_list,predicts,test_sentiments_list)
+            res = zip(test_data_list,test_class_list,test_feature_list,predicts,test_sentiments_list,predicts_prob)
             for item in res:
-                fp.write(('test data： {0}\n'.format(item[0])).encode('utf-8'))
-                #fp.write(('feature： {0}\n'.format(item[2])).encode('utf-8'))
-                fp.write(('sentiment {0}\n'.format(item[4])).encode('utf-8'))
-                fp.write(('test class： {0}\n'.format(item[1])).encode('utf-8'))
-                fp.write(('predict： {0}\n\n'.format(item[3])).encode('utf-8'))
-                test_class_results[item[3]] = test_class_results.get(item[3], 0) + 1
-                s_split = SplitSentiment(item[4])
-                test_sentiments_results[s_split] = test_sentiments_results.get(s_split, 0) + 1
+                if predict_prob and max(item[5]) > predict_prob:
+                    fp.write(('test data： {0}\n'.format(item[0])).encode('utf-8'))
+                    #fp.write(('feature： {0}\n'.format(item[2])).encode('utf-8'))
+                    fp.write(('sentiment {0}\n'.format(item[4])).encode('utf-8'))
+                    fp.write(('test class： {0}\n'.format(item[1])).encode('utf-8'))
+                    fp.write(('predict： {0}\n'.format(item[3])).encode('utf-8'))
+                    fp.write(('predict prob :{0}\n\n'.format(item[5])).encode('utf-8'))
+                    test_class_results[item[3]] = test_class_results.get(item[3], 0) + 1
+                    s_split = SplitSentiment(item[4])
+                    test_sentiments_results[s_split] = test_sentiments_results.get(s_split, 0) + 1
             for k,v in test_class_results.items():
                 fp.write(('{0} {1}'.format(k,v)).encode('utf-8'))
 
@@ -157,13 +171,11 @@ def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_
         plt.savefig('{0}.{1}'.format(result_file, 'classes.jpg'))
         plt.title(u'唐诗宋词建筑分类分布图')
         plt.show()
-    #test_accuracy = classifier.score(test_feature_list, test_class_list)
-    #return test_accuracy
 
 
 if __name__ == '__main__':
     print('start bayes classifier')
-    # 读取数据
+    # 读取训练数据 每一个类别前面加上 tag- 前缀
     file_path = 'poems.txt'
     file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), file_path)
     all_words_list, train_data_list, test_data_list, train_class_list, test_class_list, test_sentiments_list = TextProcessing(file_path, test_size=0.1)
@@ -185,14 +197,14 @@ if __name__ == '__main__':
 
     # 文本特征提取和分类
     result_file = 'poems_results.txt'
+    # 分类概率值  如果低于这个值那么分类为其他类
+    predict_prob = 0.000000
     result_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), result_file)
-    deleteNs = range(0, len(all_words_list), 20)
     test_accuracy_list = []
-    for deleteN in deleteNs:
-        feature_words = WordsDict(all_words_list, deleteN, stopwords_set)
-        if feature_words:
-            train_feature_list, test_feature_list = TextFeatures(train_data_list, test_data_list, feature_words)
-            test_accuracy = TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, result_file=result_file)
-            test_accuracy_list.append(test_accuracy)
+    feature_words = WordsDict(all_words_list, stopwords_set)
+    if feature_words:
+        train_feature_list, test_feature_list = TextFeatures(train_data_list, test_data_list, feature_words)
+        test_accuracy = TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, predict_prob=predict_prob, result_file=result_file)
+        test_accuracy_list.append(test_accuracy)
 
     print("end bayes classifier")
