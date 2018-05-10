@@ -80,6 +80,7 @@ std::string Args::modelToString(model_name mn) const {
 void Args::parseArgs(const std::vector<std::string>& args) {
   std::string command(args[1]);
   if (command == "supervised") {
+    //分类的特别参数设置
     model = model_name::sup;
     loss = loss_name::softmax;
     minCount = 1;

@@ -17,6 +17,8 @@
 namespace fasttext {
 
 enum class model_name : int { cbow = 1, sg, sup };
+
+//hs£ºhierarchical softmax
 enum class loss_name : int { hs = 1, ns, softmax };
 
 class Args {

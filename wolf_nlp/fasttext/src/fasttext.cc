@@ -322,14 +322,21 @@ void FastText::quantize(const Args qargs) {
   }
 }
 
+
+/*
+    这样文本训练的任务就完成了。大家可能会好奇，ngram加在哪里了，实际上全在dictionary类中处理了。
+    dictionary类直接返回line，line中包括了单词以及ngram的id
+*/
 void FastText::supervised(
     Model& model,
     real lr,
     const std::vector<int32_t>& line,
     const std::vector<int32_t>& labels) {
   if (labels.size() == 0 || line.size() == 0) return;
+  //这里假设有多个label，随机娶一个
   std::uniform_int_distribution<> uniform(0, labels.size() - 1);
   int32_t i = uniform(model.rng);
+  //更新，对line中的所有向量取平均，去预测label，更新词向量也是调用这个函数
   model.update(line, labels[i], lr);
 }
 
@@ -350,6 +357,8 @@ void FastText::cbow(Model& model, real lr,
   }
 }
 
+//这里是和文本分类的关键区别，循环。第一层是对一行的每个单词，第二层循环是对每个单词找到其周围的上下文，
+// 一个单词用vector去存是因为一个单词由多个subword组成
 void FastText::skipgram(Model& model, real lr,
                         const std::vector<int32_t>& line) {
   std::uniform_int_distribution<> uniform(1, args_->ws);
@@ -567,8 +576,10 @@ void FastText::analogies(int32_t k) {
 
 void FastText::trainThread(int32_t threadId) {
   std::ifstream ifs(args_->input);
+  //根据每个线程定位到不同位置，每个线程一直执行下午，到文档最后在从第一行开始
   utils::seek(ifs, threadId * utils::size(ifs) / args_->thread);
 
+  //模型主要就包括的是输入输出向量
   Model model(input_, output_, args_, threadId);
   if (args_->model == model_name::sup) {
     model.setTargetCounts(dict_->getCounts(entry_type::label));
@@ -579,10 +590,15 @@ void FastText::trainThread(int32_t threadId) {
   const int64_t ntokens = dict_->ntokens();
   int64_t localTokenCount = 0;
   std::vector<int32_t> line, labels;
+
+  //一共要处理 epoch乘以ntokens个tokens，tokenCount记录一共处理了多少个tokens
   while (tokenCount_ < args_->epoch * ntokens) {
+
+    //更新alpha的逻辑和word2vec一样
     real progress = real(tokenCount_) / (args_->epoch * ntokens);
     real lr = args_->lr * (1.0 - progress);
     if (args_->model == model_name::sup) {
+      //词典类中的getline得到一行文本line，以及对应的label，line是单词的id数组（向量）
       localTokenCount += dict_->getLine(ifs, line, labels);
       supervised(model, lr, line, labels);
     } else if (args_->model == model_name::cbow) {
@@ -592,6 +608,8 @@ void FastText::trainThread(int32_t threadId) {
       localTokenCount += dict_->getLine(ifs, line, model.rng);
       skipgram(model, lr, line);
     }
+
+    //大于一定的阈值打印
     if (localTokenCount > args_->lrUpdateRate) {
       tokenCount_ += localTokenCount;
       localTokenCount = 0;
@@ -644,8 +662,20 @@ void FastText::loadVectors(std::string filename) {
   }
 }
 
+/*
+  skipgram：
+    之前已经介绍过这个函数，首先建立词典，然后初始化所有参数，然后多线程训练然后保存参数。目前大多都和文本分类一样。
+    一点关键的区别是output向量的维度不一样了。在文本分类中维度是标签个数乘以词向量维度，这里是上下文单词个数乘以词向量维度。
+    因为文本分类是预测标签，而词向量是预测单词
+
+    区别就是调用了skipgram函数。其他流程一样：首先根据参数初始化模型，然后循环，读入一行，训练，隔一段时间更新一次learning rate
+
+    这里是和文本分类的关键区别，循环。第一层是对一行的每个单词，第二层循环是对每个单词找到其周围的上下文，一个单词用vector去存是因为一个单词由多个subword组成
+*/
 void FastText::train(const Args args) {
   args_ = std::make_shared<Args>(args);
+
+  //基本所有自然语言处理的第一步都是构建一个词典
   dict_ = std::make_shared<Dictionary>(args_);
   if (args_->input == "-") {
     // manage expectations
@@ -656,23 +686,33 @@ void FastText::train(const Args args) {
     throw std::invalid_argument(
         args_->input + " cannot be opened for training!");
   }
+
+  //通过语料构建词典
   dict_->readFromFile(ifs);
   ifs.close();
 
+  //和word2vec一样，参数由两部分组成，一部分是词向量，一部分是上下文向量/label向量，即input向量和output向量
   if (args_->pretrainedVectors.size() != 0) {
     loadVectors(args_->pretrainedVectors);
   } else {
+    //词向量的个数=单词的数量+桶的个数，多个ngram或是字符ngram会在一个桶中共享一个向量
     input_ = std::make_shared<Matrix>(dict_->nwords()+args_->bucket, args_->dim);
+    //初始化词向量
     input_->uniform(1.0 / args_->dim);
   }
 
   if (args_->model == model_name::sup) {
+    //分类中即为label向量
     output_ = std::make_shared<Matrix>(dict_->nlabels(), args_->dim);
   } else {
+    //对于训练词向量来说就是上下文向量
     output_ = std::make_shared<Matrix>(dict_->nwords(), args_->dim);
   }
   output_->zero();
+
+  //开启多线程训练
   startThreads();
+  //最后训练的结果就是词向量和上下文向量，即输入向量和输出向量
   model_ = std::make_shared<Model>(input_, output_, args_, 0);
   if (args_->model == model_name::sup) {
     model_->setTargetCounts(dict_->getCounts(entry_type::label));

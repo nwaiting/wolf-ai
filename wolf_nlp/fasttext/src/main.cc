@@ -7,6 +7,22 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
+/*
+    1、fasttext中文本向量就是词向量的平均
+
+    2、fastText 模型使用了层次Softmax技巧，层次Softmax技巧建立在哈弗曼编码的基础上，对标签进行编码，能够极大地缩小模型预测目标的数量
+
+    3、比word2vec更考虑了相似性，比如 fastText 的词嵌入学习能够考虑 english-born 和 british-born 之间有相同的后缀，但 word2vec 却不能
+        FastText= word2vec中 cbow + h-softmax  的灵活使用
+
+    4、模型的输出层：word2vec的输出层，对应的是每一个term，计算某term的概率最大；而fasttext的输出层对应的是 分类的label。不过不管输出层对应的是什么内容，起对应的vector都不会被保留和使用；
+       模型的输入层：word2vec的输出层，是 context window 内的term；而fasttext 对应的整个sentence的内容，包括term，也包括 n-gram的内容；
+
+    5、两者本质的不同，体现在 h-softmax的使用。
+        Wordvec的目的是得到词向量，该词向量 最终是在输入层得到，输出层对应的 h-softmax 也会生成一系列的向量，但最终都被抛弃，不会使用。
+        fasttext则充分利用了h-softmax的分类功能，遍历分类树的所有叶节点，找到概率最大的label（一个或者N个）
+*/
+
 #include <iostream>
 #include <queue>
 #include <iomanip>
@@ -345,6 +361,8 @@ int main(int argc, char** argv) {
     exit(EXIT_FAILURE);
   }
   std::string command(args[1]);
+  //supervised 用于分类
+  //skipgram cbow 用于词向量
   if (command == "skipgram" || command == "cbow" || command == "supervised") {
     train(args);
   } else if (command == "test") {
@@ -361,7 +379,7 @@ int main(int argc, char** argv) {
     nn(args);
   } else if (command == "analogies") {
     analogies(args);
-  } else if (command == "predict" || command == "predict-prob") {
+  } else if (command == "predict" || command == "predict-prob") {  //预测
     predict(args);
   } else if (command == "dump") {
     dump(args);

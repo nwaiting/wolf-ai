@@ -92,6 +92,9 @@ const std::vector<int32_t> Dictionary::getSubwords(
   return ngrams;
 }
 
+/*
+    getSubwords被用于训练词向量模型(skipgram和cbow)、输出词向量(print-word-vectors和print-sentence-vectors)、计算词相似性(nn和analogies)
+*/
 void Dictionary::getSubwords(const std::string& word,
                            std::vector<int32_t>& ngrams,
                            std::vector<std::string>& substrings) const {
@@ -157,9 +160,13 @@ void Dictionary::computeSubwords(const std::string& word,
     if ((word[i] & 0xC0) == 0x80) continue;
     for (size_t j = i, n = 1; j < word.size() && n <= args_->maxn; n++) {
       ngram.push_back(word[j++]);
+
+      //处理utf-8字符，见 https://blog.csdn.net/lainegates/article/details/77776419
+      //utf-8是变长编码，utf-8分3种情况，0或者10或者110/1110等
       while (j < word.size() && (word[j] & 0xC0) == 0x80) {
         ngram.push_back(word[j++]);
       }
+
       if (n >= args_->minn && !(n == 1 && (i == 0 || j == word.size()))) {
         int32_t h = hash(ngram) % args_->bucket;
         ngrams.push_back(nwords_ + h);
@@ -228,18 +235,30 @@ bool Dictionary::readWord(std::istream& in, std::string& word) const
 void Dictionary::readFromFile(std::istream& in) {
   std::string word;
   int64_t minThreshold = 1;
-  while (readWord(in, word)) {
-    add(word);
+  //每次读入一个词
+  while (readWord(in, word)) { 
+    //向词典添加单词
+    add(word); 
     if (ntokens_ % 1000000 == 0 && args_->verbose > 1) {
       std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::flush;
     }
+
+    //保证word和label的总数小于限额
     if (size_ > 0.75 * MAX_VOCAB_SIZE) {
       minThreshold++;
+      //超过限额，删除一些低频词
+      //reduce单词，和word2vec的reduce一样
       threshold(minThreshold, minThreshold);
     }
   }
+
+  //语料扫描完以后再去掉低频词
   threshold(args_->minCount, args_->minCountLabel);
+  
+  //用于subsampling
   initTableDiscard();
+  
+  //用于得到单词的subword
   initNgrams();
   if (args_->verbose > 0) {
     std::cerr << "\rRead " << ntokens_  / 1000000 << "M words" << std::endl;
@@ -261,10 +280,15 @@ void Dictionary::threshold(int64_t t, int64_t tl) {
         return (e.type == entry_type::word && e.count < t) ||
                (e.type == entry_type::label && e.count < tl);
       }), words_.end());
+
+  //当vector中数据太大，有删除操作时，手动释放空间有两种方法：1、swap  2、shrink_to_fit
+  //释放的是没有使用的空间
+  //手动释放空间 c++11增加
   words_.shrink_to_fit();
   size_ = 0;
   nwords_ = 0;
   nlabels_ = 0;
+  //fill和fill_n两个函数都是用value填充begin和end的值
   std::fill(word2int_.begin(), word2int_.end(), -1);
   for (auto it = words_.begin(); it != words_.end(); ++it) {
     int32_t h = find(it->word);
@@ -295,7 +319,13 @@ void Dictionary::addWordNgrams(std::vector<int32_t>& line,
                                int32_t n) const {
   for (int32_t i = 0; i < hashes.size(); i++) {
     uint64_t h = hashes[i];
+    //n就是wordNgram
     for (int32_t j = i + 1; j < hashes.size() && j < i + n; j++) {
+      /*
+        fasttext使用两种ngram
+        词向量的ngram是分解词,如 abc => a,ab,abc,b,bc
+        分类的ngram是组合词，如 a,b,c => a,ab,abc,b,bc
+      */
       h = h * 116049371 + hashes[j];
       pushHash(line, h % args_->bucket);
     }
@@ -336,12 +366,17 @@ int32_t Dictionary::getLine(std::istream& in,
   reset(in);
   words.clear();
   while (readWord(in, token)) {
+    //得到单词的哈希值
     int32_t h = find(token);
+
+    //得到单词的id
     int32_t wid = word2int_[h];
     if (wid < 0) continue;
 
     ntokens++;
+    //确定是单词还是标签，如果是单词且没有被subsampling掉
     if (getType(wid) == entry_type::word && !discard(wid, uniform(rng))) {
+      //存入单词id
       words.push_back(wid);
     }
     if (ntokens > MAX_LINE_SIZE || token == EOS) break;
@@ -349,6 +384,7 @@ int32_t Dictionary::getLine(std::istream& in,
   return ntokens;
 }
 
+// 输入是文件流，输出是的得到一行单词的id、得到一行的label
 int32_t Dictionary::getLine(std::istream& in,
                             std::vector<int32_t>& words,
                             std::vector<int32_t>& labels) const {
@@ -367,13 +403,19 @@ int32_t Dictionary::getLine(std::istream& in,
     ntokens++;
     if (type == entry_type::word) {
       addSubwords(words, token, wid);
+      //存入单词哈希
       word_hashes.push_back(h);
     } else if (type == entry_type::label && wid >= 0) {
+      //保存label
       labels.push_back(wid - nwords_);
     }
+    //如果换行就跳出循环
     if (token == EOS) break;
   }
+
+  //对于有监督任务还要加入ngram，words中包括了单词和ngram的id
   addWordNgrams(words, word_hashes, args_->wordNgrams);
+  // 返回读取了多少的单词
   return ntokens;
 }
 

@@ -93,17 +93,21 @@ void Model::computeOutputSoftmax(Vector& hidden, Vector& output) const {
   if (quant_ && args_->qout) {
     output.mul(*qwo_, hidden);
   } else {
+    //输出向量（多个输出向量是矩阵）和hidden向量做乘积
     output.mul(*wo_, hidden);
   }
   real max = output[0], z = 0.0;
+  //softmax常规策略，减去最大值避免over/underflow
   for (int32_t i = 0; i < osz_; i++) {
     max = std::max(output[i], max);
   }
   for (int32_t i = 0; i < osz_; i++) {
     output[i] = exp(output[i] - max);
+    //计算分母
     z += output[i];
   }
   for (int32_t i = 0; i < osz_; i++) {
+    //最终的softmax结果
     output[i] /= z;
   }
 }
@@ -114,13 +118,20 @@ void Model::computeOutputSoftmax() {
 
 real Model::softmax(int32_t target, real lr) {
   grad_.zero();
+  //计算softmax
   computeOutputSoftmax();
+  //遍历所有输出向量
   for (int32_t i = 0; i < osz_; i++) {
     real label = (i == target) ? 1.0 : 0.0;
+    //要更新的梯度
     real alpha = lr * (label - output_[i]);
+    //更新累积梯度，将来更新输入向量去
     grad_.addRow(*wo_, i, alpha);
+    //更新输出向量
     wo_->addRow(hidden_, i, alpha);
   }
+
+  //loss
   return -log(output_[target]);
 }
 
@@ -129,11 +140,13 @@ void Model::computeHidden(const std::vector<int32_t>& input, Vector& hidden) con
   hidden.zero();
   for (auto it = input.cbegin(); it != input.cend(); ++it) {
     if(quant_) {
+      //把词向量加到hidden上面
       hidden.addRow(*qwi_, *it);
     } else {
       hidden.addRow(*wi_, *it);
     }
   }
+  //平均数
   hidden.mul(1.0 / input.size());
 }
 
@@ -152,10 +165,12 @@ void Model::predict(const std::vector<int32_t>& input, int32_t k, real threshold
     throw std::invalid_argument("Model needs to be supervised for prediction!");
   }
   heap.reserve(k + 1);
+  //通过词向量平均得到hidden向量
   computeHidden(input, hidden);
   if (args_->loss == loss_name::hs) {
     dfs(k, threshold, 2 * osz_ - 2, 0.0, heap, hidden);
   } else {
+    //得到预测类别
     findKBest(k, threshold, heap, hidden, output);
   }
   std::sort_heap(heap.begin(), heap.end(), comparePairs);
@@ -167,6 +182,7 @@ void Model::predict(
   real threshold,
   std::vector<std::pair<real, int32_t>>& heap
 ) {
+  //hidden_和output_是model类自带的，一会儿用于存储结果
   predict(input, k, threshold, heap, hidden_, output_);
 }
 
@@ -176,12 +192,15 @@ void Model::findKBest(
   std::vector<std::pair<real, int32_t>>& heap,
   Vector& hidden, Vector& output
 ) const {
+  //softmax的运算结果
   computeOutputSoftmax(hidden, output);
+  //遍历得到的softmax值，选取k个最大的
   for (int32_t i = 0; i < osz_; i++) {
     if (output[i] < threshold) continue;
     if (heap.size() == k && std_log(output[i]) < heap.front().first) {
       continue;
     }
+    //如果大于第k个值就更新堆
     heap.push_back(std::make_pair(std_log(output[i]), i));
     std::push_heap(heap.begin(), heap.end(), comparePairs);
     if (heap.size() > k) {
@@ -222,23 +241,31 @@ void Model::dfs(int32_t k, real threshold, int32_t node, real score,
 }
 
 void Model::update(const std::vector<int32_t>& input, int32_t target, real lr) {
+  //确认标签的合法性
   assert(target >= 0);
   assert(target < osz_);
   if (input.size() == 0) return;
+
+  //对输入的词向量做平均得到hidden向量，和cbow一样
   computeHidden(input, hidden_);
   if (args_->loss == loss_name::ns) {
     loss_ += negativeSampling(target, lr);
   } else if (args_->loss == loss_name::hs) {
     loss_ += hierarchicalSoftmax(target, lr);
   } else {
+    //文本分类，做softmax，里面会对输出向量更新
     loss_ += softmax(target, lr);
   }
   nexamples_ += 1;
 
   if (args_->model == model_name::sup) {
+      //返回的要调整的值要除以文本的长度，这样每轮对词向量的调整非常小。大家可能疑惑为什么CBOW不这么做。
+      //实际上CBOW的调整策略并不严谨。但是因为上下文一般单词不多，所以对CBOW影响不大。当然CBOW也不是完全没道理，
+      //可以把CBOW看做是SG的特例。认为上下文中每个单词都是上下文中所有单词的平均
     grad_.mul(1.0 / input.size());
   }
   for (auto it = input.cbegin(); it != input.cend(); ++it) {
+    //对词（输入）向量更新
     wi_->addRow(grad_, *it, 1.0);
   }
 }

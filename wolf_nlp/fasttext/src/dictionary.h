@@ -27,9 +27,12 @@ enum class entry_type : int8_t {word=0, label=1};
 
 struct entry {
   std::string word;
+  //频数
   int64_t count;
+  //单词还是标签
   entry_type type;
-  std::vector<int32_t> subwords;
+  //subwords的ids
+  std::vector<int32_t> subwords; 
 };
 
 class Dictionary {
