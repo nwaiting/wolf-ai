@@ -67,3 +67,6 @@ scrapy crawl seedtest -s CONCURRENT_REQUESTS=25
 yahoo:
 
 -->
+
+### 爬虫开源资源
+https://github.com/Jack-Cherish/python-spider 验证码破解 vip视频破解等
