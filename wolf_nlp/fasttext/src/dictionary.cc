@@ -222,6 +222,12 @@ bool Dictionary::readWord(std::istream& in, std::string& word) const
       } else {
         if (c == '\n')
           sb.sungetc();
+          //streambuf 类同样定义了如下几个函数来支持对于输入缓冲区的读取和管理：
+            //sgetc: 从输入缓冲区中读取一个字符；
+            //sbumpc : 从输入缓冲区中读取一个字符，并将 gptr() 指针向后移动一个位置；
+            //sgetn : 从输入缓冲区中读取 n 个字符；
+            //sungetc : 将缓冲区的 gptr() 指针向前移动一个位置；
+            //sputbackc : 将一个读取到的字符重新放回到输入缓冲区中；
         return true;
       }
     }
@@ -255,7 +261,7 @@ void Dictionary::readFromFile(std::istream& in) {
   //语料扫描完以后再去掉低频词
   threshold(args_->minCount, args_->minCountLabel);
   
-  //用于subsampling
+  //与 word2vec 中处理高频和低频单词一样，以一定的概率过滤掉单词
   initTableDiscard();
   
   //用于得到单词的subword
@@ -298,10 +304,14 @@ void Dictionary::threshold(int64_t t, int64_t tl) {
   }
 }
 
+//初始化initTableDiscard表，对每个词根据词的频率获取相应的丢弃概率值，若是给定的阈值小于这个表的值那么就丢弃该词，这里是因为对于频率过高的词可能就是无用词，所以丢弃。比如"的"，"是"等；这里的实现与论文中有点差异，这里是当表中的词小于某个值表示该丢弃，这里因为这里没有对其求1-p形式，而是p+p^2。若是同理转为同方向，则论文是p，现实是p+p^2，这样的做法是使得打压更加宽松点，也就是更多词会被当作无用词丢弃 ??
+//以一定的概率过滤掉单词
 void Dictionary::initTableDiscard() {
   pdiscard_.resize(size_);
   for (size_t i = 0; i < size_; i++) {
+    //词频 (words是删除低频单词后的结果列表,  ntokens是总共的单词数)
     real f = real(words_[i].count) / real(ntokens_);
+    //是为了后面以一定的概率删除词频很高的词，公式：r=sqrt(t/f)+t/f，其中t为一阈值，f为词频，处理方式和word2vec一致
     pdiscard_[i] = std::sqrt(args_->t / f) + args_->t / f;
   }
 }
@@ -414,6 +424,7 @@ int32_t Dictionary::getLine(std::istream& in,
   }
 
   //对于有监督任务还要加入ngram，words中包括了单词和ngram的id
+  // 将一个词的 n-gram 加入词表，用于处理未登录词。（即便一个词不在词表里，我们也可以用它的 word n-gram 来预测一个结果）
   addWordNgrams(words, word_hashes, args_->wordNgrams);
   // 返回读取了多少的单词
   return ntokens;

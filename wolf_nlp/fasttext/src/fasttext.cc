@@ -333,7 +333,8 @@ void FastText::supervised(
     const std::vector<int32_t>& line,
     const std::vector<int32_t>& labels) {
   if (labels.size() == 0 || line.size() == 0) return;
-  //这里假设有多个label，随机娶一个
+  // 因为一个句子可以打上多个 label，但是 fastText 的架构实际上只有支持一个 label，所以这里随机选择一个 label 来更新模型，这样做会让其它 label 被忽略
+  // 所以 fastText 不太适合做多标签的分类
   std::uniform_int_distribution<> uniform(0, labels.size() - 1);
   int32_t i = uniform(model.rng);
   //更新，对line中的所有向量取平均，去预测label，更新词向量也是调用这个函数
@@ -344,15 +345,22 @@ void FastText::cbow(Model& model, real lr,
                     const std::vector<int32_t>& line) {
   std::vector<int32_t> bow;
   std::uniform_int_distribution<> uniform(1, args_->ws);
+
+  // 在一个句子中，每个词可以进行一次 update
   for (int32_t w = 0; w < line.size(); w++) {
+    // 一个词的上下文长度是随机产生的
     int32_t boundary = uniform(model.rng);
     bow.clear();
+    // 以当前词为中心，将左右 boundary 个词加入 input
     for (int32_t c = -boundary; c <= boundary; c++) {
+      // 当然，不能数组越界
       if (c != 0 && w + c >= 0 && w + c < line.size()) {
+        // 实际被加入 input 的不止是词本身，还有词的 word n-gram
         const std::vector<int32_t>& ngrams = dict_->getSubwords(line[w + c]);
         bow.insert(bow.end(), ngrams.cbegin(), ngrams.cend());
       }
     }
+    // 完成一次 CBOW 更新
     model.update(bow, line[w], lr);
   }
 }
@@ -363,8 +371,11 @@ void FastText::skipgram(Model& model, real lr,
                         const std::vector<int32_t>& line) {
   std::uniform_int_distribution<> uniform(1, args_->ws);
   for (int32_t w = 0; w < line.size(); w++) {
+    // 一个词的上下文长度是随机产生的    
     int32_t boundary = uniform(model.rng);
+    // 采用词+word n-gram 来预测这个词的上下文的所有的词
     const std::vector<int32_t>& ngrams = dict_->getSubwords(line[w]);
+    // 在 skipgram 中，对上下文的每一个词分别更新一次模型
     for (int32_t c = -boundary; c <= boundary; c++) {
       if (c != 0 && w + c >= 0 && w + c < line.size()) {
         model.update(ngrams, line[w + c], lr);
@@ -414,7 +425,10 @@ void FastText::predict(
   Vector hidden(args_->dim);
   Vector output(dict_->nlabels());
   std::vector<std::pair<real,int32_t>> modelPredictions;
+  // 调用 model 模块的预测接口，获取 k 个最可能的分类
   model_->predict(words, k, threshold, modelPredictions, hidden, output);
+
+  // 输出结果
   for (auto it = modelPredictions.cbegin(); it != modelPredictions.cend(); it++) {
     predictions.push_back(std::make_pair(it->first, dict_->getLabel(it->second)));
   }
@@ -574,9 +588,13 @@ void FastText::analogies(int32_t k) {
   }
 }
 
+//该函数的主要工作是 实现了标准的随机梯度下降，并随着训练的进行逐步降低学习率
+//一哄而上的并行训练：每个训练线程在更新参数时并没有加锁，这会给参数更新带来一些噪音，但是不会影响最终的结果
 void FastText::trainThread(int32_t threadId) {
   std::ifstream ifs(args_->input);
   //根据每个线程定位到不同位置，每个线程一直执行下午，到文档最后在从第一行开始
+  // 根据线程数，将训练文件按照总字节数（utils::size）均分成多个部分
+  // 这么做的一个后果是，每一部分的第一个词有可能从中间被切断，这样的"小噪音"对于整体的训练结果无影响
   utils::seek(ifs, threadId * utils::size(ifs) / args_->thread);
 
   //模型主要就包括的是输入输出向量
@@ -587,15 +605,19 @@ void FastText::trainThread(int32_t threadId) {
     model.setTargetCounts(dict_->getCounts(entry_type::word));
   }
 
+  // 训练文件中的 token 总数
   const int64_t ntokens = dict_->ntokens();
+  // 当前线程处理完毕的 token 总数
   int64_t localTokenCount = 0;
   std::vector<int32_t> line, labels;
 
   //一共要处理 epoch乘以ntokens个tokens，tokenCount记录一共处理了多少个tokens
+  // tokenCount 为所有线程处理完毕的 token 总数，当处理了 args_->epoch 遍所有 token 后，训练结束 
   while (tokenCount_ < args_->epoch * ntokens) {
 
-    //更新alpha的逻辑和word2vec一样
+    //更新alpha的逻辑和word2vec一样， progress = 0 ~ 1，代表当前训练进程，随着训练的进行逐渐增大
     real progress = real(tokenCount_) / (args_->epoch * ntokens);
+    // 学习率根据 progress 线性下降
     real lr = args_->lr * (1.0 - progress);
     if (args_->model == model_name::sup) {
       //词典类中的getline得到一行文本line，以及对应的label，line是单词的id数组（向量）
@@ -610,9 +632,13 @@ void FastText::trainThread(int32_t threadId) {
     }
 
     //大于一定的阈值打印
+    // args_->lrUpdateRate 是每个线程学习率的变化率，默认为 100，
+    // 它的作用是，每处理一定的行数，再更新全局的 tokenCount 变量，从而影响学习率
     if (localTokenCount > args_->lrUpdateRate) {
       tokenCount_ += localTokenCount;
+      // 每次更新 tokenCount 后，重置计数
       localTokenCount = 0;
+      // 0 号线程负责将训练进度输出到屏幕
       if (threadId == 0 && args_->verbose > 1)
         loss_ = model.getLoss();
     }
@@ -695,17 +721,25 @@ void FastText::train(const Args args) {
   if (args_->pretrainedVectors.size() != 0) {
     loadVectors(args_->pretrainedVectors);
   } else {
+    //初始化输入层
+    //对于普通 word2vec，输入层就是一个词向量的查找表，所以它的大小为 nwords 行，dim 列（dim 为词向量的长度），
+    //但是 fastText 用了word n-gram 作为输入，所以输入矩阵的大小为 (nwords + ngram 种类) * dim
+    //代码中，所有 word n-gram 都被 hash 到固定数目的 bucket 中，所以输入矩阵的大小为(nwords + bucket 个数) * dim
     //词向量的个数=单词的数量+桶的个数，多个ngram或是字符ngram会在一个桶中共享一个向量
     input_ = std::make_shared<Matrix>(dict_->nwords()+args_->bucket, args_->dim);
-    //初始化词向量
+    //初始化词向量，均匀随机分布初始化，在(-1/dim,1/dim)之间
     input_->uniform(1.0 / args_->dim);
   }
 
+  //初始化输出层
+  // 输出层无论是用负采样，层次 softmax，还是普通 softmax，对于每种可能的输出，都有一个 dim 维的参数向量与之对应
+  // 当 args_->model == model_name::sup 时，训练分类器，所以输出的种类是标签总数 dict_->nlabels()
   if (args_->model == model_name::sup) {
     //分类中即为label向量
     output_ = std::make_shared<Matrix>(dict_->nlabels(), args_->dim);
   } else {
     //对于训练词向量来说就是上下文向量
+    //训练的是词向量，输出种类就是词的种类 dict_->nwords()
     output_ = std::make_shared<Matrix>(dict_->nwords(), args_->dim);
   }
   output_->zero();

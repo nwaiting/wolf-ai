@@ -35,6 +35,7 @@ struct entry {
   std::vector<int32_t> subwords; 
 };
 
+//训练文件载入，哈希表构建，word n-gram 计算等功能，但是并没有太多算法在里面
 class Dictionary {
   protected:
     static const int32_t MAX_VOCAB_SIZE = 30000000;

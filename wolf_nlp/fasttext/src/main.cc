@@ -8,6 +8,12 @@
  */
 
 /*
+ 比较详细的介绍fasttext文章：
+ 参考： https://www.zybuluo.com/evilking/note/988186
+        http://www.52nlp.cn/fasttext
+        https://heleifz.github.io/14732610572844.html
+
+
     1、fasttext中文本向量就是词向量的平均
 
     2、fastText 模型使用了层次Softmax技巧，层次Softmax技巧建立在哈弗曼编码的基础上，对标签进行编码，能够极大地缩小模型预测目标的数量
@@ -21,6 +27,10 @@
     5、两者本质的不同，体现在 h-softmax的使用。
         Wordvec的目的是得到词向量，该词向量 最终是在输入层得到，输出层对应的 h-softmax 也会生成一系列的向量，但最终都被抛弃，不会使用。
         fasttext则充分利用了h-softmax的分类功能，遍历分类树的所有叶节点，找到概率最大的label（一个或者N个）
+
+    6、用word ngram的向量之和来代替简单的词向量的方法，以解决简单word2vec无法处理同一词的不同形态问题。
+        fasttext算法将目前用来算word2vec的网络架构做了修改，原来使用一个词的上下文的所有词向量之和来预测词本身(CBOW)，现在改为用一段短文本的词向量之和来对文本进行分类
+
 */
 
 #include <iostream>
