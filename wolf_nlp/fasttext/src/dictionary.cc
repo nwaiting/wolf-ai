@@ -79,6 +79,7 @@ const std::vector<int32_t>& Dictionary::getSubwords(int32_t i) const {
   return words_[i].subwords;
 }
 
+//获取一个词的词向量，不仅仅是对已知的，还能对未知进行预测
 const std::vector<int32_t> Dictionary::getSubwords(
     const std::string& word) const {
   int32_t i = getId(word);
@@ -105,6 +106,8 @@ void Dictionary::getSubwords(const std::string& word,
     ngrams.push_back(i);
     substrings.push_back(words_[i].word);
   }
+
+  //如果该词在入库词典中没有，则计算ngram，然后就可以通过其他词的近似ngram来获取该词的ngram
   if (word != EOS) {
     computeSubwords(BOW + word + EOW, ngrams, substrings);
   }
@@ -113,7 +116,7 @@ void Dictionary::getSubwords(const std::string& word,
 bool Dictionary::discard(int32_t id, real rand) const {
   assert(id >= 0);
   assert(id < nwords_);
-  if (args_->model == model_name::sup) return false;
+  if (args_->model == model_name::sup) return false; //非词向量不丢弃
   return rand > pdiscard_[id];
 }
 
@@ -158,7 +161,8 @@ void Dictionary::computeSubwords(const std::string& word,
   for (size_t i = 0; i < word.size(); i++) {
     std::string ngram;
     if ((word[i] & 0xC0) == 0x80) continue;
-    for (size_t j = i, n = 1; j < word.size() && n <= args_->maxn; n++) {
+    //n-1个词背景
+    for (size_t j = i, n = 1; j < word.size() && n <= args_->maxn; n++) { 
       ngram.push_back(word[j++]);
 
       //处理utf-8字符，见 https://blog.csdn.net/lainegates/article/details/77776419
@@ -176,6 +180,7 @@ void Dictionary::computeSubwords(const std::string& word,
   }
 }
 
+//字符级的ngram
 void Dictionary::computeSubwords(const std::string& word,
                                std::vector<int32_t>& ngrams) const {
   for (size_t i = 0; i < word.size(); i++) {
@@ -354,6 +359,7 @@ void Dictionary::addSubwords(std::vector<int32_t>& line,
       line.push_back(wid);
     } else { // in vocab w/ subwords
       const std::vector<int32_t>& ngrams = getSubwords(wid);
+      //vector::cbegin表示const begin
       line.insert(line.end(), ngrams.cbegin(), ngrams.cend());
     }
   }

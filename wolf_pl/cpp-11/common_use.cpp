@@ -7,7 +7,7 @@
 using namespace std;
 
 /*
-    linux���룺g++ common_use.cpp -o common_use -std=c++0x
+    linux编译：g++ common_use.cpp -o common_use -std=c++0x
 */
 
 void func1()
@@ -17,7 +17,7 @@ void func1()
         data1.push_back(i);
     }
 
-    //������� c++11֧��
+    //随机打乱 c++11支持
     std::shuffle(data1.begin(), data1.end(), std::default_random_engine(1));
     for (auto& it : data1)
     {
@@ -26,9 +26,37 @@ void func1()
     cout << endl;
 }
 
+//
+void func2() {
+    std::vector<int> datas;
+    datas.push_back(1);
+    datas.push_back(2);
+    datas.push_back(3);
+
+    //引用 可以改变原来的值
+    /*
+    for(auto &it: datas) {
+        it = 5;
+    }
+    */
+
+    //不能改变原来的值
+    for (auto it : datas) {
+        it = 5;
+    }
+
+    cout << "show data:" << endl;
+    for (auto it : datas) {
+        cout << it << endl;
+    }
+}
+
+
 int main()
 {
     //func1();
+
+    func2();
 
     cin.get();
     return 0;

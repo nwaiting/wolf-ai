@@ -33,6 +33,7 @@ real Vector::norm() const {
   return std::sqrt(sum);
 }
 
+//数乘向量
 void Vector::mul(real a) {
   for (int64_t i = 0; i < size(); i++) {
     data_[i] *= a;
@@ -53,6 +54,7 @@ void Vector::addVector(const Vector& source, real s) {
   }
 }
 
+//向量相加
 void Vector::addRow(const Matrix& A, int64_t i) {
   assert(i >= 0);
   assert(i < A.size(0));
@@ -62,6 +64,7 @@ void Vector::addRow(const Matrix& A, int64_t i) {
   }
 }
 
+//加数乘向量
 void Vector::addRow(const Matrix& A, int64_t i, real a) {
   assert(i >= 0);
   assert(i < A.size(0));
@@ -76,6 +79,7 @@ void Vector::addRow(const QMatrix& A, int64_t i) {
   A.addToVector(*this, i);
 }
 
+//向量与矩阵相乘得到的向量
 void Vector::mul(const Matrix& A, const Vector& vec) {
   assert(A.size(0) == size());
   assert(A.size(1) == vec.size());
@@ -92,6 +96,7 @@ void Vector::mul(const QMatrix& A, const Vector& vec) {
   }
 }
 
+//最大分量
 int64_t Vector::argmax() {
   real max = data_[0];
   int64_t argmax = 0;

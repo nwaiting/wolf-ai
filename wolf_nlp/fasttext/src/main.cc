@@ -378,6 +378,7 @@ int main(int argc, char** argv) {
   } else if (command == "test") {
     test(args);
   } else if (command == "quantize") {
+    //Á¿×Ó»¯ 
     quantize(args);
   } else if (command == "print-word-vectors") {
     printWordVectors(args);

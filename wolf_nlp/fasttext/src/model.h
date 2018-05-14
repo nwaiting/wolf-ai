@@ -32,7 +32,9 @@ struct Node {
 
 class Model {
   protected:
+    //输入--上下文
     std::shared_ptr<Matrix> wi_;
+    //参数矩阵，行对应于某个词的参数集合
     std::shared_ptr<Matrix> wo_;
     std::shared_ptr<QMatrix> qwi_;
     std::shared_ptr<QMatrix> qwo_;

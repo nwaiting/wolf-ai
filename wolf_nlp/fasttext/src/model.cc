@@ -66,12 +66,12 @@ real Model::binaryLogistic(int32_t target, bool label, real lr) {
   //Loss 对于 LR 参数的梯度累加到 wo_ 的对应行上
   //更新 haffman 节点的参数向量
   wo_->addRow(hidden_, target, alpha);
-  // LR 的 Loss，负指数损失
+  // LR 的 Loss，负指数损失，
   if (label) {
-    // 1
+    // 1  公式：L=log(1/p(x))，p(x)是概率值
     return -log(score);
   } else {
-    // 0
+    // 0 公式：p(x)=1-score，score为1的概率
     return -log(1.0 - score);
   }
 }
@@ -82,8 +82,10 @@ real Model::negativeSampling(int32_t target, real lr) {
   for (int32_t n = 0; n <= args_->neg; n++) {
     // 对于正样本和负样本，分别更新 LR
     if (n == 0) {
+      //正采样
       loss += binaryLogistic(target, true, lr);
     } else {
+      //负采样args_->neg个
       loss += binaryLogistic(getNegative(target), false, lr);
     }
   }
@@ -108,6 +110,7 @@ real Model::hierarchicalSoftmax(int32_t target, real lr) {
 }
 
 void Model::computeOutputSoftmax(Vector& hidden, Vector& output) const {
+  //输出=参数转移矩阵*输入
   if (quant_ && args_->qout) {
     output.mul(*qwo_, hidden);
   } else {
@@ -115,13 +118,15 @@ void Model::computeOutputSoftmax(Vector& hidden, Vector& output) const {
     output.mul(*wo_, hidden);
   }
   real max = output[0], z = 0.0;
-  //softmax常规策略，减去最大值避免over/underflow
+  //softmax常规策略，减去最大值避免over/underflow，获取最大的内积值
   for (int32_t i = 0; i < osz_; i++) {
     max = std::max(output[i], max);
   }
+
+  //求出每个内绩值相对最大值的情况
   for (int32_t i = 0; i < osz_; i++) {
     output[i] = exp(output[i] - max);
-    //计算分母
+    //计算分母，用于归一化
     z += output[i];
   }
   for (int32_t i = 0; i < osz_; i++) {
@@ -139,18 +144,18 @@ real Model::softmax(int32_t target, real lr) {
   grad_.zero();
   //计算softmax
   computeOutputSoftmax();
-  //遍历所有输出向量
+  //遍历所有输出向量，遍历所有词---此次操作只是针对一个词的更新
   for (int32_t i = 0; i < osz_; i++) {
     real label = (i == target) ? 1.0 : 0.0;
     //要更新的梯度
     real alpha = lr * (label - output_[i]);
-    //更新累积梯度，将来更新输入向量去
+    //更新累积梯度，将来更新输入向量去，更新e值
     grad_.addRow(*wo_, i, alpha);
     //更新输出向量
     wo_->addRow(hidden_, i, alpha);
   }
 
-  //loss
+  //loss损失值
   return -log(output_[target]);
 }
 
@@ -214,6 +219,7 @@ void Model::predict(
   predict(input, k, threshold, heap, hidden_, output_);
 }
 
+//vector寻找topk---获得一个最小堆
 void Model::findKBest(
   int32_t k,
   real threshold,
@@ -246,9 +252,12 @@ void Model::dfs(int32_t k, real threshold, int32_t node, real score,
     return;
   }
 
-  // 只输出叶子节点的结果
+  // 只输出叶子节点的结果，表示为叶子节点
   if (tree[node].left == -1 && tree[node].right == -1) {
+    //根到叶子的损失总值，叶子也就是词了
     heap.push_back(std::make_pair(score, node));
+    
+    //维持最小堆，以损失值
     std::push_heap(heap.begin(), heap.end(), comparePairs);
     if (heap.size() > k) {
       std::pop_heap(heap.begin(), heap.end(), comparePairs);
@@ -257,7 +266,7 @@ void Model::dfs(int32_t k, real threshold, int32_t node, real score,
     return;
   }
 
-  // 将 score 累加后递归向下收集结果
+  // 将 score 累加后递归向下收集结果，计算出sigmod值，用于计算损失
   real f;
   if (quant_ && args_->qout) {
     f= qwo_->dotRow(hidden, node - osz_);
@@ -288,7 +297,7 @@ void Model::update(const std::vector<int32_t>& input, int32_t target, real lr) {
   assert(target < osz_);
   if (input.size() == 0) return;
 
-  //对输入的词向量做平均得到hidden向量，和cbow一样
+  //对输入的词向量做平均得到hidden向量，和cbow一样，计算映射层值
   computeHidden(input, hidden_);
   //接下来就是将隐藏层传入输出层计算损失函数:
 
@@ -296,6 +305,7 @@ void Model::update(const std::vector<int32_t>& input, int32_t target, real lr) {
   // 不仅通过前向传播算出了 loss_，还进行了反向传播，计算出了 grad_，后面逐一分析。
   //负采样 损失函数
   if (args_->loss == loss_name::ns) {
+    //负采样的更新
     loss_ += negativeSampling(target, lr);
   } else if (args_->loss == loss_name::hs) {
     loss_ += hierarchicalSoftmax(target, lr);
@@ -320,14 +330,14 @@ void Model::update(const std::vector<int32_t>& input, int32_t target, real lr) {
 
   //分别将梯度误差贡献到每个词向量上
   for (auto it = input.cbegin(); it != input.cend(); ++it) {
-    //对词（输入）向量更新
+    //对词（输入）向量更新，迭代加上上下文的词向量，来更新上下文的词向量
     wi_->addRow(grad_, *it, 1.0);
   }
 }
 
 void Model::setTargetCounts(const std::vector<int64_t>& counts) {
   assert(counts.size() == osz_);
-  //负采样
+  //初始化负采样表
   if (args_->loss == loss_name::ns) {
     initTableNegatives(counts);
   }
@@ -337,14 +347,21 @@ void Model::setTargetCounts(const std::vector<int64_t>& counts) {
   }
 }
 
+//负采样的采样表获取
 void Model::initTableNegatives(const std::vector<int64_t>& counts) {
   real z = 0.0;
   for (size_t i = 0; i < counts.size(); i++) {
     z += pow(counts[i], 0.5);
   }
   for (size_t i = 0; i < counts.size(); i++) {
+    //c值
     real c = pow(counts[i], 0.5);
+
+    //0,0,0,1,1,1,1,1,1,1,2,2类似这种有序的，0表示第一个词，占个坑，随机读取时，越多则概率越大。所有词的随机化
+    //最多重复次数，若是c/z足够小，会导致重复次数很少，最小是1次
+    //NEGATIVE_TABLE_SIZE含义是一个词最多重复不能够超过的值
     for (size_t j = 0; j < c * NEGATIVE_TABLE_SIZE / z; j++) {
+      //该词映射到表的维度上的取值情况，也就是不等分区映射到等区分段上
       negatives_.push_back(i);
     }
   }
@@ -352,12 +369,15 @@ void Model::initTableNegatives(const std::vector<int64_t>& counts) {
   std::shuffle(negatives_.begin(), negatives_.end(), rng);
 }
 
+//对于词target获取负采样的值
 int32_t Model::getNegative(int32_t target) {
   int32_t negative;
   do {
+    //由于表是随机化的，取值就是随机采的
     negative = negatives_[negpos];
+    //下一个，不断的累加的，由于表格随机的，所以不需要pos随机了
     negpos = (negpos + 1) % negatives_.size();
-  } while (target == negative);
+  } while (target == negative); //若是遇到为正样本则跳过
   return negative;
 }
 
@@ -438,10 +458,12 @@ void Model::buildTree(const std::vector<int64_t>& counts) {
   }
 }
 
+//获取均匀损失值，平均每个样本的损失
 real Model::getLoss() const {
   return loss_ / nexamples_;
 }
 
+//初始化sigmod表
 void Model::initSigmoid() {
   for (int i = 0; i < SIGMOID_TABLE_SIZE + 1; i++) {
     real x = real(i * 2 * MAX_SIGMOID) / SIGMOID_TABLE_SIZE - MAX_SIGMOID;
@@ -449,6 +471,7 @@ void Model::initSigmoid() {
   }
 }
 
+//初始化log函数的表，对于0~1之间的值
 void Model::initLog() {
   for (int i = 0; i < LOG_TABLE_SIZE + 1; i++) {
     real x = (real(i) + 1e-5) / LOG_TABLE_SIZE;
@@ -456,6 +479,7 @@ void Model::initLog() {
   }
 }
 
+//log的处理
 real Model::log(real x) const {
   if (x > 1.0) {
     return 0.0;
@@ -468,6 +492,7 @@ real Model::std_log(real x) const {
   return std::log(x+1e-5);
 }
 
+//获取sigmod值
 real Model::sigmoid(real x) const {
   if (x < -MAX_SIGMOID) {
     return 0.0;

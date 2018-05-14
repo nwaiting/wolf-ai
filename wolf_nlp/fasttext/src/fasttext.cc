@@ -64,9 +64,11 @@ void FastText::getWordVector(Vector& vec, const std::string& word) const {
   const std::vector<int32_t>& ngrams = dict_->getSubwords(word);
   vec.zero();
   for (int i = 0; i < ngrams.size(); i ++) {
+    //ngram的累加
     addInputVector(vec, ngrams[i]);
   }
   if (ngrams.size() > 0) {
+    //词向量均值
     vec.mul(1.0 / ngrams.size());
   }
 }
@@ -360,7 +362,7 @@ void FastText::cbow(Model& model, real lr,
         bow.insert(bow.end(), ngrams.cbegin(), ngrams.cend());
       }
     }
-    // 完成一次 CBOW 更新
+    // 完成一次 CBOW 更新，根据上下文更新
     model.update(bow, line[w], lr);
   }
 }
@@ -378,6 +380,7 @@ void FastText::skipgram(Model& model, real lr,
     // 在 skipgram 中，对上下文的每一个词分别更新一次模型
     for (int32_t c = -boundary; c <= boundary; c++) {
       if (c != 0 && w + c >= 0 && w + c < line.size()) {
+        //ngram作为上下文
         model.update(ngrams, line[w + c], lr);
       }
     }
@@ -468,9 +471,13 @@ void FastText::getSentenceVector(
   if (args_->model == model_name::sup) {
     std::vector<int32_t> line, labels;
     dict_->getLine(in, line, labels);
+    //句子的词以及ngram的索引
     for (int32_t i = 0; i < line.size(); i++) {
+      //将词的向量求出和
       addInputVector(svec, line[i]);
     }
+
+    //求均值
     if (!line.empty()) {
       svec.mul(1.0 / line.size());
     }
@@ -703,6 +710,7 @@ void FastText::train(const Args args) {
 
   //基本所有自然语言处理的第一步都是构建一个词典
   dict_ = std::make_shared<Dictionary>(args_);
+
   if (args_->input == "-") {
     // manage expectations
     throw std::invalid_argument("Cannot use stdin for training!");
