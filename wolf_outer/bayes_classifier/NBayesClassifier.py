@@ -6,6 +6,7 @@ import snownlp
 from sklearn.naive_bayes import MultinomialNB
 from matplotlib import pyplot as plt
 from pylab import mpl
+from collections import Counter
 
 #去除标点符号
 pointwords = ['，', '、', '[', ']', '（', '）', '：',
@@ -27,6 +28,7 @@ def MakeWordsSet(words_file):
 def TextPro(file_path):
     test_data_list = []
     test_sentiments_list = []
+    handle_count = 0
     with open(file_path, encoding='utf-8') as fp:
         for line in fp.readlines():
             line = line.strip('\r\n ')
@@ -40,8 +42,12 @@ def TextPro(file_path):
                     snow = snownlp.SnowNLP(line)
                     test_data_list.append(snow.words)
                     test_sentiments_list.append(snow.sentiments)
+                    handle_count += 1
                 except Exception as e:
-                    print('except {0} -- line {1}'.format(e, line))
+                    #print('except {0} -- line {1}'.format(e, line))
+                    pass
+            if handle_count%10000 == 0:
+                print('have done {0}'.format(handle_count))
         return test_data_list, test_sentiments_list
 
 def TextProcessing(file_path, test_size=0.2):
@@ -93,7 +99,7 @@ def WordsDict(all_words_list, stopwords_set=set()):
     feature_words = []
     n = 1
     for t in range(0, len(all_words_list), 1):
-        if n > 1000: # feature_words的维度1000
+        if n > 1000:
             break
         if not all_words_list[t].isdigit() and all_words_list[t] not in stopwords_set and 1<len(all_words_list[t])<5:
             feature_words.append(all_words_list[t])
@@ -142,7 +148,8 @@ def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_
         with open(result_file, 'wb') as fp:
             res = zip(test_data_list,test_class_list,test_feature_list,predicts,test_sentiments_list,predicts_prob)
             for item in res:
-                if predict_prob and max(item[5]) > predict_prob:
+                #if predict_prob and max(item[5]) > predict_prob:
+                if predict_prob and item[5][1] > predict_prob:
                     fp.write(('test data： {0}\n'.format(item[0])).encode('utf-8'))
                     #fp.write(('feature： {0}\n'.format(item[2])).encode('utf-8'))
                     fp.write(('sentiment {0}\n'.format(item[4])).encode('utf-8'))
@@ -154,23 +161,25 @@ def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_
                     test_sentiments_results[s_split] = test_sentiments_results.get(s_split, 0) + 1
             for k,v in test_class_results.items():
                 fp.write(('{0} {1}'.format(k,v)).encode('utf-8'))
+    return test_class_results,test_sentiments_results
 
-        mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
-        sd = sorted(test_sentiments_results.items(), key=lambda x:x[0])
-        plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb',tick_label=[i[0] for i in sd])
-        plt.title(u'唐诗宋词情感分布图')
-        plt.savefig('{0}.{1}'.format(result_file, 'sentiments.jpg'))
-        plt.show()
+def show(test_sentiments_results, test_class_results):
+    mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+    sd = sorted(test_sentiments_results.items(), key=lambda x:x[0])
+    plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb',tick_label=[i[0] for i in sd])
+    plt.title(u'唐诗宋词情感分布图')
+    plt.savefig('{0}.{1}'.format(result_file, 'sentiments.jpg'))
+    plt.show()
 
-        print('test_class_results ', test_class_results)
-        mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
-        tick_l = test_class_results.keys()
-        tick_l = [i.replace('tag-', '') for i in tick_l if i]
-        print('tick_l ', tick_l)
-        plt.bar(range(len(test_class_results)), test_class_results.values(), color='rgb', tick_label=tick_l)
-        plt.savefig('{0}.{1}'.format(result_file, 'classes.jpg'))
-        plt.title(u'唐诗宋词建筑分类分布图')
-        plt.show()
+    print('test_class_results ', test_class_results)
+    mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
+    tick_l = test_class_results.keys()
+    tick_l = [i.replace('tag-', '') for i in tick_l if i]
+    print('tick_l ', tick_l)
+    plt.bar(range(len(test_class_results)), test_class_results.values(), color='rgb', tick_label=tick_l)
+    plt.savefig('{0}.{1}'.format(result_file, 'classes.jpg'))
+    plt.title(u'唐诗宋词建筑分类分布图')
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -187,7 +196,7 @@ if __name__ == '__main__':
         t_test_data_list, t_test_sentiments_list = TextPro(file_path)
         if len(t_test_data_list) > 0 and len(t_test_sentiments_list) > 0:
             test_data_list = t_test_data_list[:]
-            test_class_list = [None for _ in range(len(t_test_data_list))]
+            test_class_list = [0.0 for _ in range(len(t_test_data_list))]
             test_sentiments_list = t_test_sentiments_list[:]
 
     # 生成stopwords_set
@@ -198,13 +207,36 @@ if __name__ == '__main__':
     # 文本特征提取和分类
     result_file = 'poems_results.txt'
     # 分类概率值  如果低于这个值那么分类为其他类
-    predict_prob = 0.0000001
+    predict_prob = 0.1
     result_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), result_file)
-    test_accuracy_list = []
     feature_words = WordsDict(all_words_list, stopwords_set)
+    test_class_results_all = {}
+    test_sentiments_results_all = {}
     if feature_words:
         train_feature_list, test_feature_list = TextFeatures(train_data_list, test_data_list, feature_words)
-        test_accuracy = TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, predict_prob=predict_prob, result_file=result_file)
-        test_accuracy_list.append(test_accuracy)
+        range_big = len(test_data_list)
+        range_end = int(range_big/10000)
+        for i in range(range_end + 1):
+            print('classifier {0} ~ {1}'.format(10000*i, 10000*(i+1)))
+            test_data_list_t = []
+            test_feature_list_t = []
+            test_class_list_t = []
+            test_sentiments_list_t = []
+            if i == range_end:
+                test_data_list_t = test_data_list[10000*i:]
+                test_feature_list_t = test_feature_list[10000*i:]
+                test_class_list_t = test_class_list[10000*i:]
+                test_sentiments_list_t = test_sentiments_list[10000*i:]
+            else:
+                test_data_list_t = test_data_list[10000*i:10000*(i+1)]
+                test_feature_list_t = test_feature_list[10000*i:10000*(i+1)]
+                test_class_list_t = test_class_list[10000*i:10000*(i+1)]
+                test_sentiments_list_t = test_sentiments_list[10000*i:10000*(i+1)]
+
+            test_class_results_tmp,test_sentiments_results_tmp = TextClassifier(train_feature_list, test_data_list_t, test_feature_list_t, train_class_list, test_class_list_t, test_sentiments_list_t, predict_prob=predict_prob, result_file=result_file)
+            test_class_results_all = dict(Counter(test_class_results_tmp)+Counter(test_class_results_all))
+            test_sentiments_results_all = dict(Counter(test_sentiments_results_tmp)+Counter(test_sentiments_results_all))
+
+    show(test_sentiments_results_all,test_class_results_all)
 
     print("end bayes classifier")
