@@ -1,28 +1,28 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <fstream>
 #include <string>
 using namespace std;
 
 /*
-    fseek¶¨Òå£º
-        º¯ÊıÔ­ĞÍ£ºint fseek(FILE *fp, LONG offset, int origin)
-        ²ÎÊıº¬Òå£ºfp ÎÄ¼şÖ¸Õë offset Ïà¶ÔÓÚorigin¹æ¶¨µÄÆ«ÒÆÎ»ÖÃÁ¿ origin Ö¸ÕëÒÆ¶¯µÄÆğÊ¼Î»ÖÃ£¬¿ÉÉèÖÃÎªÒÔÏÂÈıÖÖÇé¿ö£º SEEK_SET ÎÄ¼ş¿ªÊ¼Î»ÖÃ SEEK_CUR ÎÄ¼şµ±Ç°Î»ÖÃ SEEK_END ÎÄ¼ş½áÊøÎ»ÖÃ
+    fseekå®šä¹‰ï¼š
+        å‡½æ•°åŸå‹ï¼šint fseek(FILE *fp, LONG offset, int origin)
+        å‚æ•°å«ä¹‰ï¼šfp æ–‡ä»¶æŒ‡é’ˆ offset ç›¸å¯¹äºoriginè§„å®šçš„åç§»ä½ç½®é‡ origin æŒ‡é’ˆç§»åŠ¨çš„èµ·å§‹ä½ç½®ï¼Œå¯è®¾ç½®ä¸ºä»¥ä¸‹ä¸‰ç§æƒ…å†µï¼š SEEK_SET æ–‡ä»¶å¼€å§‹ä½ç½® SEEK_CUR æ–‡ä»¶å½“å‰ä½ç½® SEEK_END æ–‡ä»¶ç»“æŸä½ç½®
 
-    tellg()¶¨Òå£º
-        tellg() ÓÃÓÚÔÚÊäÈëÁ÷ÖĞ»ñÈ¡Î»ÖÃ
-        streampos tellg();//·µ»ØÒ»¸öÕûĞÍÊı£¬´ú±í¶ÁÖ¸ÕëµÄÎ»ÖÃ
-        example:streampos pos = tellg();//½«tellg()·µ»ØµÄÖ¸ÕëÎ»ÖÃ¸³Öµ¸øpos
-    seekg()¶¨Òå£º
-        seekg()ÓÃÓÚÉèÖÃÔÚÊäÈëÁ÷ÖĞµÄÎ»ÖÃ
-        istream& seekg(streampos pos);//½«¶ÁÖ¸ÕëÉèÖÃµ½posÎ»ÖÃ
-        istream& seekg(streamoff off, ios_base::seekdir way);//½«¶ÁÖ¸ÕëÉèÖÃÎªway+off£¬ÆäÖĞoff ´ú±íÆ«ÒÆÖµ£¬¶øway´ú±í»ùÖ·
+    tellg()å®šä¹‰ï¼š
+        tellg() ç”¨äºåœ¨è¾“å…¥æµä¸­è·å–ä½ç½®
+        streampos tellg();//è¿”å›ä¸€ä¸ªæ•´å‹æ•°ï¼Œä»£è¡¨è¯»æŒ‡é’ˆçš„ä½ç½®
+        example:streampos pos = tellg();//å°†tellg()è¿”å›çš„æŒ‡é’ˆä½ç½®èµ‹å€¼ç»™pos
+    seekg()å®šä¹‰ï¼š
+        seekg()ç”¨äºè®¾ç½®åœ¨è¾“å…¥æµä¸­çš„ä½ç½®
+        istream& seekg(streampos pos);//å°†è¯»æŒ‡é’ˆè®¾ç½®åˆ°posä½ç½®
+        istream& seekg(streamoff off, ios_base::seekdir way);//å°†è¯»æŒ‡é’ˆè®¾ç½®ä¸ºway+offï¼Œå…¶ä¸­off ä»£è¡¨åç§»å€¼ï¼Œè€Œwayä»£è¡¨åŸºå€
 
-        in.seekg(0,ios::end);   //»ùµØÖ·ÎªÎÄ¼ş½áÊø´¦£¬Æ«ÒÆµØÖ·Îª0£¬ÓÚÊÇÖ¸Õë¶¨Î»ÔÚÎÄ¼ş½áÊø´¦
-        in.seekg(-sp/3,ios::end); //»ùµØÖ·ÎªÎÄ¼şÄ©£¬Æ«ÒÆµØÖ·Îª¸º£¬ÓÚÊÇÏòÇ°ÒÆ¶¯sp/3¸ö×Ö½Ú
-        in.seekg(0,ios::beg);   //»ùµØÖ·ÎªÎÄ¼şÍ·£¬Æ«ÒÆÁ¿Îª0£¬ÓÚÊÇ¶¨Î»ÔÚÎÄ¼şÍ·
-        curpos = in.tellg();  //»ñÈ¡µ±Ç°Î»ÖÃ
+        in.seekg(0,ios::end);   //åŸºåœ°å€ä¸ºæ–‡ä»¶ç»“æŸå¤„ï¼Œåç§»åœ°å€ä¸º0ï¼Œäºæ˜¯æŒ‡é’ˆå®šä½åœ¨æ–‡ä»¶ç»“æŸå¤„
+        in.seekg(-sp/3,ios::end); //åŸºåœ°å€ä¸ºæ–‡ä»¶æœ«ï¼Œåç§»åœ°å€ä¸ºè´Ÿï¼Œäºæ˜¯å‘å‰ç§»åŠ¨sp/3ä¸ªå­—èŠ‚
+        in.seekg(0,ios::beg);   //åŸºåœ°å€ä¸ºæ–‡ä»¶å¤´ï¼Œåç§»é‡ä¸º0ï¼Œäºæ˜¯å®šä½åœ¨æ–‡ä»¶å¤´
+        curpos = in.tellg();  //è·å–å½“å‰ä½ç½®
 
-        »ñÈ¡ÎÄ¼ş³¤¶È£º
+        è·å–æ–‡ä»¶é•¿åº¦ï¼š
             ifs.seekg(std::streamoff(0), std::ios::end);
             return ifs.tellg();
 */
@@ -39,6 +39,29 @@ void func1()
     cout << "file have " << ifs.tellg() << endl;
 }
 
+/*
+    #include <fstream>
+    ofstream         //æ–‡ä»¶å†™æ“ä½œ å†…å­˜å†™å…¥å­˜å‚¨è®¾å¤‡
+    ifstream         //æ–‡ä»¶è¯»æ“ä½œï¼Œå­˜å‚¨è®¾å¤‡è¯»åŒºåˆ°å†…å­˜ä¸­
+    fstream          //è¯»å†™æ“ä½œï¼Œå¯¹æ‰“å¼€çš„æ–‡ä»¶å¯è¿›è¡Œè¯»å†™æ“ä½œ
+
+    ofstream out("...", ios::out);
+    ifstream in("...", ios::in);
+    fstream foi("...", ios::in|ios::out);
+    fstream file1;
+        file1.open("c:\\config.sys",ios::binary|ios::in,0);
+        file1.open("c:\\config.sys"); <=> file1.open("c:\\config.sys",ios::in|ios::out,0);
+    ios::in	    ä¸ºè¾“å…¥(è¯»)è€Œæ‰“å¼€æ–‡ä»¶ï¼Œåªå¯ä»¥å¯¹ifstreamå’Œfstreamè®¾å®š
+    ios::out	ä¸ºè¾“å‡º(å†™)è€Œæ‰“å¼€æ–‡ä»¶ï¼Œåªå¯ä»¥å¯¹ofstreamå’Œfstreamè®¾å®š
+    ios::ate	åˆå§‹ä½ç½®ï¼šæ–‡ä»¶å°¾
+    ios::app	æ‰€æœ‰è¾“å‡ºé™„åŠ åœ¨æ–‡ä»¶æœ«å°¾
+    ios::trunc	å¦‚æœæ–‡ä»¶å·²å­˜åœ¨åˆ™å…ˆåˆ é™¤è¯¥æ–‡ä»¶
+    ios::binary	äºŒè¿›åˆ¶æ–¹å¼
+*/
+void func2()
+{
+
+}
 
 int main()
 {
