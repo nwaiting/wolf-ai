@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Copyright (c) 2016-present, Facebook, Inc.
  * All rights reserved.
  *
@@ -32,14 +32,21 @@ struct Node {
 
 class Model {
   protected:
-    //����--������
+    //输入--上下文，对应为 input_，
+    //首先进行随机数初始化，输入矩阵和样本进行计算，得到隐向量，隐向量和样本计算得到输出矩阵
     std::shared_ptr<Matrix> wi_;
-    //���������ж�Ӧ��ĳ���ʵĲ�������
+
+    //参数矩阵，行对应于某个词的参数集合
+    //隐向量、样本和ð计算得出输出向量
     std::shared_ptr<Matrix> wo_;
+    
     std::shared_ptr<QMatrix> qwi_;
     std::shared_ptr<QMatrix> qwo_;
     std::shared_ptr<Args> args_;
+    
+    //隐向量每次计算之前会重置，由输入向量和样本计算得出当前隐向量
     Vector hidden_;
+    
     Vector output_;
     Vector grad_;
     int32_t hsz_;

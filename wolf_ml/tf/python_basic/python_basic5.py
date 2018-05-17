@@ -80,8 +80,34 @@ def func4():
     model = Word2Vec()
     model.wv.save_word2vec_format('a.txt', binary=False)
 
+def func5():
+    from collections import Counter
+    """
+        两个dict合并：
+            方法1：(速度较慢)
+                dictMerged1=dict(dict1.items()+dict2.items())
+            方法2：
+                dictMerged2=dict(dict1, **dict2)
+            方法2等同于：
+                dictMerged=dict1.copy()
+                dictMerged.update(dict2)
+            方法4：
+                dictMerged=dict(dict1)
+                dictMerged.update(dict2)
+    """
+    d1 = {'1':1,'2':2}
+    d2 = {"4":4,"5":5, '2':6}
+    d2 = dict(d1, **d2)
+
+    d3 = d1.copy()
+    d3.update(d2)
+
+    d2 = dict(Counter(d1)+Counter(d2))
+    print(d2)
+
 if __name__ == '__main__':
     #func1()
     #func2()
     #func3()
-    func4()
+    #func4()
+    func5()

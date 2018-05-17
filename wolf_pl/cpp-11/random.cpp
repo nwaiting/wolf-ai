@@ -4,49 +4,49 @@
 using namespace std;
 
 /*
-    c++11Ö®Ç°Ëæ»úÊı£º
-        srand() ÉèÖÃÖÖ×Ó£¬³õÊ¼»¯rand() 
-        rand() »ñÈ¡Ëæ»úÊı
-        Èç£ºsrand(time(NULL));
-            rand() »ñÈ¡Ëæ»úÊı
+    c++11ä¹‹å‰éšæœºæ•°ï¼š
+        srand() è®¾ç½®ç§å­ï¼Œåˆå§‹åŒ–rand() 
+        rand() è·å–éšæœºæ•°
+        å¦‚ï¼šsrand(time(NULL));
+            rand() è·å–éšæœºæ•°
 
 
-    c++11Ìá¹©ÁËºÜ¶àËæ»úÊıµÄÑ¡Ôñ£º
-        ¾ùÔÈ·Ö²¼£º
-        uniform_int_distribution          ÕûÊı¾ùÔÈ·Ö²¼
-        uniform_real_distribution        ¸¡µãÊı¾ùÔÈ·Ö²¼
+    c++11æä¾›äº†å¾ˆå¤šéšæœºæ•°çš„é€‰æ‹©ï¼š
+        å‡åŒ€åˆ†å¸ƒï¼š
+        uniform_int_distribution          æ•´æ•°å‡åŒ€åˆ†å¸ƒ
+        uniform_real_distribution        æµ®ç‚¹æ•°å‡åŒ€åˆ†å¸ƒ
 
-        ²®Å¬ÀûÀàĞÍ·Ö²¼£º£¨½öÓĞyes/noÁ½ÖÖ½á¹û£¬¸ÅÂÊÒ»¸öp£¬Ò»¸ö1-p£©
-        bernoulli_distribution    ²®Å¬Àû·Ö²¼
-        binomial_distribution     ¶şÏî·Ö²¼
-        geometry_distribution    ¼¸ºÎ·Ö²¼
-        negative_biomial_distribution  ¸º¶şÏî·Ö²¼
+        ä¼¯åŠªåˆ©ç±»å‹åˆ†å¸ƒï¼šï¼ˆä»…æœ‰yes/noä¸¤ç§ç»“æœï¼Œæ¦‚ç‡ä¸€ä¸ªpï¼Œä¸€ä¸ª1-pï¼‰
+        bernoulli_distribution    ä¼¯åŠªåˆ©åˆ†å¸ƒ
+        binomial_distribution     äºŒé¡¹åˆ†å¸ƒ
+        geometry_distribution    å‡ ä½•åˆ†å¸ƒ
+        negative_biomial_distribution  è´ŸäºŒé¡¹åˆ†å¸ƒ
 
         Rate-based distributions:
-        poisson_distribution ²´ËÉ·Ö²¼
-        exponential_distributionÖ¸Êı·Ö²¼
-        gamma_distribution Ù¤Âí·Ö²¼
-        weibull_distribution Íş²¼¶û·Ö²¼
-        extreme_value_distribution ¼«Öµ·Ö²¼
+        poisson_distribution æ³Šæ¾åˆ†å¸ƒ
+        exponential_distributionæŒ‡æ•°åˆ†å¸ƒ
+        gamma_distribution ä¼½é©¬åˆ†å¸ƒ
+        weibull_distribution å¨å¸ƒå°”åˆ†å¸ƒ
+        extreme_value_distribution æå€¼åˆ†å¸ƒ
 
-        ÕıÌ¬·Ö²¼Ïà¹Ø£º
-        normal_distribution        ÕıÌ¬·Ö²¼
-        chi_squared_distribution¿¨·½·Ö²¼
-        cauchy_distribution       ¿ÂÎ÷·Ö²¼
-        fisher_f_distribution      ·ÑĞª¶ûF·Ö²¼
-        student_t_distribution t·Ö²¼
+        æ­£æ€åˆ†å¸ƒç›¸å…³ï¼š
+        normal_distribution        æ­£æ€åˆ†å¸ƒ
+        chi_squared_distributionå¡æ–¹åˆ†å¸ƒ
+        cauchy_distribution       æŸ¯è¥¿åˆ†å¸ƒ
+        fisher_f_distribution      è´¹æ­‡å°”Fåˆ†å¸ƒ
+        student_t_distribution tåˆ†å¸ƒ
 
-        ·Ö¶Î·Ö²¼Ïà¹Ø£º
-        discrete_distributionÀëÉ¢·Ö²¼
-        piecewise_constant_distribution·Ö¶Î³£Êı·Ö²¼
-        piecewise_linear_distribution·Ö¶ÎÏßĞÔ·Ö²¼
+        åˆ†æ®µåˆ†å¸ƒç›¸å…³ï¼š
+        discrete_distributionç¦»æ•£åˆ†å¸ƒ
+        piecewise_constant_distributionåˆ†æ®µå¸¸æ•°åˆ†å¸ƒ
+        piecewise_linear_distributionåˆ†æ®µçº¿æ€§åˆ†å¸ƒ
 */
 
 int main()
 {
     default_random_engine random(time(NULL));
 
-    //Ëæ»úÊıµÄ·¶Î§Îª[]
+    //éšæœºæ•°çš„èŒƒå›´ä¸º[]
     uniform_int_distribution<> uniform(1, 100);
     cout << "uniform_int_distribution " << endl;
     for (int i = 0; i < 5; i++)

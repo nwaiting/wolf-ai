@@ -135,11 +135,13 @@ def SplitSentiment(sent):
             flag_sent = 0.2
     return flag_sent
 
-
-def TextClassifier(train_feature_list, test_data_list, test_feature_list, train_class_list, test_class_list, test_sentiments_list, predict_prob=None, result_file=None):
-    # sklearn分类器
+def TextTrain(train_feature_list, train_class_list):
     classifier = MultinomialNB()
     classifier.fit(train_feature_list, train_class_list)
+    return classifier
+
+def TextClassifier(classifier, test_data_list, test_feature_list, test_class_list, test_sentiments_list, predict_prob=None, result_file=None):
+    # sklearn分类器
     predicts = classifier.predict(test_feature_list)
     predicts_prob = classifier.predict_proba(test_feature_list)
     test_class_results = {}
@@ -212,10 +214,12 @@ if __name__ == '__main__':
     feature_words = WordsDict(all_words_list, stopwords_set)
     test_class_results_all = {}
     test_sentiments_results_all = {}
+
     if feature_words:
         train_feature_list, test_feature_list = TextFeatures(train_data_list, test_data_list, feature_words)
         range_big = len(test_data_list)
         range_end = int(range_big/10000)
+        classifiers = TextTrain(train_feature_list, train_class_list)
         for i in range(range_end + 1):
             print('classifier {0} ~ {1}'.format(10000*i, 10000*(i+1)))
             test_data_list_t = []
@@ -233,7 +237,7 @@ if __name__ == '__main__':
                 test_class_list_t = test_class_list[10000*i:10000*(i+1)]
                 test_sentiments_list_t = test_sentiments_list[10000*i:10000*(i+1)]
 
-            test_class_results_tmp,test_sentiments_results_tmp = TextClassifier(train_feature_list, test_data_list_t, test_feature_list_t, train_class_list, test_class_list_t, test_sentiments_list_t, predict_prob=predict_prob, result_file=result_file)
+            test_class_results_tmp,test_sentiments_results_tmp = TextClassifier(classifiers, test_data_list_t, test_feature_list_t, test_class_list_t, test_sentiments_list_t, predict_prob=predict_prob, result_file=result_file)
             test_class_results_all = dict(Counter(test_class_results_tmp)+Counter(test_class_results_all))
             test_sentiments_results_all = dict(Counter(test_sentiments_results_tmp)+Counter(test_sentiments_results_all))
 

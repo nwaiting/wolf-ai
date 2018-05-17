@@ -22,8 +22,10 @@
 
 namespace fasttext {
 
-constexpr int32_t FASTTEXT_VERSION = 12; /* Version 1b */
-constexpr int32_t FASTTEXT_FILEFORMAT_MAGIC_INT32 = 793712314;
+//constexpr int32_t FASTTEXT_VERSION = 12; /* Version 1b */
+    const int32_t FASTTEXT_VERSION = 12; /* Version 1b */
+//constexpr int32_t FASTTEXT_FILEFORMAT_MAGIC_INT32 = 793712314;
+    const int32_t FASTTEXT_FILEFORMAT_MAGIC_INT32 = 793712314;
 
 FastText::FastText() : quant_(false) {}
 
@@ -355,14 +357,14 @@ void FastText::cbow(Model& model, real lr,
     bow.clear();
     // 以当前词为中心，将左右 boundary 个词加入 input
     for (int32_t c = -boundary; c <= boundary; c++) {
-      // 当然，不能数组越界
       if (c != 0 && w + c >= 0 && w + c < line.size()) {
         // 实际被加入 input 的不止是词本身，还有词的 word n-gram
+        //将上下文的子字符串加入到包中
         const std::vector<int32_t>& ngrams = dict_->getSubwords(line[w + c]);
         bow.insert(bow.end(), ngrams.cbegin(), ngrams.cend());
       }
     }
-    // 完成一次 CBOW 更新，根据上下文更新
+    //用所有词的子串预测中心词，更新参数
     model.update(bow, line[w], lr);
   }
 }
@@ -381,6 +383,7 @@ void FastText::skipgram(Model& model, real lr,
     for (int32_t c = -boundary; c <= boundary; c++) {
       if (c != 0 && w + c >= 0 && w + c < line.size()) {
         //ngram作为上下文
+        // 通过 ngrams 计算 line[w] 的表示，通过逻辑回归优化 ngrams 的嵌入表示
         model.update(ngrams, line[w + c], lr);
       }
     }
@@ -743,11 +746,10 @@ void FastText::train(const Args args) {
   // 输出层无论是用负采样，层次 softmax，还是普通 softmax，对于每种可能的输出，都有一个 dim 维的参数向量与之对应
   // 当 args_->model == model_name::sup 时，训练分类器，所以输出的种类是标签总数 dict_->nlabels()
   if (args_->model == model_name::sup) {
-    //分类中即为label向量
+    //分类：label数量 * 词向量维度
     output_ = std::make_shared<Matrix>(dict_->nlabels(), args_->dim);
   } else {
-    //对于训练词向量来说就是上下文向量
-    //训练的是词向量，输出种类就是词的种类 dict_->nwords()
+    //词向量：词数量 * 词向量维度
     output_ = std::make_shared<Matrix>(dict_->nwords(), args_->dim);
   }
   output_->zero();

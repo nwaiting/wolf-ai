@@ -62,6 +62,7 @@ void Dictionary::add(const std::string& w) {
 }
 
 int32_t Dictionary::nwords() const {
+  //单词的个数
   return nwords_;
 }
 
@@ -70,6 +71,7 @@ int32_t Dictionary::nlabels() const {
 }
 
 int64_t Dictionary::ntokens() const {
+  //总的个数 = 词数 + label数
   return ntokens_;
 }
 
@@ -180,7 +182,10 @@ void Dictionary::computeSubwords(const std::string& word,
   }
 }
 
-//字符级的ngram
+// 该函数仅被 Dictionary::getSubword（...）调用
+// Dictionary::getSubword（...）被用于训练词向量模型(skipgram和cbow）
+// 、输出词向量（print-word-vectors和print-sentence-vectors）和计算词相似性（nn和analogies）
+// ！！！也就是说这个函数计算的ngram与分类不相关！！！
 void Dictionary::computeSubwords(const std::string& word,
                                std::vector<int32_t>& ngrams) const {
   for (size_t i = 0; i < word.size(); i++) {
@@ -390,7 +395,7 @@ int32_t Dictionary::getLine(std::istream& in,
     if (wid < 0) continue;
 
     ntokens++;
-    //确定是单词还是标签，如果是单词且没有被subsampling掉
+    //确定是单词还是标签，如果是单词且没有被subsampling掉，discard 会计算概率过滤掉一些词
     if (getType(wid) == entry_type::word && !discard(wid, uniform(rng))) {
       //存入单词id
       words.push_back(wid);

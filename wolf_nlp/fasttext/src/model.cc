@@ -16,9 +16,14 @@
 
 namespace fasttext {
 
+/*
 constexpr int64_t SIGMOID_TABLE_SIZE = 512;
 constexpr int64_t MAX_SIGMOID = 8;
 constexpr int64_t LOG_TABLE_SIZE = 512;
+*/
+    const int64_t SIGMOID_TABLE_SIZE = 512;
+    const int64_t MAX_SIGMOID = 8;
+    const int64_t LOG_TABLE_SIZE = 512;
 
 Model::Model(
     std::shared_ptr<Matrix> wi,
@@ -53,7 +58,8 @@ void Model::setQuantizePointer(std::shared_ptr<QMatrix> qwi,
   }
 }
 
-//逻辑回归步先计算X^Tθ，然后计算ð(X^Tθ) ，然后计算误差lr * (label - score) ，接着根据 grad + alpha * Out 去更新梯度，然后更新 Haffman 树节点的权重向量θ；最后根据预测正例还是反例返回负指数损失
+//逻辑回归步先计算X^Tθ，然后计算ð(X^Tθ) ，然后计算误差lr * (label - score) ，接着根据 grad + alpha * Out 去更新梯度，
+//然后更新 Haffman 树节点的权重向量θ；最后根据预测正例还是反例返回负指数损失
 real Model::binaryLogistic(int32_t target, bool label, real lr) {
   // 将 hidden_ 和参数矩阵的第 target 行做内积，并计算 sigmoid，逻辑回归
   real score = sigmoid(wo_->dotRow(hidden_, target));
@@ -64,7 +70,7 @@ real Model::binaryLogistic(int32_t target, bool label, real lr) {
   //更新梯度
   grad_.addRow(*wo_, target, alpha);
   //Loss 对于 LR 参数的梯度累加到 wo_ 的对应行上
-  //更新 haffman 节点的参数向量
+  //更新target对应的行参数
   wo_->addRow(hidden_, target, alpha);
   // LR 的 Loss，负指数损失，
   if (label) {
@@ -82,7 +88,7 @@ real Model::negativeSampling(int32_t target, real lr) {
   for (int32_t n = 0; n <= args_->neg; n++) {
     // 对于正样本和负样本，分别更新 LR
     if (n == 0) {
-      //正采样
+      //将当前词作为正面例子对target类进行LR训练
       loss += binaryLogistic(target, true, lr);
     } else {
       //负采样args_->neg个
@@ -170,11 +176,12 @@ void Model::computeHidden(const std::vector<int32_t>& input, Vector& hidden) con
       //addRow 的作用是将 wi_ 矩阵的第 *it 列加到 hidden_ 上
       hidden.addRow(*qwi_, *it);
     } else {
+      //子词嵌入 子串加和，然后平均
       hidden.addRow(*wi_, *it);
     }
   }
 
-  // 求和后除以输入词个数，得到均值向量
+  // 求和后除以输入词个数，得到均值向量，每个词是其子串嵌入表示的加和平均
   hidden.mul(1.0 / input.size());
 }
 
@@ -297,7 +304,7 @@ void Model::update(const std::vector<int32_t>& input, int32_t target, real lr) {
   assert(target < osz_);
   if (input.size() == 0) return;
 
-  //对输入的词向量做平均得到hidden向量，和cbow一样，计算映射层值
+  //子串加和平均得到词嵌入表示，对输入的词向量做平均得到hidden向量
   computeHidden(input, hidden_);
   //接下来就是将隐藏层传入输出层计算损失函数:
 
@@ -310,7 +317,7 @@ void Model::update(const std::vector<int32_t>& input, int32_t target, real lr) {
   } else if (args_->loss == loss_name::hs) {
     loss_ += hierarchicalSoftmax(target, lr);
   } else {
-    //文本分类，做softmax，里面会对输出向量更新
+    //文本分类模式使用，做softmax，里面会对输出向量更新
     loss_ += softmax(target, lr);
   }
   //用于真正训练的样例
@@ -322,9 +329,13 @@ void Model::update(const std::vector<int32_t>& input, int32_t target, real lr) {
       //实际上CBOW的调整策略并不严谨。但是因为上下文一般单词不多，所以对CBOW影响不大。当然CBOW也不是完全没道理，
       //可以把CBOW看做是SG的特例。认为上下文中每个单词都是上下文中所有单词的平均
 
+      //在逻辑回归中产生了导数，在文本分类情况下导数向量需要除以子串数量
+
       //梯度平均分配
     grad_.mul(1.0 / input.size());
   }
+
+  //导数直接加到子串向量中
 
   // 反向传播，将 hidden_ 上的梯度传播到 wi_ 上的对应行
 
@@ -347,15 +358,16 @@ void Model::setTargetCounts(const std::vector<int64_t>& counts) {
   }
 }
 
-//负采样的采样表获取
+//通过词频构造负采样表
 void Model::initTableNegatives(const std::vector<int64_t>& counts) {
   real z = 0.0;
   for (size_t i = 0; i < counts.size(); i++) {
     z += pow(counts[i], 0.5);
   }
   for (size_t i = 0; i < counts.size(); i++) {
-    //c值
     real c = pow(counts[i], 0.5);
+
+    //每个词在采样表中数量跟词频开方成正比
 
     //0,0,0,1,1,1,1,1,1,1,2,2类似这种有序的，0表示第一个词，占个坑，随机读取时，越多则概率越大。所有词的随机化
     //最多重复次数，若是c/z足够小，会导致重复次数很少，最小是1次

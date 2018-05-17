@@ -10,6 +10,7 @@
 #pragma once
 
 #include <fstream>
+#include <stdint.h>
 
 #if defined(__clang__) || defined(__GNUC__)
 # define FASTTEXT_DEPRECATED(msg) __attribute__((__deprecated__(msg)))
