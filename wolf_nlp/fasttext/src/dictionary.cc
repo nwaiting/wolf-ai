@@ -272,6 +272,7 @@ void Dictionary::readFromFile(std::istream& in) {
   threshold(args_->minCount, args_->minCountLabel);
   
   //与 word2vec 中处理高频和低频单词一样，以一定的概率过滤掉单词
+  //初始化采样概率表
   initTableDiscard();
   
   //用于得到单词的subword
