@@ -20,6 +20,9 @@ TensorFlow源码：
 ML基础算法：
     https://github.com/Jack-Cherish  机器学习基础算法python代码实现以及详解
 
+自然语言处理之深度学习：
+    https://zh.gluon.ai/chapter_natural-language-processing/index.html  深度学习之自然语言处理
+
 NLP相关：
     http://mindhacks.cn/2008/09/21/the-magical-bayesian-method/  数学之美番外篇：平凡而又神奇的贝叶斯方法
     http://www.omegaxyz.com/2017/12/26/python_check_word/   Python机器学习与拼写检查器
