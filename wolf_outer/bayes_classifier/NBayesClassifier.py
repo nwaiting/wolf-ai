@@ -179,8 +179,8 @@ def show(test_sentiments_results, test_class_results):
     tick_l = [i.replace('tag-', '') for i in tick_l if i]
     print('tick_l ', tick_l)
     plt.bar(range(len(test_class_results)), test_class_results.values(), color='rgb', tick_label=tick_l)
-    plt.savefig('{0}.{1}'.format(result_file, 'classes.jpg'))
     plt.title(u'唐诗宋词建筑分类分布图')
+    plt.savefig('{0}.{1}'.format(result_file, 'classes.jpg'))
     plt.show()
 
 
@@ -218,24 +218,25 @@ if __name__ == '__main__':
     if feature_words:
         train_feature_list, test_feature_list = TextFeatures(train_data_list, test_data_list, feature_words)
         range_big = len(test_data_list)
-        range_end = int(range_big/10000)
+        num_per = 10000
+        range_end = int(range_big/num_per)
         classifiers = TextTrain(train_feature_list, train_class_list)
         for i in range(range_end + 1):
-            print('classifier {0} ~ {1}'.format(10000*i, 10000*(i+1)))
+            print('classifier {0} ~ {1}'.format(num_per*i, num_per*(i+1)))
             test_data_list_t = []
             test_feature_list_t = []
             test_class_list_t = []
             test_sentiments_list_t = []
             if i == range_end:
-                test_data_list_t = test_data_list[10000*i:]
-                test_feature_list_t = test_feature_list[10000*i:]
-                test_class_list_t = test_class_list[10000*i:]
-                test_sentiments_list_t = test_sentiments_list[10000*i:]
+                test_data_list_t = test_data_list[num_per*i:]
+                test_feature_list_t = test_feature_list[num_per*i:]
+                test_class_list_t = test_class_list[num_per*i:]
+                test_sentiments_list_t = test_sentiments_list[num_per*i:]
             else:
-                test_data_list_t = test_data_list[10000*i:10000*(i+1)]
-                test_feature_list_t = test_feature_list[10000*i:10000*(i+1)]
-                test_class_list_t = test_class_list[10000*i:10000*(i+1)]
-                test_sentiments_list_t = test_sentiments_list[10000*i:10000*(i+1)]
+                test_data_list_t = test_data_list[num_per*i:num_per*(i+1)]
+                test_feature_list_t = test_feature_list[num_per*i:num_per*(i+1)]
+                test_class_list_t = test_class_list[num_per*i:num_per*(i+1)]
+                test_sentiments_list_t = test_sentiments_list[num_per*i:num_per*(i+1)]
 
             test_class_results_tmp,test_sentiments_results_tmp = TextClassifier(classifiers, test_data_list_t, test_feature_list_t, test_class_list_t, test_sentiments_list_t, predict_prob=predict_prob, result_file=result_file)
             test_class_results_all = dict(Counter(test_class_results_tmp)+Counter(test_class_results_all))
