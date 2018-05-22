@@ -20,6 +20,9 @@ TensorFlow源码：
 ML基础算法：
     https://github.com/Jack-Cherish  机器学习基础算法python代码实现以及详解
 
+李航统计学习算法实现及详解：
+    https://github.com/WenDesi/lihang_book_algorithm    李航老师的统计算法代码详解
+
 自然语言处理之深度学习：
     https://zh.gluon.ai/chapter_natural-language-processing/index.html  深度学习之自然语言处理
 
