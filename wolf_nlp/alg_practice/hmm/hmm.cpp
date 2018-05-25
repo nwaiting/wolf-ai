@@ -5,6 +5,10 @@
 #include <algorithm>
 using namespace std;
 
+/*
+    参考：https://en.wikipedia.org/wiki/Viterbi_algorithm#Example
+*/
+    
 class HMM
 {
 public:
