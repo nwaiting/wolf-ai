@@ -1,44 +1,48 @@
 
-tensorflow 架构分析：
-    https://www.jianshu.com/p/a5574ebcdeab  TensorFlow架构与设计：概述 原文：刘光聪·简书
-    http://www.cnblogs.com/ningskyer/articles/6481902.html  TensorFlow 架构与设计-编程模型【转】 原文：刘光聪·简书
-    https://www.jianshu.com/u/49d1f3b7049e 刘光聪·简书 个人主页
-    http://www.cnblogs.com/ningskyer/articles/6481898.html TensorFlow 架构与设计-四大组件【转】 原文：刘光聪·简书
-    http://www.tensorfly.cn/tfdoc/how_tos/overview.html TensorFlow的中文社区
+深度学习相关：
+    tensorflow 架构分析：
+        https://www.jianshu.com/p/a5574ebcdeab  TensorFlow架构与设计：概述 原文：刘光聪·简书
+        http://www.cnblogs.com/ningskyer/articles/6481902.html  TensorFlow 架构与设计-编程模型【转】 原文：刘光聪·简书
+        https://www.jianshu.com/u/49d1f3b7049e 刘光聪·简书 个人主页
+        http://www.cnblogs.com/ningskyer/articles/6481898.html TensorFlow 架构与设计-四大组件【转】 原文：刘光聪·简书
+        http://www.tensorfly.cn/tfdoc/how_tos/overview.html TensorFlow的中文社区
 
-    http://www.cnblogs.com/libinggen/p/7399339.html 学习笔记TF044:TF.Contrib组件、统计分布、Layer、性能分析器tfprof
+        http://www.cnblogs.com/libinggen/p/7399339.html 学习笔记TF044:TF.Contrib组件、统计分布、Layer、性能分析器tfprof
 
-    https://www.w3cschool.cn/tensorflow_python/tensorflow_python-3szt2c8q.html    TensorFlow全面的中文文档
+        https://www.w3cschool.cn/tensorflow_python/tensorflow_python-3szt2c8q.html    TensorFlow全面的中文文档
 
-TensorFlow源码：
-    http://gonewithgt.github.io/2017/04/20/Tensorflow%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/  Tensorflow源码解析
-    https://github.com/yao62995/tensorflow   图解tensorflow 源码
+    TensorFlow源码：
+        http://gonewithgt.github.io/2017/04/20/Tensorflow%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/  Tensorflow源码解析
+        https://github.com/yao62995/tensorflow   图解tensorflow 源码
 
-    ** 源码解析作者博客
-    http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/  Tensorflow常用函数、博客资料、源码及应用
+        ** 源码解析作者博客
+        http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/  Tensorflow常用函数、博客资料、源码及应用
 
-ML基础算法：
-    https://github.com/Jack-Cherish  机器学习基础算法python代码实现以及详解
+ML学习相关：
+    ML基础算法：
+        https://github.com/Jack-Cherish  机器学习基础算法python代码实现以及详解
 
-李航统计学习算法实现及详解：
-    https://github.com/WenDesi/lihang_book_algorithm    李航老师的统计算法代码详解
+    SVM详细介绍：
+        https://www.zhihu.com/question/21094489?answer_deleted_redirect=true    五岁小孩也能看懂的SVM
 
-自然语言处理之深度学习：
-    https://zh.gluon.ai/chapter_natural-language-processing/index.html  深度学习之自然语言处理
+    李航统计学习算法实现及详解：
+        https://github.com/WenDesi/lihang_book_algorithm    李航老师的统计算法代码详解
 
 NLP相关：
-    http://mindhacks.cn/2008/09/21/the-magical-bayesian-method/  数学之美番外篇：平凡而又神奇的贝叶斯方法
-    http://www.omegaxyz.com/2017/12/26/python_check_word/   Python机器学习与拼写检查器
+    自然语言处理之深度学习：
+        https://zh.gluon.ai/chapter_natural-language-processing/index.html  深度学习之自然语言处理
 
-NLP的相关：
-    http://www.jthinking.com/news/all/detail/17411.html  回望2017，基于深度学习的NLP研究大盘点
+    NLP相关：
+        http://mindhacks.cn/2008/09/21/the-magical-bayesian-method/  数学之美番外篇：平凡而又神奇的贝叶斯方法
+        http://www.omegaxyz.com/2017/12/26/python_check_word/   Python机器学习与拼写检查器
+
+    NLP的相关：
+        http://www.jthinking.com/news/all/detail/17411.html  回望2017，基于深度学习的NLP研究大盘点
 
 其他：
     http://www.funnyai.com/article/view_article.php?id=7754489  推荐文章系列
     https://baijia.baidu.com/s?id=1589819872838791110&wfr=pc&fr=ch_lst&utm_source=tuicool&utm_medium=referral  AlphaGo Zero用它来调参？「高斯过程」到底有何过人之处？
 
-
-其他开源项目介绍：
     https://draveness.me/bigtable-leveldb 浅析 Bigtable 和 LevelDB 的实现
     https://draveness.me/index  浅析 Bigtable 和 LevelDB 的实现 作者站点
 

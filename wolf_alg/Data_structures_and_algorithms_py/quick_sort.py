@@ -18,7 +18,7 @@ def qsort(d_list, left, right):
             r -= 1
         while d_list[l] <= key and l < r:
             l += 1
-        print d_list, l, r, left, right
+        print (d_list, l, r, left, right)
         d_list[l], d_list[r] = d_list[r], d_list[l]
     d_list[left], d_list[l] = d_list[l], d_list[left]
     qsort(d_list, left, l - 1)
@@ -54,7 +54,7 @@ def qsort_middle(data_list, left, right):
             lp += 1
         while rp > lp and data_list[rp] >= key:
             rp -= 1
-        print data_list, lp, rp, left, right, key_index
+        print (data_list, lp, rp, left, right, key_index)
         data_list[lp], data_list[rp] = data_list[rp], data_list[lp]
     qsort_middle(data_list, left, key_index - 1)
     qsort_middle(data_list, key_index + 1, right)
@@ -69,4 +69,4 @@ def quick_sort(data_list):
 
 if __name__ == "__main__":
     data_list = [44678, 2, 4676, 67868, 4546, 464, 8, 56, 67, 676]
-    print quick_sort(data_list)
+    print (quick_sort(data_list))
