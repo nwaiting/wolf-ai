@@ -112,7 +112,7 @@ public:
         for (auto &it : V[V.size() - 1]) {
             if (it.second.p_ > max_prob){
                 max_prob = it.second.p_;
-
+                max_prob_state_pre = it.second.pre_s_;
             }
         }
 
