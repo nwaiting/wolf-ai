@@ -19,7 +19,10 @@
         http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/  Tensorflow常用函数、博客资料、源码及应用
 
         详细的深度学习资料：
-        https://deeplearning4j.org/cn/lstm      
+        https://deeplearning4j.org/cn/lstm
+
+        一个c++11开发的word2vec:
+        https://github.com/jdeng/word2vec
 
 ML学习相关：
     ML基础算法：

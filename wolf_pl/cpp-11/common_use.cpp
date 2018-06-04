@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <inttypes.h>
+#include <numeric>
 
 using namespace std;
 
@@ -51,12 +52,58 @@ void func2() {
     }
 }
 
+/*
+    iota(begin,end,start); 从start开始递增加1
+    accumulate(begin, end, start); 从start开始累加到end，然后在加上start
+    itoa();从int转char
+*/
+
+struct Functor
+{
+    int operator() (int a, int b)
+    {
+        return a + b;
+    }
+};
+
+void func3()
+{
+    vector<int32_t> gem(10, 0);
+    for (auto it : gem){
+        cout << it << " ";
+    }
+    cout << endl;
+
+    std::iota(gem.begin(), gem.end(), -1);
+    for (auto it:gem) {
+        cout << it << " ";
+    }
+    cout << endl;
+
+    //方法1
+    int32_t total = std::accumulate(gem.begin(), gem.end(), 10);
+    cout << "total1 " << total << endl;
+
+    //方法2
+    total = std::accumulate(gem.begin(), gem.end(), 10, plus<int32_t>());
+    cout << "total2 " << total << endl;
+
+    //方法3
+    total = std::accumulate(gem.begin(), gem.end(), 10, Functor());
+    cout << "total3 " << total << endl;
+
+    //方法4 lambda
+    total = std::accumulate(gem.begin(), gem.end(), 10, [](int a, int b) -> int {return a + b; });
+    cout << "total4 " << total << endl;
+}
 
 int main()
 {
     //func1();
 
-    func2();
+    //func2();
+
+    func3();
 
     cin.get();
     return 0;
