@@ -11,12 +11,15 @@ from sklearn.linear_model.logistic import LogisticRegression, LogisticRegression
 # 见 D:\opensource\scrapy-work\wolf_nlp\算法学习笔记\NLP汉语自然语言处理原理与实践-读书笔记/20180424-bayes.md
 from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
 # 会出现共线性问题
+# 重复的词，多项式（出现多次），伯努利（出现1次），混合模型（计算句子概率时计算1次，统计时统计多次）
 
-#降维算法 t-SNE
+#降维算法 t-SNE PCA
+# tsne保留下的属性信息，更具代表性，也即最能体现样本间的差异
+# tsne运行极慢，PCA则相对较快
 from sklearn.manifold import TSNE
-ts=TSNE(2)
-reduced_vec=ts.fit_transform()
-plt.show(reduced_vec)
+from sklearn.decomposition import PCA
+data_pca = PCA(n_components=50).fit_transform(data)
+data_pca_tsne = TSNE(n_components=2).fit_transform(data_pca)
 
 #构建词袋模型
 from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer,TfidfTransformer

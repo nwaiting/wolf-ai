@@ -59,10 +59,17 @@ class Bayes(object):
         self.total = sum(map(lambda x: self.d[x].getsum(), self.d.keys()))
 
     def classify(self, x):
+        """
+            获取x在哪一类中出现的概率最大
+        """
         tmp = {}
+        #遍历每个分类标签
         for k in self.d:
+            #获取每个分类标签下的总词数和所有标签总词数，求对数(某类标签下的总词数/所有标签总词数)
             tmp[k] = log(self.d[k].getsum()) - log(self.total)
             for word in x:
+                #获取每个单词出现的频率log[(某标签下的总词数/所有标签总词数)*单词出现频率]
+                #如果需要分类的词在k中出现越大，那么tmp[k]越大
                 tmp[k] += log(self.d[k].freq(word))
         ret, prob = 0, 0
         for k in self.d:
