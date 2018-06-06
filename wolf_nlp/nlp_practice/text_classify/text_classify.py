@@ -70,7 +70,7 @@ def cal_tfidf():
         ngram_range: 取ngram的范围
     """
     X_test = ["我 来到 网易 公司"]
-    vectorizer = TfidfVectorizer()
+    vectorizer = TfidfVectorizer(max_features=1000, stop_words=None)
     # 用train_corpus数据来fit
     vectorizer.fit(corpus)
     # 得到tfidf矩阵

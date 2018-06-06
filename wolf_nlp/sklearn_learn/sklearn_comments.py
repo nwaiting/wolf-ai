@@ -23,8 +23,20 @@ data_pca_tsne = TSNE(n_components=2).fit_transform(data_pca)
 
 #构建词袋模型
 from sklearn.feature_extraction.text import TfidfVectorizer,CountVectorizer,TfidfTransformer
-vectorizer = CountVectorizer(max_features=1000)
+vectorizer = CountVectorizer(max_features=1000, ngram_range=(1, 2, 3))  #单个词、2元词组、3元词组全部获取，生成词袋模型
 train_data_features = vectorizer.fit_transform().toarray()  #转成词袋模型进行编码
+
+#数据预处理
+#数据的幅度缩放 标准化
+from sklearn.preprocessing import MinMaxScaler,StandardScaler,scale
+#独热向量编码
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import minmax_scale
+minmax_scale.fit_transform()
+
+#特征选择
+#SelectKBest：选出k个， SelectPercentile：选出百分比
+from sklearn.feature_selection import SelectKBest, SelectPercentile, GenericUnivariateSelect,RFE
 
 #随机森林
 #基于树的模型 不适合用one-hot编码、bag-of-words编码
