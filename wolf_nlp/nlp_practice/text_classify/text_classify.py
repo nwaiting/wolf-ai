@@ -24,63 +24,73 @@ def cal_tfidf():
         TfidfVectorizer就是可以把CountVectorizer、TfidfTransformer合并起来，直接计算tfidf值
         gensim的corpora和models也有类似的功能
     """
+    inner_flag = 2
     corpus = ["我 来到 北京 清华大学",
                 "他 来到 了 网易 杭研 大厦",
                 "小明 硕士 毕业 与 中国 科学院",
                 "我 爱 北京 天安门"]
-    vectorizer = CountVectorizer() #将文本中的词转换为词频矩阵，矩阵a[i][j]表示j词在i类文本下的词频
-    vecs = vectorizer.fit_transform(corpus) #计算词频矩阵
-    #统计出所有的词频
-    print(vectorizer.get_feature_names())
-    #['中国', '北京', '大厦', '天安门', '小明', '来到', '杭研', '毕业', '清华大学', '硕士', '科学院', '网易']
+    if inner_flag == 0:
+        vectorizer = CountVectorizer() #将文本中的词转换为词频矩阵，矩阵a[i][j]表示j词在i类文本下的词频
+        vecs = vectorizer.fit_transform(corpus) #计算词频矩阵
+        #统计出所有的词频
+        print(vectorizer.get_feature_names())
+        #['中国', '北京', '大厦', '天安门', '小明', '来到', '杭研', '毕业', '清华大学', '硕士', '科学院', '网易']
 
-    # 可以看到所有文本的关键字和其位置
-    print(vectorizer.vocabulary_)
-    # {'来到': 5, '北京': 1, '清华大学': 8, '网易': 11, '杭研': 6, '大厦': 2, '小明': 4, '硕士': 9, '毕业': 7, '中国': 0, '科学院': 10, '天安门': 3}
+        # 可以看到所有文本的关键字和其位置
+        print(vectorizer.vocabulary_)
+        # {'来到': 5, '北京': 1, '清华大学': 8, '网易': 11, '杭研': 6, '大厦': 2, '小明': 4, '硕士': 9, '毕业': 7, '中国': 0, '科学院': 10, '天安门': 3}
 
-    print(vecs.toarray()) #计算出词袋矩阵
-    """
-    [[0 1 0 0 0 1 0 0 1 0 0 0]
-     [0 0 1 0 0 1 1 0 0 0 0 1]
-     [1 0 0 0 1 0 0 1 0 1 1 0]
-     [0 1 0 1 0 0 0 0 0 0 0 0]]
-    """
+        print(vecs.toarray()) #计算出词袋矩阵
+        """
+        [[0 1 0 0 0 1 0 0 1 0 0 0]
+         [0 0 1 0 0 1 1 0 0 0 0 1]
+         [1 0 0 0 1 0 0 1 0 1 1 0]
+         [0 1 0 1 0 0 0 0 0 0 0 0]]
+        """
 
-    transformer = TfidfTransformer() #统计每个词的tf-idf权值
-    tfidf = transformer.fit_transform(vecs) #就是tf-idf
+        transformer = TfidfTransformer() #统计每个词的tf-idf权值
+        tfidf = transformer.fit_transform(vecs) #就是tf-idf
 
-    words = vectorizer.get_feature_names() #获取词袋中的所有词
-    weights = tfidf.toarray() #计算出的tf-idf权重
-    print(weights)
-    """
-    [[ 0.          0.52640543  0.          0.          0.          0.52640543       0.          0.          0.66767854  0.          0.          0.        ]
-     [ 0.          0.          0.52547275  0.          0.          0.41428875           0.52547275  0.          0.          0.          0.          0.52547275]
-     [ 0.4472136   0.          0.          0.          0.4472136   0.          0.       0.4472136   0.          0.4472136   0.4472136   0.        ]
-     [ 0.          0.6191303   0.          0.78528828  0.          0.          0.       0.          0.          0.          0.          0.        ]]
-    """
-    for i in range(len(weights)):
-        print('{0} 的tf-idf权值'.format(corpus[i]))
-        for j in range(len(words)):
-            print(words[j],weights[i][j])
-
-
-    """
-        使用TfidfVectorizer直接计算tfidf值
-        max_df,min_df在建立单词表的时候会取df在[max_df,min_df]区间内的单词，使用整数时，表示单词的频次，浮点数表示频率
-        ngram_range: 取ngram的范围
-    """
-    X_test = ["我 来到 网易 公司"]
-    vectorizer = TfidfVectorizer(max_features=1000, stop_words=None)
-    # 用train_corpus数据来fit
-    vectorizer.fit(corpus)
-    # 得到tfidf矩阵
-    tfidf_train = vectorizer.transform(corpus)
-    tfidf_test = vectorizer.transform(X_test)
-    print('get train tfidf：')
-    print(tfidf_train.toarray())
-    print('get test tfidf：')
-    print(tfidf_test.toarray())
-
+        words = vectorizer.get_feature_names() #获取词袋中的所有词
+        weights = tfidf.toarray() #计算出的tf-idf权重
+        print(weights)
+        """
+        [[ 0.          0.52640543  0.          0.          0.          0.52640543       0.          0.          0.66767854  0.          0.          0.        ]
+         [ 0.          0.          0.52547275  0.          0.          0.41428875           0.52547275  0.          0.          0.          0.          0.52547275]
+         [ 0.4472136   0.          0.          0.          0.4472136   0.          0.       0.4472136   0.          0.4472136   0.4472136   0.        ]
+         [ 0.          0.6191303   0.          0.78528828  0.          0.          0.       0.          0.          0.          0.          0.        ]]
+        """
+        for i in range(len(weights)):
+            print('{0} 的tf-idf权值'.format(corpus[i]))
+            for j in range(len(words)):
+                print(words[j],weights[i][j])
+    elif inner_flag == 1:
+        """
+            使用TfidfVectorizer直接计算tfidf值
+            max_df,min_df在建立单词表的时候会取df在[max_df,min_df]区间内的单词，使用整数时，表示单词的频次，浮点数表示频率
+            ngram_range: 取ngram的范围
+        """
+        X_test = ["我 来到 网易 公司"]
+        vectorizer = TfidfVectorizer(max_features=1000, stop_words=None)
+        # 用train_corpus数据来fit
+        vectorizer.fit(corpus)
+        # 得到tfidf矩阵
+        tfidf_train = vectorizer.transform(corpus)
+        tfidf_test = vectorizer.transform(X_test)
+        print('get train tfidf：')
+        print(tfidf_train.toarray())
+        print('get test tfidf：')
+        print(tfidf_test.toarray())
+    elif inner_flag == 2:
+        """
+            使用CountVectorizer统计词频
+        """
+        print('inner_flag 2')
+        countvec = CountVectorizer()
+        countvec_fit = countvec.fit_transform(corpus)
+        word_with_count = zip(countvec.get_feature_names(), countvec_fit.toarray().sum(axis=0))
+        results_sorted = sorted(word_with_count, key=lambda x:x[1], reverse=True)
+        print(results_sorted)
 
 class TextClassify(object):
     def __init__(self):
@@ -177,7 +187,7 @@ class TextCluster(object):
         print(k_means.inertia_)
 
 if __name__ == '__main__':
-    flag = 1
+    flag = 0
     if flag == 0:
         cal_tfidf()
     elif flag == 1:
