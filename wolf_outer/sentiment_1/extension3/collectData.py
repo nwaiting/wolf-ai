@@ -223,7 +223,7 @@ class CollectData():
                     print('Be Caught!')
                     self.logger.error('Be Caught Error!')
                     self.logger.info('url: ' + source_url)
-                    self.logger.info('fileNum: ' + str(fileNum))
+                    #self.logger.info('fileNum: ' + str(fileNum))
                     self.logger.info('page:' + str(i))
                     data = None
                     self.flag = False
