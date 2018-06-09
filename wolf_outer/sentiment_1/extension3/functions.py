@@ -27,7 +27,6 @@ def days_ago(n):
     yest = datetime.now() - timedelta(days=n)
     date = str(yest).split(" ")[0]
     day = date[5:]
-    print(day)
     return day
 
 
@@ -76,5 +75,3 @@ def sleep_how_long(lag_hour, starttime, endtime):
     lag_seconds = lag_hour * 3600
     during = lag_seconds - int(during)
     return during
-
-
