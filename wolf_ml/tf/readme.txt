@@ -45,6 +45,9 @@ NLP相关：
     NLP的相关：
         http://www.jthinking.com/news/all/detail/17411.html  回望2017，基于深度学习的NLP研究大盘点
 
+    训练语言模型工具：
+        https://github.com/kpu/kenlm    推荐的一个训练语言模型的工具
+
 其他：
     http://www.funnyai.com/article/view_article.php?id=7754489  推荐文章系列
     https://baijia.baidu.com/s?id=1589819872838791110&wfr=pc&fr=ch_lst&utm_source=tuicool&utm_medium=referral  AlphaGo Zero用它来调参？「高斯过程」到底有何过人之处？

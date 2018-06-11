@@ -1,6 +1,13 @@
 #coding=utf-8
 
 """
+    python的编程规范中：
+        只有类名为驼峰表达形式，其余都是小写形式
+        大驼峰：第一个字母大写
+        小驼峰：第一个字母小写
+"""
+
+"""
     urllib库的区别：
         在Pytho2.x中使用import urllib2——-对应的，在Python3.x中会使用import urllib.request，urllib.error。
         在Pytho2.x中使用import urllib——-对应的，在Python3.x中会使用import urllib.request，urllib.error，urllib.parse。

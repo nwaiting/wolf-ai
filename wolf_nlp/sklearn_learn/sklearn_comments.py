@@ -69,3 +69,25 @@ model.transform(X)
 
 # panda 处理 csv 和 excel文件
 import pandas as pd
+
+#plt中文显示的问题
+from matplotlib import pyplot as plt
+plt.style.use('ggplot') #设置图片显示的主题样式
+plt.rcParams['font-sans-serif'] = ['SimHei'] #指定默认字体
+plt.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
