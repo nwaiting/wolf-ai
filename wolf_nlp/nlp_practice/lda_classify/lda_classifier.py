@@ -37,15 +37,16 @@ print(orig_topics)
 #猜测概率分布 学习过程
 # 第一步 随机初始化参数 准备学习
 w_i = [] #单词
-i = []
+idxs = [] #总的词的位置
 d_i = [] #文档
 z_i = [] #主题
 counter = 0
 for doc_index,doc in enumerate(docs):
     for word_index,word in enumerate(doc):
         #找到单词在总集合中的位置
+        #print('np.where(np.array(vocab)==word) ', np.where(np.array(vocab)==word))
         w_i.append(np.where(np.array(vocab)==word)[0][0])
-        i.append(counter)
+        idxs.append(counter)
         d_i.append(doc_index)
         #初始化topic分布
         z_i.append(np.random.randint(0,T))
@@ -58,7 +59,7 @@ z_i = np.array(z_i)
 #word-topic 矩阵
 WT = np.zeros((len(vocab), T))
 for idx,word in enumerate(vocab):
-    # 每一个单词下的topic进行计数
+    # 每一个单词下的topic进行计数 每个单词对应的主题分布
     topics = z_i[np.where(w_i==idx)]
     print('topics ', topics)
     for t in range(T):
@@ -67,7 +68,7 @@ for idx,word in enumerate(vocab):
 #doc-topic 矩阵
 DT = np.zeros((D,T))
 for idx,doc in enumerate(docs):
-    #对每个话题，这个句子服从它的次数
+    #对每个话题，这个句子服从它的次数  每个文档对应的主题分布
     topics = z_i[np.where(d_i==idx)]
     for t in range(T):
         DT[idx,t] = sum(topics==t)
@@ -88,7 +89,7 @@ alpha = 1
 beta = 1
 
 for step in range(iters):
-    for current in i:
+    for current in idxs:
         #把D好玩W分别拿出来
         doc_idx = d_i[current]
         word_idx = w_i[current]
@@ -103,7 +104,7 @@ for step in range(iters):
         #对于每一个topic的概率
         prob = prob_word * prob_document
 
-        #更新z 根据概率
+        #更新z 根据概率 根据拟合情况更新参数
         z_i[current] = np.random.choice([0,1], 1, p=prob/prob.sum())[0]
 
         #更新计数器
@@ -117,8 +118,10 @@ for step in range(iters):
 
 #统计
 theta = DT/DT.sum(axis=0)
-#归一
+#归一化
 theta = theta/np.sum(theta, axis=1).reshape(16,1)
+print('theta ', theta)
+print(np.argmax(theta, axis=1))
 #验证 最后分类结果和初始结果的比较
 np.argmax(theta, axis=1) == orig_topics
 

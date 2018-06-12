@@ -16,6 +16,7 @@ pointWordsFilter = lambda s: ''.join(filter(lambda x: x not in pt, s))
 
 def sentiment_analysis(file, pos_prob, word_num):
     dr = pd.read_csv(file, header=None, nrows=None, usecols=[7])
+    dr = dr.dropna() #删除掉空行
     sentiment_map = {}
     cut_all_words = []
     for lines in dr.values:

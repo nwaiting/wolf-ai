@@ -105,9 +105,20 @@ def func5():
     d2 = dict(Counter(d1)+Counter(d2))
     print(d2)
 
+def func6():
+    """
+        一个星（*）：表示接收的参数作为元组来处理
+        两个星（**）：表示接收的参数作为字典来处理
+    """
+    a = [('1',1),('2',2),('3',3)]
+    x,y = zip(*a)  #这里如果不加*的话，就会报错
+    print('x ', x)
+    print('y ', y)
+
 if __name__ == '__main__':
     #func1()
     #func2()
     #func3()
     #func4()
-    func5()
+    #func5()
+    func6()

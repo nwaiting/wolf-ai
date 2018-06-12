@@ -9,10 +9,10 @@ from urllib.parse import quote
 
 def today():
     time = str(datetime.now())
-    # print time
+    print('time ', time)
     date = time.split(" ")[0]
     day = date[5:]
-    # print day
+    print('day ', day)
     return day
 
 
@@ -20,7 +20,7 @@ def yesterday():
     yest = datetime.now() - timedelta(days=1)
     date = str(yest).split(" ")[0]
     day = date[5:]
-    # print day
+    print('day ', day)
     return day
 
 def days_ago(n):
@@ -45,6 +45,7 @@ def create_url_list(list):
           "&luicode=10000011&lfid=106003type%3D1&title=" + country + \
           "&containerid=100103type%3D2%26q%3D" + country + "&page="
         url_list.append(this_url)
+        print('this_url ', this_url)
     return url_list
 
 

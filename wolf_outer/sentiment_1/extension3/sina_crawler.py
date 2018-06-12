@@ -1,5 +1,4 @@
 #coding=utf-8
-from functions import *
 import requests
 import time
 import random
@@ -7,9 +6,83 @@ import os
 import json
 import re
 import xlrd
+from datetime import datetime
+from datetime import timedelta
+from urllib.parse import quote
 
 
-def spider_word(word):
+
+def today():
+    time = str(datetime.now())
+    print('time ', time)
+    date = time.split(" ")[0]
+    day = date[5:]
+    print('day ', day)
+    return day
+
+
+def yesterday():
+    yest = datetime.now() - timedelta(days=1)
+    date = str(yest).split(" ")[0]
+    day = date[5:]
+    print('day ', day)
+    return day
+
+def days_ago(n):
+    yest = datetime.now() - timedelta(days=n)
+    date = str(yest).split(" ")[0]
+    day = date[5:]
+    return day
+
+
+def url_encoding(list):
+    url_word_list = []
+    for country in list:
+        url_word_list.append(quote(country))
+    return url_word_list
+
+
+def create_url_list(list):
+    url_list = []
+    for country in list:
+        this_url = "http://m.weibo.cn/container/getIndex?type=wb&queryVal=" + country + \
+          "&luicode=10000011&lfid=106003type%3D1&title=" + country + \
+          "&containerid=100103type%3D2%26q%3D" + country + "&page="
+        url_list.append(this_url)
+        print('this_url ', this_url)
+    return url_list
+
+
+
+def format_datetime(time):
+    this_date = time.split(' ')[0]
+    this_time = time.split(' ')[1]
+    mon = this_date.split('-')[0]
+    day = this_date.split('-')[1]
+    hor = this_time.split(':')[0]
+    min = this_time.split(':')[1]
+    return datetime(2017, int(mon), int(day), int(hor), int(min))
+
+
+def get_this_endtime_text(content):
+    this_data = content
+    decoded_data = this_data.decode('utf-8')
+    json_data = json.loads(decoded_data)
+    try:
+        this_endtime_text = json_data['data']['cards'][0]['card_group'][-1]['mblog']['created_at']
+    except Exception as e:
+        raise
+    return this_endtime_text
+
+
+def sleep_how_long(lag_hour, starttime, endtime):
+    during = (endtime - starttime).total_seconds()
+    lag_seconds = lag_hour * 3600
+    during = lag_seconds - int(during)
+    return during
+
+
+def spider_word(word, end_dates=2):
     # add header for the crawler
     headers = {'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'}
 
@@ -38,7 +111,8 @@ def spider_word(word):
         initial_page_number = 0  # define start page
         str_initial_page_number = str(initial_page_number)
         exception_count = 0  # exception count
-        end_date = days_ago(2)  # Determine the date of when to end, format [03-30]
+        end_date = days_ago(end_dates)  # Determine the date of when to end, format [03-30]
+        print('end_date ', end_date)
 
         this_end_time = 0
         try:
@@ -67,22 +141,25 @@ def spider_word(word):
                             try:
                                 user_name = item['mblog']['user']['screen_name']
                             except:
-                                pass
+                                print('except user_name ', user_name)
+
                             user_description = None
                             try:
                                 user_description = item['mblog']['user']['description']
                             except:
-                                pass
+                                print('except user_description ', user_description)
+
                             this_end_time = item["mblog"]["created_at"]
                             fd.write("{0},{1},{2},{3},{4},{5},{6},{7}\n".format(id,user_name,user_description,weibo_start_time,"","",src,text).encode('utf-8'))  # write down data
                         except Exception as e:
                             print("error {0}".format(e))
                     total_page_count += 1
 
+                    print('end_date {0}, this_end_time {1}'.format(end_date, this_end_time))
                     if end_date > this_end_time:
                         break
                     else:
-                        time.sleep(random.randint(30, 50))
+                        time.sleep(random.randint(10, 20))
 
                 # This situation happens when there is no weibo exist for the word your try to search
                 # Pleas double check on the web page
@@ -94,12 +171,6 @@ def spider_word(word):
                     exception_count += 1
                     if exception_count > 6:
                         print("ehhhhh! I have failed 5 times for this country, I got to stop really long! 1 hour!")
-
-                        # you can personalize your own report email here
-                        # send an email to you when exception received more than 6 time
-                        error_title = "Error!"
-                        error_report = str(datetime.now())
-                        send_email(user, pwd, recipient, error_title, error_report)
 
                         exception_count = 0  # Set exception count back to 0 and sleep for 1 hour
                         time.sleep(600)
