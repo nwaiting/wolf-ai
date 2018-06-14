@@ -63,7 +63,7 @@ from sklearn.svm import SVC, SVR
 clf = SVC(kernel='rbf', verbose=True)
 clf.fit()
 
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, SVR（regression）
 #嵌入型特征选择
 from sklearn.feature_selection import SelectFromModel
 lsvc = LinearSVC(C=0.01, penalty='l1', dual=False).fit(X,y) #选择l1作为正则化

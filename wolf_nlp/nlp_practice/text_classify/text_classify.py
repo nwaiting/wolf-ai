@@ -24,13 +24,16 @@ def cal_tfidf():
         TfidfVectorizer就是可以把CountVectorizer、TfidfTransformer合并起来，直接计算tfidf值
         gensim的corpora和models也有类似的功能
     """
-    inner_flag = 2
+    inner_flag = 0
     corpus = ["我 来到 北京 清华大学",
                 "他 来到 了 网易 杭研 大厦",
                 "小明 硕士 毕业 与 中国 科学院",
                 "我 爱 北京 天安门"]
     if inner_flag == 0:
         vectorizer = CountVectorizer() #将文本中的词转换为词频矩阵，矩阵a[i][j]表示j词在i类文本下的词频
+        vectorizer.fit(corpus)
+        print(vectorizer.transform(corpus))
+        return
         vecs = vectorizer.fit_transform(corpus) #计算词频矩阵
         #统计出所有的词频
         print(vectorizer.get_feature_names())
