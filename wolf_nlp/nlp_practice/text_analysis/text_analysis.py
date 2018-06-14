@@ -100,11 +100,15 @@ class TextClassifier(object):
             分类器可以自由选择
             特征构造也可以自由选择，比如CountVectorizer或者TfidfVectorizer
         """
+        from sklearn.naive_bayes import MultinomialNB
+        from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
         if not classifier:
             self.classifier = MultinomialNB()
         else:
             self.classifier = classifier
 
+        self.train_data = TfidfVectorizer()
+        self.train_data = CountVectorizer()
 
 if __name__ == '__main__':
     #func1()

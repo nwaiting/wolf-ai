@@ -280,6 +280,14 @@ std::vector<int32_t> FastText::selectEmbeddings(int32_t cutoff) const {
   return idx;
 }
 
+/*
+    支付宝的xNN-xqueeze模型压缩步骤：
+        神经元剪枝(neuron pruning)
+        突触剪枝(synapse pruning)
+        量化(quantization)
+        网络结构变换(network transform)
+        自适应Huffman编码(adaptive Huffman)
+*/
 void FastText::quantize(const Args qargs) {
   if (args_->model != model_name::sup) {
     throw std::invalid_argument(

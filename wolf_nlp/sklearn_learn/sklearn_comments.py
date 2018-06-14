@@ -49,6 +49,10 @@ forest.fit()
 
 #分离训练和测试数据
 from sklearn.cross_validation import train_test_split
+train_test_split(X,y, test_size=0.33, random_state=1234) #random_state随机选取33%样本作为测试集合
+
+#调节超参数的使用方法，会给出一组候选参数，然后进行交叉验证选择最好的一组参数进行建模
+from sklearn.model_selection import GridSearchCV
 
 # 用于保存模型
 from sklearn.externals import joblib
@@ -74,7 +78,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 plt.style.use('ggplot') #设置图片显示的主题样式
 plt.rcParams['font-sans-serif'] = ['SimHei'] #指定默认字体
-plt.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题 
+plt.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题
 
 
 
