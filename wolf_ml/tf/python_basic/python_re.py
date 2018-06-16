@@ -19,8 +19,8 @@ def func1():
     s = 'sdof92034@gmail.com'
     res = re.sub(r'[\w]+@[\.\w]+', '', s)
     print(res) #去除时间  'sdof92034@gmail.com' -> ''
-    
 
+    #英文中去除标点符号等，re.sub(r'[~a-zA-Z]','',text) 将除了a到z和A到Z以外的词替换成空
 
 
 if __name__ == '__main__':

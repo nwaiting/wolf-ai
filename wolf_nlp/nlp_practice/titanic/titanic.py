@@ -224,10 +224,10 @@ def titanic(train_file, test_file):
     from sklearn import preprocessing
     scaler = preprocessing.StandardScaler()
     age_scaler_param = scaler.fit([df['Age']])
-    df['Age_scaled'] = scaler.fit_transform(df['Age'], age_scaler_param)
+    df['Age_scaled'] = scaler.fit_transform([df['Age']], age_scaler_param)
     fare_scale_param = scaler.fit([df['Fare']])
-    df['Fare'] = scaler.fit_transform([df['Fare']], fare_scale_param)
-    print(df.head())
+    df['Fare_scaled'] = scaler.fit_transform([df['Fare']], fare_scale_param)
+    #print(df.head())
 
 
 

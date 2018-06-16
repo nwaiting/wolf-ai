@@ -45,8 +45,6 @@ from sklearn.ensemble import RandomForestClassifier
 forest = RandomForestClassifier(n_estimators=100)
 forest.fit()
 
-#英文中去除标点符号等，re.sub(r'[~a-zA-Z]','',text) 将除了a到z和A到Z以外的词替换成空
-
 #分离训练和测试数据
 from sklearn.cross_validation import train_test_split
 train_test_split(X,y, test_size=0.33, random_state=1234) #random_state随机选取33%样本作为测试集合
@@ -69,6 +67,25 @@ from sklearn.feature_selection import SelectFromModel
 lsvc = LinearSVC(C=0.01, penalty='l1', dual=False).fit(X,y) #选择l1作为正则化
 model = SelectFromModel(lsvc, prefit=True)
 model.transform(X)
+
+"""
+数据归一化、标准化、正则化
+    scale或者StandardScaler 两个方法进行标准化，去除均值和方差缩放
+        公式为：(X-mean)/std  计算时对每个属性/每列分别进行
+        将数据按期属性（按列进行）减去其均值，并处以其方差。得到的结果是，对于每个属性/每列来说所有数据都聚集在0附近，方差为1。
+
+    MinMaxScaler缩放数据到指定区间内（通常在0-1区间）
+        目的和作用：
+            对于方差非常小的属性可以增强其稳定性
+            维持稀疏矩阵中为0的条目
+
+    Normalizer或者normalize，正则化的过程就是将每个样本缩放到单位范数（每个样本的范数为1），如果后面要使用如二次型（点积）或者其他核方法计算两个样本之间的相似度这个方法会很有用
+    Normalizer主要思想：对每个样本计算其p范数，然后对给样本中每个元素除以该范数，这样处理的结果是使得每个处理后样本p范数等于1
+    改方法主要应用于文本分类和聚类中。例如对于两个tf-idf向量的l2-norm进行点积，就可以得到这两个向量的余弦相似性
+
+"""
+
+from sklearn.preprocessing import scale, StandardScaler, MinMaxScaler, Normalizer, normalize
 
 
 # panda 处理 csv 和 excel文件

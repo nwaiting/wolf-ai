@@ -24,6 +24,10 @@
         一个c++11开发的word2vec:
         https://github.com/jdeng/word2vec
 
+掘金翻译计划：
+    https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
+    https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化
+
 ML学习相关：
     ML基础算法：
         https://github.com/Jack-Cherish  机器学习基础算法python代码实现以及详解
