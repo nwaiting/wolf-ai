@@ -88,6 +88,81 @@ model.transform(X)
 from sklearn.preprocessing import scale, StandardScaler, MinMaxScaler, Normalizer, normalize
 
 
+"""
+    fit和fit_transform区别：
+        fit只是数据拟合
+        fit_transform特征化
+
+        fit(X)：传一个参数是无监督的学习算法，如降维、特征提取、标准化
+        fit(X,y)：传两个参数是有监督学习
+"""
+
+"""
+    网格搜索参数详解：
+        sklearn.model_selection.GridSearchCV(estimator, param_grid, scoring=None, fit_params=None,n_jobs=1, iid=True,
+        refit=True, cv=None, verbose=0, pre_dispatch=‘2*n_jobs’, error_score=’raise’, return_train_score=’warn’)
+        参数：
+            estimator：分类器
+            param_grid：需要最优化的参数的取值
+                    pagram_grid = {
+                            'learning_rate':[0.01,0.02,0.05,0.1],
+                            'n_estimators':[1000,2000,3000,4000,5000], #树的数量
+                            'num_leaves':[128,1024] #树的深度 7,10
+                        }
+            scoring：模型评价标准，默认为None，这时需要使用score函数，或者如scoring='roc_auc'，
+                    根据所选模型不同，评价标准不同，字符串函数名，或者是可条用对象
+                    需要其函数签名如：scorer(estimator,X,y)；如果是None，则使用estimator的误差估计函数
+            verbose=0，scoring=None
+                    verbose：日志冗长度，0：不输出训练过程，1：偶尔输出，>1：对每个子模型都输出
+            pre_dispatch:
+                    指定总共分发的并行任务数，当n_job大于1时，数据将在每个运行点进行复制，这可能导致OOM，而设置pre_dispatch参数，则可以预先划分总共的job数量
+                    是数据最多被复制pre_dispatch次
+            return_train_score:
+                    如果为False，cv_results_属性将不包括训练分数
+            refit：
+                    默认为True，程序将会以交叉验证训练集得到的最佳参数，重新对所有可用的训练集和开发集进行，作为最终用于性能评估的最佳模型参数。即在搜索参数结束后，用最佳参数结果再次fit一遍全部数据集
+            iid：
+                    默认为True，为True时，默认为各个样本fold概率分布一直，误差估计为所有样本之和，而非各个fold的平均
+            cv：
+                    交叉验证参数，默认None，使用三折交叉验证，指定fold数量，默认为3，也可以是yield训练/测试数据的生成器
+
+
+            gsearch1 = sklearn.model_selection.GridSearchCV()
+            gsearch1.fit(X,y)
+            gsearch1.grid_scores_,
+            gsearch1.best_params_,
+            gsearch1.best_score_
+
+    如果有transform，使用Pipeline简化系统搭建流程，将transform与分类器串联起来
+        pipeline= Pipeline([("features", combined_features), ("svm", svm)])
+        param_grid= dict(features__pca__n_components=[1, 2, 3],
+                          features__univ_select__k=[1,2],
+                          svm__C=[0.1, 1, 10])
+
+        grid_search= GridSearchCV(pipeline, param_grid=param_grid, verbose=10)
+        grid_search.fit(X,y)
+        print(grid_search.best_estimator_)
+
+"""
+
+"""
+    patsy是一个Python包，用于描述统计模型（statistical models）（特别是，线性模型或者有线性成分的模型），同时也用于构建设计矩阵（design matrices）
+        from patsy import dmatrices
+        举例来说，如果我们有变量y和变量 x，a，b。我们想求出变量y与变量x,a,b之间的回归关系，其中变量a和b之间存在着交互作用，
+        则公式可写为：patsy.dmatrices("y ~ x + a + b + a:b", data)
+"""
+
+
+
+
+
+
+
+
+
+
+
+
 # panda 处理 csv 和 excel文件
 import pandas as pd
 
@@ -97,7 +172,9 @@ plt.style.use('ggplot') #设置图片显示的主题样式
 plt.rcParams['font-sans-serif'] = ['SimHei'] #指定默认字体
 plt.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题
 
-
+#用于显示图例，有多个axes图例时，把他们放在一起
+#参数：best 自适应模式
+plt.legend(loc='best')
 
 
 
