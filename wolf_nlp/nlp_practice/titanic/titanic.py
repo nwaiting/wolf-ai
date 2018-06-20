@@ -635,15 +635,18 @@ def titanic(train_file, test_file):
     #分割测试和训练集
     X_train,X_test,Y_train,Y_test = train_test_split(x_train, y_train, test_size=0.2, random_state=int(time.time()))
     #初始化分类器
-    forest_clf = RandomForestClassifier(n_estimators=500, criterion="entropy", max_depth=5, min_samples_split=1,min_samples_leaf=1,
+    forest_clf = RandomForestClassifier(n_estimators=500, criterion="entropy", max_depth=5, min_samples_split=2, min_samples_leaf=1,
                         max_features="auto", bootstrap=False, oob_score=False, n_jobs=1, random_state=int(time.time()), verbose=0)
+
     ### grid search 找到最好的参数
+    # 可以从 print('estimator.get_params().keys() ', forest_clf.get_params().keys()) 获取需要哪些参数
     param_grid = {
-            'learning_rate':[0.01,0.02,0.05,0.1],
-            'n_estimators':[1000,2000,3000,4000,5000],
-            'num_leaves':[128,1024]
+            'clf__n_estimators':[1000,2000,3000,4000,5000],
+            'clf__max_depth':[5,6,7,8,9,10]
         }
     pipeline = Pipeline([('clf', forest_clf)])
+    # 参考 https://stackoverflow.com/questions/34889110/random-forest-with-gridsearchcv-error-on-param-grid
+    # print('pipeline.get_params().keys() ', pipeline.get_params().keys()) 获取param_grid的参数
     strati_cv = StratifiedShuffleSplit(n_splits=10, test_size=0.2, train_size=None, random_state=int(time.time()))
     grid_search = GridSearchCV(pipeline, param_grid=param_grid, verbose=3, scoring='accuracy', cv=strati_cv).fit(X_train, Y_train)
     #对结果打分
