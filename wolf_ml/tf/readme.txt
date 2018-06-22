@@ -45,6 +45,9 @@ ML学习相关：
     李航统计学习算法实现及详解：
         https://github.com/WenDesi/lihang_book_algorithm    李航老师的统计算法代码详解
 
+    统计相关学习笔记：
+        http://www.loyhome.com/elements_of_statistical_learining_lecture_notes/
+
 NLP相关：
     自然语言处理之深度学习：
         https://zh.gluon.ai/chapter_natural-language-processing/index.html  深度学习之自然语言处理
