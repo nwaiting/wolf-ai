@@ -28,6 +28,13 @@
     https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
     https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化
 
+matplotlib 画图详细教程：
+    https://github.com/nwaiting/matplotlib-tutorial-Simplified-Chinese
+    https://github.com/nwaiting/py-ds-intro-tut-zh
+    https://www.jianshu.com/p/7fbecf5255f0
+    http://qiangbo.space/2018-04-06/matplotlib_l1/
+    https://wizardforcel.gitbooks.io/matplotlib-user-guide/3.1.html
+
 ML学习相关：
     ML基础算法：
         https://github.com/Jack-Cherish  机器学习基础算法python代码实现以及详解
