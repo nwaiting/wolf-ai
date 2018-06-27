@@ -28,6 +28,12 @@
     https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
     https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化
 
+简书NLP的深度学习汇总：
+    https://www.jianshu.com/p/28f02bb59fe5
+
+韩晓阳深度学习在自然语言处理中的应用：
+    https://blog.csdn.net/column/details/dl-nlp.html
+
 matplotlib 画图详细教程：
     https://github.com/nwaiting/matplotlib-tutorial-Simplified-Chinese
     https://github.com/nwaiting/py-ds-intro-tut-zh
