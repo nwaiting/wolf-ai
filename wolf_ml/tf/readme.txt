@@ -28,6 +28,9 @@
     https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
     https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化
 
+hashmap源码详解：
+    https://www.jianshu.com/p/24ed6e962533
+
 简书NLP的深度学习汇总：
     https://www.jianshu.com/p/28f02bb59fe5
 
@@ -65,8 +68,9 @@ NLP相关：
     NLP的相关：
         http://www.jthinking.com/news/all/detail/17411.html  回望2017，基于深度学习的NLP研究大盘点
 
-    训练语言模型工具：
-        https://github.com/kpu/kenlm    推荐的一个训练语言模型的工具
+    自然语言相关工具：
+        https://github.com/kpu/kenlm    推荐一个训练语言模型的工具
+        https://spacy.io/usage/adding-languages#section-training  自然语言处理工具
 
 其他：
     http://www.funnyai.com/article/view_article.php?id=7754489  推荐文章系列
