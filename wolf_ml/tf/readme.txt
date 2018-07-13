@@ -27,6 +27,7 @@
 掘金翻译计划：
     https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
     https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化
+    https://www.cntofu.com/book/85/ml/crf/crf.md  常用机器学习算法
 
 hashmap源码详解：
     https://www.jianshu.com/p/24ed6e962533
