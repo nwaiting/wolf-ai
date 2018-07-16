@@ -3,6 +3,8 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <functional> //std::bind
+#include <cmath>
 using namespace std;
 
 /*
@@ -212,9 +214,96 @@ public:
     A11(int _data) :data_(_data) {}
 };
 
+
+/*
+    移动构造函数：
+        属于c++11的右值引用的衍生效果之一
+        std::move主要解决拷贝性能问题
+        类似于python的深拷贝和浅拷贝，python中的对象赋值和copy.copy都是浅拷贝，赋值的都是对象的引用，copy.deepcopy则是深拷贝
+        
+        python赋值：
+            对象的赋值其实就是对象的引用。当创建一个对象，把它赋值给另一个变量的时候，python并没有拷贝这个对象，只是拷贝了这个对象的引用而已。
+        深拷贝：
+            外围和内部元素都进行了拷贝对象本身，而不是引用。也就是，把对象复制一遍，并且该对象中引用的其他对象我也复制。
+        浅拷贝：
+            拷贝了最外围的对象本身，内部的元素都只是拷贝了一个引用而已。也就是，把对象复制一遍，但是该对象中引用的其他对象我不复制
+
+        std::move：
+            std::move解决的问题是一个赋值效率的问题
+            如对临时变量（函数中的参数）的复制，通过更改对象的所有者(move)，实现免内存搬迁和拷贝（去除深拷贝）
+            提高"复制"效率（其实不是复制，仅是更改了对象的所有者）
+*/
+
+class TestMove
+{
+public:
+    std::vector<std::string> v_;
+    TestMove(std::vector<std::string> &tmp) {
+        for (auto& it:tmp) {
+            v_.push_back(std::move(it));
+        }
+    }
+};
+
+//std::move使用
+//仅仅是简单地将左值转换为右值，它本身并没有转移任何东西，仅仅是让对象可以转移
 void func15()
 {
+    //方法1
+    std::string aaa = "123"; //或std::string &&aaa = "123"; 显示的标识aaa是全局字符串的右值引用
+    //右值"123"，它的所有者将从原来的左值(变量std::string a),转移到新的左值(std::vector v)
+    //所以，使用std::move时一定要保证，以前的左值不再真需要了，典型使用场合就是：（构造）函数的参数，避免了再复制
+    std::vector<std::string> v;
+    v.push_back(std::move(aaa));
+    //因为全局字符串"123"已经从最开始的变量a转移到了v
+    fprintf(stdout, "move f1 %s\n", aaa.c_str());
 
+
+    //方法2
+    //移动构造函数
+    //最大的用途就是避免同一份内存数据的不必要的变成两份甚至多份、过程中的变量传递导致的内存复制，另外解除了栈变量对内存的引用
+    std::vector<std::string>  temp_vec = {"123", "234", "345", "456"};
+    fprintf(stdout, "temp_vec size %d\n", temp_vec.size());
+    for (auto i:temp_vec) {
+        fprintf(stdout, "%s ", i.c_str()); 
+    }
+    fprintf(stdout, "\n");
+    TestMove tm(temp_vec);
+    //执行了move后，temp_vec的元素还是4个，但是每个元素是空的，没有内容
+    fprintf(stdout, "after move, temp_vec size %d\n", temp_vec.size());
+    for (auto i : temp_vec) {
+        fprintf(stdout, "%s ", i.c_str());
+    }
+    fprintf(stdout, "\n");
+
+    //方法3
+    //c++11风格的新老容器的数据转移
+    //如果一个老容器如vector容器oldv，需要将其内部数据复制到新容器vector的newv，且老容器后面无用，数据量很大
+    //c++11的std::make_move_iterator将派上用场，可以将一个普通的迭代器，如oldv.begin(),转化为move迭代器，配合std::copy，将老容器内全部数据的引用，
+    //move到新容器同时取消老容器对数据的持有权，这就是c++11风格的告诉数据拷贝
+    std::vector<std::string> oldv = { "1111", "2222", "3333", "4444" };
+    std::vector<std::string> newv(oldv.size());
+    fprintf(stdout, "before make_move_iterator\n");
+    for (auto &i:oldv) {
+        fprintf(stdout, "%s ", i.c_str());
+    }
+    fprintf(stdout, "\n");
+
+    //传统做法，赋值
+    //std::copy(oldv.begin(), oldv.end(), newv.begin());
+    std::copy(std::make_move_iterator(oldv.begin()), std::make_move_iterator(oldv.end()), newv.begin());
+    fprintf(stdout, "after move \n");
+    fprintf(stdout, "old data \n");
+    for (auto &i : oldv) {
+        fprintf(stdout, "%s ", i.c_str());
+    }
+    fprintf(stdout, "\n");
+
+    fprintf(stdout, "new data\n");
+    for (auto &i : newv) {
+        fprintf(stdout, "%s ", i.c_str());
+    }
+    fprintf(stdout, "\n");
 }
 
 
@@ -237,22 +326,69 @@ void func16()
 /*
     17、bind
     c++11风格的函数指针，绑定的函数，可以是普通函数，也可以是类成员函数
+    bind内不仅不再有boost占位符实现的1st,2nd的个数限制，还可以传递常量，并可以指定参数的顺序
 */
+
+class CA
+{
+public:
+    int func(int a) {
+        return pow(a, a);
+    }
+};
+
+struct MyPair
+{
+    int32_t a_, b_;
+    int32_t multiply() {
+        return a_ * b_;
+    }
+};
+
 void func17()
 {
+    //方式1
     auto f = [](int32_t _a, int32_t _b) {
         return _a + _b;
     };
 
-    auto autof = std::bind(f, std::placeholders::_1, std::placeholders::_2);
-    fprintf(stdout, "lambda %d\n", autof(10,20));
+    auto autof1 = std::bind(f, std::placeholders::_1, std::placeholders::_2);
+    fprintf(stdout, "autof1 result %d\n", autof1(10, 20));
+
+    //方式2
+    CA ca;
+    auto autof2 = std::bind(&CA::func, ca, std::placeholders::_1);
+    fprintf(stdout, "autof2 result %d\n", autof2(3));
+
+    //方式3
+    MyPair ten_two{10, 2};
+    auto autof3 = std::bind(&MyPair::multiply, std::placeholders::_1);   //return x.multiply()
+    fprintf(stdout, "autof3 result %d\n", autof3(ten_two));
+
+    //方法4
+    auto autof4 = std::bind(&MyPair::a_, ten_two);  //return ten_two.a_
+    fprintf(stdout, "autof4 result %d\n", autof4());
 }
 
 /*
     18、std::function
+    function作为函数指针，同样可以作为参数传递并执行
+
 */
+
+int my_add1(int32_t a, double b, std::string c)
+{
+    b = a * 3;
+    return int(a + b);
+}
+
 void func18()
 {
+    //方法1
+    //function内定义了该function调用时的顺序，也是_1,_2,..._n的顺序，bind内要整理符合绑定的函数参数顺序
+    //bind中的_1对应function中的第一个string，bind中的_2对应function中的int32_t
+    std::function<int32_t (std::string, int32_t)> function1 = std::bind(my_add1, std::placeholders::_2, 2.0, std::placeholders::_1);
+    fprintf(stdout, "function1 result %d\n", function1("aaa", 1));
 
 }
 
@@ -290,7 +426,13 @@ int main()
 
     //func14();
 
-    func16();
+    func15();
+
+    //func16();
+
+    //func17();
+
+    //func18();
 
     cin.get();
     return 0;
