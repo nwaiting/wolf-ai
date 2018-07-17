@@ -127,6 +127,21 @@ def func2():
             res = sess.run(tensor_a)
             print(type(res), res, res.decode())
 
+def func3():
+    """
+        https://www.jianshu.com/p/83443b2baf27
+    """
+    
+    """
+        tf.contrib.layers.embed_sequence
+        embed_sequence(ids,...)
+
+        将函数输入的ids，转换成embeddings
+        输入：ids是整数的维数为[batch_size,doc_length]的张量
+        输出：返回[batch_size,doc_length,embed_dim]的张量
+    """
+    pass
+
 if __name__ == '__main__':
     #main()
     #matrix_function()

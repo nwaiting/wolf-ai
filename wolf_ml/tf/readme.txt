@@ -21,8 +21,6 @@
         详细的深度学习资料：
         https://deeplearning4j.org/cn/lstm
 
-        TensorFlow详细资料
-        http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/
 
         一个c++11开发的word2vec:
         https://github.com/jdeng/word2vec
