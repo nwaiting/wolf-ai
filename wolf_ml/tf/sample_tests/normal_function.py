@@ -131,7 +131,7 @@ def func3():
     """
         https://www.jianshu.com/p/83443b2baf27
     """
-    
+
     """
         tf.contrib.layers.embed_sequence
         embed_sequence(ids,...)
@@ -141,6 +141,16 @@ def func3():
         输出：返回[batch_size,doc_length,embed_dim]的张量
     """
     pass
+
+def func4():
+    """
+    矩阵拼接
+        tf.stack()
+        tf.stack([a,b], axis=0)  将a、b矩阵进行拼接
+    矩阵分解
+        tf.unstack()
+        tf.unstack(c, axis=0)  将c矩阵进行分解
+    """
 
 if __name__ == '__main__':
     #main()

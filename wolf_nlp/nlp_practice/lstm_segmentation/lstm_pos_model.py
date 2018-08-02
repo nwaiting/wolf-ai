@@ -160,7 +160,10 @@ def lstm_model(inputs, targets, config):
     logits = tf.matmul(softmax_w, output) + softmax_b
 
     loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=tf.reshape())
-    cost =
+    cost = tf.reduce_sum(loss) / batch_size #loss [time_step]
+
+    # add extra statistics to monitor
+    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.)
 
 
 def bilstm_model(inputs, targets, config):

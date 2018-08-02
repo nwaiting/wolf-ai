@@ -155,6 +155,7 @@ class BiLSTM(object):
             train_result = []
             for step in range(0,self.training_step,self.batch_size):
                 batch_x, batch_y = self.mnist.train.next_batch(self.batch_size)
+                print('batch_y ', batch_y)
                 batch_x = batch_x.reshape((self.batch_size, self.timesteps, self.num_input))
                 sess.run(self.train_op, feed_dict={self.X:batch_x, self.y:batch_y})
                 if step%self.display_step == 0:
