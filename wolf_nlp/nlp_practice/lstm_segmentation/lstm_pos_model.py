@@ -150,7 +150,7 @@ def lstm_model(inputs, targets, config):
             if time_step > 0:
                 tf.get_variable_scope().reuse_variables()
             # inputs[batch_size, time_step, hidden_size]
-            (cell_output, state) = cell(inputs[;, time_step, :], state)
+            (cell_output, state) = cell(inputs[:, time_step, :], state)
             outputs.append(cell_output)
 
     output = tf.reshape(tf.concat(outputs, 1), [-1, hidden_size])
@@ -163,20 +163,74 @@ def lstm_model(inputs, targets, config):
     cost = tf.reduce_sum(loss) / batch_size #loss [time_step]
 
     # add extra statistics to monitor
-    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.)
-
+    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.reshape(targets, [-1]))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+    return cost,logits,state,initial_state
 
 def bilstm_model(inputs, targets, config):
-    pass
+    """
+        use BasicLSTMCell,MultiRNNCell method to build lstm model
+        retun logits,cost and others
+    """
+    batch_size = config.batch_size
+    num_steps = config.num_steps
+    num_layers = config.num_layers
+    hidden_size = config.hidden_size
+    vocab_size = config.vocab_size
+    target_num = config.target_num # target output number
 
+    lstm_fw_cell = rnn.BasicLSTMCell(hidden_size, forget_bias=0.0, state_is_tuple=True)
+    lstm_bw_cell = rnn.BasicLSTMCell(hidden_size, forget_bias=0.0, state_is_tuple=True)
 
+    cell_fw = rnn.MultiRNNCell([lstm_fw_cell] * num_layers, state_is_tuple=True)
+    cell_bw = rnn.MultiRNNCell([lstm_bw_cell] * num_layers, state_is_tuple=True)
+
+    initial_state_fw = cell_fw.zero_state(batch_size, tf.float32)
+    initial_state_bw = cell_bw.zero_state(batch_size, tf.float32)
+
+    #split to get a list of n_steps tensors of shape (batch_size,n_input)
+    inputs_list = [tf.squeeze(s, axis=1) for s in tf.split(value=inputs, num_or_size_splits=num_steps, axis=1)]
+    with tf.variable_scope('pos_bilstm'):
+        outputs,state_fw,state_bw = rnn.static_bidirectional_rnn(cell_fw, cell_bw, inputs_list,
+                                    initial_state_fw=initial_state_fw, initial_state_bw=initial_state_bw)
+    # outputs is a length T list of output vectors, which is [batch_size, 2*hidden_size]
+    output = tf.reshape(tf.concat(outputs, 1), [-1, hidden_size * 2])
+    softmax_w = tf.get_variable('softmax_w', [hidden_size * 2, target_num], dtype=tf.float32)
+    softmax_b = tf.get_variable('softmax_b', [target_num], dtype=tf.float32)
+
+    logits = tf.matmul(output, softmax_w) + softmax_b
+
+    # add extra statistics to monitor
+    correct_prediction = tf.equal(tf.cast(tf.argmax(logits, 1), tf.int32), tf.reshape(targets, [-1]))
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+    loss = tf.nn.sparse_softmax_cross_entropy_with_logits(labels=tf.reshape(targets, [-1]), logits=logits)
+    cost = tf.reduce_sum(loss)/batch_size
+    return cost,logits
 
 def run_epoch(session,model,word_data,tag_data,eval_op,verbose=False):
     '''
         runs the model on the given data
     '''
-    epoch_size = ((len(word_data)//model.batch_size_) - 1) // model.num_steps_
-
+    epoch_size = ((len(word_data)/model.batch_size_) - 1) / model.num_steps_
+    start_time = int(time.time())
+    costs = 0.0
+    iters = 0
+    for step,(x,y) in enumerate(reader.iterator(word_data, tag_data, model.batch_size, model.num_steps)):
+        fetches = [model.cost, model.logits, eval_op]
+        feed_dict = {}
+        feed_dict[model.input_data] = x
+        feed_dict[model.targets] = y
+        cost,logits,_ = session.run(fetches, feed_dict)
+        costs += cost
+        iters += model.num_steps
+        if verbose and step % (epoch_size / 10) == 10:
+            print('{} {} {}'.format(step*1.0/epoch_size, np.exp(costs/iters), iters * model.batch_size / (int(time.time()) - start_time)))
+        if model.is_training:
+            if step % (epoch_size / 10) == 10:
+                checkpoint_path = os.path.join(FLAGS.pos_train_dir, 'pos_bilstm.ckpt')
+                model.saver.save(session, checkpoint_path)
+        return np.exp(costs/iters)
 
 
 
@@ -191,8 +245,16 @@ def run_epoch(session,model,word_data,tag_data,eval_op,verbose=False):
 
 
 def main():
-    pass
+    print(help(tf.squeeze))
+    print(help(tf.split))
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    t = tf.constant([[1, 2, 1],[3, 1, 1]])
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        #print(sess.run(tf.shape(tf.squeeze(t))))
+        print(sess.run(tf.shape(t)))
+        print(sess.run(tf.unstack(t, 3, axis=0)))
+        print(sess.run(tf.unstack(t, 3, axis=1)))

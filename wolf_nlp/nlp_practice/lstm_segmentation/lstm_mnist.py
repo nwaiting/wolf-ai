@@ -90,6 +90,7 @@ class BiLSTM(object):
         self.display_step = 200
 
         #timesteps * num_input 就是一张图，把每一行拆到每个timesteps上
+        #对于RNN来说，每一次输入的是一行即self.num_input=28个像素点，输入28行即self.timesteps = 28，就是一张整的图片数据
         self.num_input = 28  # mnist data input (image 28*28)
         self.timesteps = 28  # timesteps
 

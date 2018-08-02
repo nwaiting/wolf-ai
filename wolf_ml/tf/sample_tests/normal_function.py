@@ -150,7 +150,98 @@ def func4():
     矩阵分解
         tf.unstack()
         tf.unstack(c, axis=0)  将c矩阵进行分解
+        unstack(
+            value,
+            num=None,
+            axis=0,
+            name=‘unstack‘
+            )
+            将value根据axis分解成num个张量，返回的值是list类型，如果没有指定num则根据axis推断出！
     """
+
+def func5():
+    """
+    tf.squeeze
+        如果t的维度是[1, 2, 1, 3, 1, 1]，则squeeze的作用是删除维度大小为1的维度
+    """
+    # 't' is a tensor of shape [1, 2, 1, 3, 1, 1]
+    tf.shape(tf.squeeze(t))  # [2, 3]
+    tf.shape(tf.squeeze(t, [2, 4]))  # [1, 2, 3, 1]  只删除指定维度大小为1的维度
+
+def func6():
+    """
+    split( value,
+            num_or_size_splits,
+            axis=0,
+            num=None,
+            name='split'
+            )
+    value：输入的tensor
+    num_or_size_splits：如果是整数n，则将输入的tensor分成n个子tensor，如果是tensor T，
+                        就将输入的tensor分为len(tensor)个子tensor
+    axis：默认为0,计算value.shape(axis)，一定要能被 num_or_size_splits 整除
+    """
+
+    # 'value' is a tensor with shape [5, 30]
+    # Split 'value' into 3 tensors with sizes [4, 15, 11] along dimension 1
+    value = tf.Variable(tf.random_uniform([5,30]), tf.int32)
+    split0, split1, split2 = tf.split(value, [4, 15, 11], 1)
+    tf.shape(split0)  # [5, 4]
+    tf.shape(split1)  # [5, 15]
+    tf.shape(split2)  # [5, 11]
+
+    # Split 'value' into 3 tensors along dimension 1
+    split0, split1, split2 = tf.split(value, num_or_size_splits=3, axis=1)
+    tf.shape(split0)  # [5, 10]
+
+    # 将a分为两个tensor，a.shape(1)为2，可以整除，不会报错
+    b= tf.split(a,2,1)
+
+    #a.shape(0)为4，被2整除，输出2个[2,2,3]的Tensor
+    c= tf.split(a,2,0)
+
+    #  a.shape(2)为3，不被2整除，报错
+    d= tf.split(a,2,2)
+
+
+def func7():
+    """
+    tf.reduce_mean( )
+        reduce_mean沿着tensor的某一维度，计算元素的平均值，由于输出的tnesor维度比原tensor的维度低，这类操作也叫降维
+
+        reduce_mean(input_tensor,axis=None,keep_dims=False,name=None, reduction_indices=None)
+        input_tensor：需要降维的tensor。
+        axis：axis=none, 求全部元素的平均值；axis=0, 按列降维，求每列平均值；axis=1，按行降维，求每行平均值。
+    """
+
+    x = tf.constant([[1., 2., 3.], [4., 5., 6.]])
+
+    tf.reduce_mean(x) # 3.5
+    tf.reduce_mean(x, 0)  #[ 2.5  3.5  4.5]
+    tf.reduce_mean(x, 1)  #[ 2.  5.]
+
+    """
+    tf.reduce_sum( )
+        沿着tensor的某一维度，计算元素的和
+
+    tf.reduce_max( )：
+        沿着tensor的某一维度，计算元素的最大值
+
+    tf.reduce_min( ):
+        沿着tensor的某一维度，计算元素的最小值
+
+    tf.reduce_prod( ):
+        沿着tensor的某一维度，计算输入tensor元素的乘积。
+
+    tf.reduce_all( )
+        对tensor中各个元素求逻辑‘与’
+
+    tf.reduce_any( )：
+        对tensor中各个元素求逻辑‘或’
+
+    """
+
+
 
 if __name__ == '__main__':
     #main()
