@@ -82,6 +82,9 @@
             https://github.com/kpu/kenlm    推荐一个训练语言模型的工具
             https://spacy.io/usage/adding-languages#section-training  自然语言处理工具
 
+        个人比较全自然语言的博客：
+            http://fornlp.com/2018/01/
+
 - **其他：**
         http://www.funnyai.com/article/view_article.php?id=7754489  推荐文章系列
         https://baijia.baidu.com/s?id=1589819872838791110&wfr=pc&fr=ch_lst&utm_source=tuicool&utm_medium=referral  AlphaGo Zero用它来调参？「高斯过程」到底有何过人之处？
