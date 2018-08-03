@@ -24,6 +24,15 @@
         一个c++11开发的word2vec:
         https://github.com/jdeng/word2vec
 
+    TensorFlow实战：
+        https://github.com/aymericdamien/TensorFlow-Examples    非常全和从基础到高阶的代码和说明，带notebook的详细说明
+        https://github.com/yongyehuang/Tensorflow-Tutorial      一些神经网络的实战项目 带notebook的详细说明
+
+        https://github.com/brightmart/text_classification   主要是很多文本分类的模型
+        https://github.com/tensorflow/nmt   比较全的机器翻译的模型
+        https://github.com/tensorflow/models/tree/master/research/slim  提供了 ImageNet 的各个经典模型
+        https://github.com/tensorflow/models/tree/master/tutorials  官方提供的例子
+
 - **掘金翻译计划：**
         https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
         https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化
