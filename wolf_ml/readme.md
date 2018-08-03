@@ -33,6 +33,8 @@
         https://github.com/tensorflow/models/tree/master/research/slim  提供了 ImageNet 的各个经典模型
         https://github.com/tensorflow/models/tree/master/tutorials  官方提供的例子
 
+        http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/
+
 - **掘金翻译计划：**
         https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
         https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化
