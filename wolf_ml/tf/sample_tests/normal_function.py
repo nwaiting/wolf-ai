@@ -158,6 +158,12 @@ def func4():
             )
             将value根据axis分解成num个张量，返回的值是list类型，如果没有指定num则根据axis推断出！
     """
+    t = tf.constant([[[1.,2.,3.],[4.,5.,6.]],[[7.,8.,9.],[10.,11.,12.]]])
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        x = tf.unstack(t, 2, 1)
+        print(sess.run(t))
+        print(sess.run(x))
 
 def func5():
     """
@@ -249,4 +255,6 @@ if __name__ == '__main__':
     #combin_tensor()
     #negative_function()
     #func1()
-    func2()
+    #func2()
+
+    func4()
