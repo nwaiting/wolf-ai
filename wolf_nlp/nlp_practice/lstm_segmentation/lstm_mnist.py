@@ -174,8 +174,68 @@ class BiLSTM(object):
             print('test accuracy {0}'.format(sess.run(self.accuracy, feed_dict={self.X:test_data, self.y:test_label})))
 
 
+def func3():
+    data_path = 'D:\\opensource\\scrapy-work\\wolf_ml\\tf\\sample_tests\\data'
+    mnist = input_data.read_data_sets(data_path, one_hot=True)
+    learning_rate = 0.01
+    training_steps = 10000
+    batch_size = 128
+    display_step = 200
+
+    num_input = 28
+    time_steps = 28
+    num_hidden = 128
+    num_classes = 10
+
+    # shape：None*28*28
+    X = tf.placeholder(tf.float32,[None, time_steps, num_input])
+    # shape： None*10
+    y = tf.placeholder(tf.float32,[None, num_classes])
+
+    #weights
+    weights = {'out':tf.Variable(tf.random_normal([num_hidden, num_classes]))}
+    bias = {'out':tf.Variable(tf.random_normal([num_classes]))}
+
+    def RNN(x,weights,bias):
+        x = tf.unstack(x, time_steps, 1)
+        lstm_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)
+        outputs,states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
+        return tf.matmul(outputs[-1], weights) + bias
+
+    logits = RNN(X, weights['out'], bias['out'])
+    predictions = tf.nn.softmax(logits)
+
+    #define loss and optimizer
+    loss_optimizer = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y))
+    train_optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(loss_optimizer)
+
+    # evaluate model
+    correct_pred = tf.equal(tf.argmax(predictions, 1), tf.argmax(y, 1))
+    accuracy_pre = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        for step in range(training_steps+1):
+            batch_x,batch_y = mnist.train.next_batch(batch_size)
+            batch_x = batch_x.reshape(batch_size, time_steps, num_input)
+            sess.run(train_optimizer, feed_dict={X:batch_x, y:batch_y})
+            if step % display_step == 0:
+                loss,acc = sess.run([loss_optimizer, accuracy_pre], feed_dict={X:batch_x, y:batch_y})
+                print(loss, acc)
+        print('optimize finished')
+
+        test_len = 128
+        test_data = mnist.test.images[:test_len].reshape(-1, time_steps, num_input)
+        test_label = mnist.test.labels[:test_len]
+        accuracy_test = sess.run(acc, feed_dict={X:test_data, y:test_label})
+        print('test accuracy ', accuracy_test)
+
+
+
 if __name__ == '__main__':
     #main()
 
-    bilstm = BiLSTM()
-    bilstm.train()
+    #bilstm = BiLSTM()
+    #bilstm.train()
+
+    func3()
