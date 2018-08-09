@@ -29,11 +29,39 @@ def func2():
 
 def func3():
     """
-    
+    初始化：
+        tf.global_variables_initializer()
+            添加节点用于初始化所有的变量(GraphKeys.VARIABLES)。返回一个初始化所有全局变量的操作，当构建完整个模型并在会话中加载模型后，运行这个节点
+            能够将所有的变量一步到位的初始化，非常的方便
+        tf.local_variables_initializer()
+            初始化所有局部变量的操作(GraphKeys.LOCAL_VARIABLE)。GraphKeys.LOCAL_VARIABLE中的变量指的是被添加入图中，但是未被存储的变量。tf.train.Saver中关于存储的变量
     """
 
 
+def func4():
+    """
+    模型的保存于恢复：
+        恢复：
+        saver = tf.train.Saver(tf.global_variables())
+        saver.restore(sess, checkpoint)
+        模型的恢复用的是restore()函数，它需要两个参数restore(sess, save_path)，save_path指的是保存的模型路径。
+        我们可以使用tf.train.latest_checkpoint() 来自动获取最后一次保存的模型
+    """
+    pass
+
+
+def main(_):
+    print('this is test tf')
+
 if __name__ == '__main__':
     #func1()
+
     #func2()
-    func3()
+
+    #func3()
+
+    #func4()
+
+    # 启动 main(_) 函数，注意main里面有一个参数
+    import tensorflow as tf
+    tf.app.run()

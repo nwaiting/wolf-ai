@@ -52,5 +52,15 @@ def func1():
     # 对应元素相乘 [[7,16,27],[16,35,6]]
     a*b
 
+def func2():
+    """
+    填充矩阵：
+        numpy.full(shape, fill_value, dtype=None, order='C')
+    """
+    import numpy as np
+    print(np.full((3,2), 100))
+
 if __name__ == '__main__':
-    func1()
+    #func1()
+
+    func2()
