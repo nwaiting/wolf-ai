@@ -55,6 +55,10 @@ def function_2():
         print(tf.shape(result), sess.run(result))
 
 def function_3():
+    """
+    tf.cast()：
+        数据类型转换
+    """
     # 数据类型转换 tf.cast()
     var_a = tf.Variable([1,0,3])
     #结果 [ True False  True]
@@ -68,7 +72,10 @@ def function_3():
         print(tf.shape(var_c), sess.run(var_c))
 
 def function_4():
-    #矩阵乘法
+    """
+    tf.matmul()
+        矩阵乘法
+    """
     var_a = tf.Variable(tf.random_uniform([2,2], 1, 5, dtype=tf.float32), dtype=tf.float32)
     var_b = tf.Variable(tf.truncated_normal([2,2], dtype=tf.float32))
 
@@ -82,6 +89,7 @@ def function_4():
 def function_5():
     """
     tf.reshape()
+        转换矩阵的形状
     """
     var_a = tf.Variable(tf.random_uniform([3,4], 1., 5., dtype=tf.float32))
     var_b = tf.reshape(var_a, [2,6])
@@ -93,8 +101,8 @@ def function_5():
 def function_6():
     """
     tf.nn.embedding_lookup(embedding, input_ids)
-    根据input_ids中的索引，寻找embedding中对应的元素
-    比如：input_ids=[1,3,5]，则找到embedding中下标为1,3,5的向量组成一个矩阵返回
+        根据input_ids中的索引，寻找embedding中对应的元素
+        比如：input_ids=[1,3,5]，则找到embedding中下标为1,3,5的向量组成一个矩阵返回
     """
     tensor = tf.Variable(tf.random_normal([5,5], dtype=tf.float32))
     tensor_int = tf.cast(tensor, dtype=tf.int32)
@@ -121,10 +129,9 @@ def function_6():
 def function_7():
     """
     tf.gradients(ys, xs)
-    计算梯度的函数tf.gradients(ys, xs)，注意xs中的x必须与ys相关，不相关的话会报错
-
-    matmul()矩阵相乘;
-    multiply()实数相乘
+        计算梯度的函数tf.gradients(ys, xs)，注意xs中的x必须与ys相关，不相关的话会报错
+        matmul()矩阵相乘;
+        multiply()实数相乘
     """
     w1 = tf.Variable([[1,2]])
     w2 = tf.Variable([[3,4]])
@@ -151,8 +158,9 @@ def function_7():
 
 def function_8():
     """
-    tf.linspace()
-    tf.range()
+    序列和等差序列：
+        tf.linspace()
+        tf.range()
     """
     line_tensor = tf.linspace(1., 5., 10) #等差数列
     range_tensor = tf.range(1, 10) #rang序列
@@ -191,11 +199,11 @@ def function_10():
 def function_reduce():
     """
     求平均值 可以指定求第一维、指定维数的平均值
-    tf.reduce_mean()
+        tf.reduce_mean()
     求最大值 可以指定位维度
-    tf.reduce_max()
+        tf.reduce_max()
     求和 可以指定维度
-    tf.reduce_sum()
+        tf.reduce_sum()
     """
 
 def function_11():

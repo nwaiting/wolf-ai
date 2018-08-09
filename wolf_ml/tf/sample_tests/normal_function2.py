@@ -27,7 +27,13 @@ def func2():
         print(sess.run(y))
         print(sess.run(tf.argmax(y, 1)))
 
+def func3():
+    """
+    
+    """
+
+
 if __name__ == '__main__':
     #func1()
-
-    func2()
+    #func2()
+    func3()
