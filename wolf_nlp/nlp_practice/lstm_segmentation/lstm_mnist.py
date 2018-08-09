@@ -196,10 +196,15 @@ def func3():
     weights = {'out':tf.Variable(tf.random_normal([num_hidden, num_classes]))}
     bias = {'out':tf.Variable(tf.random_normal([num_classes]))}
 
-    def RNN(x,weights,bias):
+    def RNN(x,weights,bias,is_bi=False):
         x = tf.unstack(x, time_steps, 1)
-        lstm_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)
-        outputs,states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
+        if not is_bi:
+            lstm_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)
+            outputs,states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
+        else:
+            lstm_fw_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)
+            lstm_bw_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)
+            outputs,states = rnn.static_bidirectional_rnn(lstm_fw_cell, lstm_bw_cell, x, dtype=tf.float32)
         return tf.matmul(outputs[-1], weights) + bias
 
     logits = RNN(X, weights['out'], bias['out'])
@@ -238,4 +243,6 @@ if __name__ == '__main__':
     #bilstm = BiLSTM()
     #bilstm.train()
 
-    func3()
+    #func3()
+
+    print(help(rnn.static_bidirectional_rnn))
