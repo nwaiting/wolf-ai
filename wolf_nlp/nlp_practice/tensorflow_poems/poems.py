@@ -59,10 +59,10 @@ def generate_batch(batch_size, poems_vec, word_to_int):
     n_chunk = len(poems_vec) // batch_size
     x_batches = []
     y_batches = []
+    print('n_chunk {0} {1} {2}'.format(n_chunk, len(poems_vec), batch_size))
     for i in range(n_chunk):
         start_index = i * batch_size
         end_index = start_index + batch_size
-
         batches = poems_vec[start_index:end_index]
         length = max(map(len, batches))
         x_data = np.full((batch_size, length), word_to_int[' '], np.int32)

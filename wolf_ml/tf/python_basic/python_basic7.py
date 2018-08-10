@@ -9,5 +9,24 @@ def func1():
     pass
 
 
+def func2():
+    """
+    整数和浮点数除法：
+        / 表示一定是浮点数除法
+        // 表示整数除法
+
+    """
+    a = 3
+    b = 8
+    print(b/a)  #2.666666
+    print(b//a) #2
+
+    a = 3.0
+    b = 8.0
+    print(b/a)  #2.666666
+    print(b//a) #2.0    
+
 if __name__ == '__main__':
-    func1()
+    #func1()
+
+    func2()
