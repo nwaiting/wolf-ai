@@ -60,7 +60,35 @@ def func2():
     import numpy as np
     print(np.full((3,2), 100))
 
+def func3():
+    """
+    随机数：
+        numpy.random.choice(a, size=None, replace=True, p=None)
+        #表示从a中以概率p随机取3个，p没指定时相当于是一致的分布，replace表示抽取之后是否还放回去，False表示不放回去
+        np.random.choice(a=5, size=3, replace=False, p=None)
+        np.random.choice(a=5, size=3, replace=False, p=[0.2, 0.1, 0.3, 0.4, 0.0])
+    """
+    a = [1,2,3,4,5,6,7,8]
+    print(np.random.choice(a, size=7, replace=False))
+
+    a = 10
+    print(np.random.choice(a, size=3, replace=False))
+
+def func4():
+    """
+    单个元素使用矩阵数据结构传入，在tf.placeholder()中定义，在传入参数时候会使用到
+    np.zeros((1,1))
+    """
+    a = np.zeros((1,1))
+    print(a)
+    a[0,0] = 100
+    print(a)
+
 if __name__ == '__main__':
     #func1()
 
-    func2()
+    #func2()
+
+    #func3()
+
+    func4()

@@ -5,7 +5,8 @@ import tensorflow as tf
 def main():
     #从正态分布输出随机数 一维的数组
     a = tf.Variable(tf.random_normal([10], dtype=tf.float32, seed=1))
-    #截断的正态分布函数 一维的数组
+    #一维的数组 这是一个截断的产生正太分布的函数，就是说产生正太分布的值如果与均值的差值大于两倍的标准差，那就重新生成
+    # 和一般的正太分布的产生随机数据比起来，这个函数产生的随机数与均值的差距不会超过两倍的标准差，但是一般的别的函数是可能的
     b = tf.Variable(tf.truncated_normal([10], dtype=tf.float32, seed=2))
     #从均匀分布中返回随机值 一维的数组
     c = tf.Variable(tf.random_uniform([10], -1.0, 1.0, seed=3))
@@ -24,6 +25,24 @@ def main():
         print('end')
 
 def my_add(a, b):
+    """
+    tf.add(x,y,name=None)
+
+    tf.nn.bias_add(value,bias,name=None)
+        a=tf.constant([[1,1],[2,2],[3,3]],dtype=tf.float32)
+        b=tf.constant([1,-1],dtype=tf.float32)
+        tf.nn.bias_add(a, b)
+        [[ 2. 0.]
+        [ 3. 1.]
+        [ 4. 2.]]
+
+    tf.add_n(inputs,name=None)
+        input1 = tf.constant([1.0, 2.0, 3.0])
+        input2 = tf.Variable([2.0, 3.0, 4.0])
+        sess.run(tf.add_n([input1, input2]))和sess.run(input1 + input2)效果一样
+        [3.0, 5.0, 7.0]
+
+    """
     xa = tf.placeholder(dtype=tf.float32)
     xb = tf.placeholder(dtype=tf.float32)
     y = tf.add(xa, xb)
@@ -92,11 +111,15 @@ def function_5():
         转换矩阵的形状
     """
     var_a = tf.Variable(tf.random_uniform([3,4], 1., 5., dtype=tf.float32))
-    var_b = tf.reshape(var_a, [2,6])
+    var_b = tf.reshape(var_a, [2,6])  # shape=(2, 6)
+    var_c = tf.reshape(var_a, [-1,6]) # shape=(2, 6)
+    var_d = tf.reshape(var_a, [-1])  # shape=(12,)
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         print(var_a, sess.run(var_a))
         print(var_b, sess.run(var_b))
+        print(var_c, sess.run(var_c))
+        print(var_d, sess.run(var_d))
 
 def function_6():
     """
@@ -249,7 +272,7 @@ def function_bak():
     tf.get_variable_scope()
 
 if __name__ == '__main__':
-    #main()
+    main()
     #my_add(1,2)
     #functions_1()
     #function_2()
@@ -260,4 +283,4 @@ if __name__ == '__main__':
     #function_7()
     #function_8()
     #function_9()
-    function_10()
+    #function_10()

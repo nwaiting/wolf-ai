@@ -35,6 +35,8 @@
 
         http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/
 
+        http://blog.topspeedsnail.com/archives/10542    TensorFlow例子char-rnn、生成图片、评论分类、游戏AI
+
 - **掘金翻译计划：**
         https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
         https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化

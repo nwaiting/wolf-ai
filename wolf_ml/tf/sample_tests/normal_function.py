@@ -67,6 +67,13 @@ def matrix_function():
         print('end ==========')
 
 def combin_tensor():
+    """
+    tf.concat()
+        t1:shape(2,3)
+        t2:shape(2,3)
+        tf.concat([t1,t2], 0)：shape(4,3)
+        tf.concat([t1,t2], 1)：shape(2,6)
+    """
     # 二维数组中 shape为(2,3)
     t1 = [[1,2,3],[4,5,6]]
     t2 = [[7,8,9],[10,11,12]]
@@ -93,8 +100,10 @@ def combin_tensor():
         print('end===============')
 
 def negative_function():
+    """
+    负采样
+    """
     a = [1,2,3,4]
-    # 负采样
     nega_a = tf.negative(a)  #[-1,-2,-3,-4]
     with tf.Session() as sess:
         nega_a_res = sess.run(nega_a)
@@ -252,9 +261,9 @@ def func7():
 if __name__ == '__main__':
     #main()
     #matrix_function()
-    #combin_tensor()
+    combin_tensor()
     #negative_function()
     #func1()
     #func2()
 
-    func4()
+    #func4()

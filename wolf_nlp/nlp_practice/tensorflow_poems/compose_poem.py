@@ -17,8 +17,8 @@
 # limitations under the License.
 # ------------------------------------------------------------------------
 import tensorflow as tf
-from poems.model import rnn_model
-from poems.poems import process_poems
+from model import rnn_model
+from poems import process_poems
 import numpy as np
 
 start_token = 'B'
@@ -30,7 +30,7 @@ lr = 0.0002
 
 
 def to_word(predict, vocabs):
-    predict = predict[0]       
+    predict = predict[0]
     predict /= np.sum(predict)
     sample = np.random.choice(np.arange(len(predict)), p=predict)
     if sample > len(vocabs):

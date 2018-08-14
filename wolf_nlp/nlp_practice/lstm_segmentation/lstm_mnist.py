@@ -201,6 +201,7 @@ def func3():
         if not is_bi:
             lstm_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)
             outputs,states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
+            #计算最后一层output layer时，outputs[-1]和states[1]是一样的
         else:
             lstm_fw_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)
             lstm_bw_cell = rnn.BasicLSTMCell(num_hidden, forget_bias=1.0, state_is_tuple=True)

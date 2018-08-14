@@ -47,6 +47,7 @@ def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_laye
     cell = tf.contrib.rnn.MultiRNNCell([cell] * num_layers, state_is_tuple=True)
 
     if output_data is not None:
+        # 当state_is_tuple=true时，cell.zero_state会生成一个tuple即(c_state,m_state)即主线和分线的state
         initial_state = cell.zero_state(batch_size, tf.float32)
     else:
         initial_state = cell.zero_state(1, tf.float32)
@@ -57,6 +58,9 @@ def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_laye
         inputs = tf.nn.embedding_lookup(embedding, input_data)
 
     # [batch_size, ?, rnn_size] = [64, ?, 128]
+    # outputs 是一个list，所有时刻的输出都存在outputs中
+    # last_state表示最后一个时刻的state，如果是lstm cell的话，那么存的是(c_state,m_state)一个元祖
+    # tf.nn.dynamic_rnn()里面有一个函数是time_major=true时false，表示[batches,time_steps,num_inputs]即[128,28,28] time_steps是否是主要的维度还是次要的维度，在元祖的第一位还是在元祖的第二位
     outputs, last_state = tf.nn.dynamic_rnn(cell, inputs, initial_state=initial_state)
     output = tf.reshape(outputs, [-1, rnn_size])
 
@@ -73,6 +77,9 @@ def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_laye
         loss = tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits)
         # loss shape should be [?, vocab_size+1]
         total_loss = tf.reduce_mean(loss)
+
+        #train_op = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(total_loss)
+        #tf.train.AdagradOptimizer()
         train_op = tf.train.AdamOptimizer(learning_rate).minimize(total_loss)
 
         end_points['initial_state'] = initial_state
