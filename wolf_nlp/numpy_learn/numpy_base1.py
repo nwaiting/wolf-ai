@@ -84,6 +84,18 @@ def func4():
     a[0,0] = 100
     print(a)
 
+def func5():
+    """
+    np.shape()
+    """
+    a = np.array([1,2,3,4,5,6])
+    a = a.reshape((2,3))
+    print(a)
+
+    print(a.shape) #(2, 3)
+    print(a.shape[0]) #2
+
+
 if __name__ == '__main__':
     #func1()
 
@@ -91,4 +103,6 @@ if __name__ == '__main__':
 
     #func3()
 
-    func4()
+    #func4()
+
+    func5()

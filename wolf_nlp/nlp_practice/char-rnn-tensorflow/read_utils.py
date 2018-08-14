@@ -8,6 +8,8 @@ import pickle
 def batch_generator(arr, n_seqs, n_steps):
     arr = copy.copy(arr)
     batch_size = n_seqs * n_steps
+    print('len arr ', len(arr))
+    print('batch_size ', batch_size)
     n_batches = int(len(arr) / batch_size)
     arr = arr[:batch_size * n_batches]
     arr = arr.reshape((n_seqs, -1))
@@ -16,6 +18,7 @@ def batch_generator(arr, n_seqs, n_steps):
         for n in range(0, arr.shape[1], n_steps):
             x = arr[:, n:n + n_steps]
             y = np.zeros_like(x)
+            #错位赋值
             y[:, :-1], y[:, -1] = x[:, 1:], x[:, 0]
             yield x, y
 
@@ -30,13 +33,17 @@ class TextConverter(object):
             print(len(vocab))
             # max_vocab_process
             vocab_count = {}
+            for word in text:
+                vocab_count[word] = vocab_count.get(word, 0) + 1
+            """
             for word in vocab:
                 vocab_count[word] = 0
             for word in text:
                 vocab_count[word] += 1
+            """
             vocab_count_list = []
             for word in vocab_count:
-                vocab_count_list.append((word, vocab_count[word]))
+                vocab_count_list.append((word, vocab_count.get(word, 0)))
             vocab_count_list.sort(key=lambda x: x[1], reverse=True)
             if len(vocab_count_list) > max_vocab:
                 vocab_count_list = vocab_count_list[:max_vocab]

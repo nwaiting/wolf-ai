@@ -141,6 +141,47 @@ def func6():
          [0 0 0 0 0 0 0 1]]
     """
 
+def func7():
+    """
+    tf.variable_scope()
+        主要用于管理一个graph中变量的名字，避免变量之间的命名冲突
+        可以让变量有相同的命名，包括tf.get_variable()得到的变量，还有tf.Variable()的变量
+    tf.name_scope()
+        主要用于管理一个图里的各种op，避免各个op之间命名冲突
+        可以让变量有相同的命名，但是只限于tf.Variable()的变量
+    """
+
+    #tf.variable_scope
+    with tf.variable_scope('V1'):
+        a1 = tf.get_variable(name='a1', shape=[1], initializer=tf.constant_initializer(1))
+        a2 = tf.Variable(tf.random_normal(shape=[2,3], mean=0, stddev=1), name='a2')
+    with tf.variable_scope('V2'):
+        a3 = tf.get_variable(name='a1', shape=[1], initializer=tf.constant_initializer(1))
+        a4 = tf.Variable(tf.random_normal(shape=[2,3], mean=0, stddev=1.0), name='a2')
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        print(a1.name)
+        print(a2.name)
+        print(a3.name)
+        print(a4.name)
+
+    #tf.name_scope
+    with tf.name_scope('V1'):
+        #错误
+        #a1 = tf.get_variable(name='a1', shape=[1], initializer=tf.constant_initializer(1))
+        a2 = tf.Variable(tf.random_normal(shape=[2,3], mean=0, stddev=1), name='a2')
+    with tf.name_scope('V2'):
+        #错误 a1和a3命名冲突，报错
+        #a3 = tf.get_variable(name='a1', shape=[1], initializer=tf.constant_initializer(1))
+        a4 = tf.Variable(tf.random_normal(shape=[2,3], mean=0, stddev=1), name='a2')
+    with tf.Session() as sess:
+        sess.run(tf.global_variables_initializer())
+        #print(a1.name)
+        print(a2.name)
+        #print(a3.name)
+        print(a4.name)
+
+
 if __name__ == '__main__':
     #func1()
 
@@ -156,4 +197,6 @@ if __name__ == '__main__':
 
     #func5()
 
-    func6()
+    #func6()
+
+    func7()

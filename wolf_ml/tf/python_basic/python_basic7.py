@@ -24,9 +24,19 @@ def func2():
     a = 3.0
     b = 8.0
     print(b/a)  #2.666666
-    print(b//a) #2.0    
+    print(b//a) #2.0
+
+def func3():
+    """
+    set()
+    """
+    ss = '你好不好不好啊'
+    print(set(ss))
+
 
 if __name__ == '__main__':
     #func1()
 
-    func2()
+    #func2()
+
+    func3()

@@ -63,13 +63,14 @@ class CharRNN:
         # 创建单个cell并堆叠多层
         def get_a_cell(lstm_size, keep_prob):
             lstm = tf.nn.rnn_cell.BasicLSTMCell(lstm_size)
+            # rnn的drop只在层间
             drop = tf.nn.rnn_cell.DropoutWrapper(lstm, output_keep_prob=keep_prob)
             return drop
 
         with tf.name_scope('lstm'):
             cell = tf.nn.rnn_cell.MultiRNNCell(
                 [get_a_cell(self.lstm_size, self.keep_prob) for _ in range(self.num_layers)]
-            )
+            , state_is_tuple=True)
             self.initial_state = cell.zero_state(self.num_seqs, tf.float32)
 
             # 通过dynamic_rnn对cell展开时间维度
@@ -95,9 +96,14 @@ class CharRNN:
 
     def build_optimizer(self):
         # 使用clipping gradients
+        # tf.trainable_variables()会返回所有可训练的参数
         tvars = tf.trainable_variables()
+        # tf.clip_by_global_norm是clipping gradients操作，对tvars（具体是每个单一变量）关于loss求梯度时，对那些梯度数值超过了梯度全局范数的进行缩小操作，全局范数定义是所有梯度的平方和的平方根
+        # 其返回值grads是修剪后的梯度。
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), self.grad_clip)
+        # 使用adam优化算法进行优化，同时通过clipping gradients算法解决梯度爆炸的问题
         train_op = tf.train.AdamOptimizer(self.learning_rate)
+        # train_op.apply_gradients是在优化器中应用梯度修建
         self.optimizer = train_op.apply_gradients(zip(grads, tvars))
 
     def train(self, batch_generator, max_steps, save_path, save_every_n, log_every_n):
@@ -114,6 +120,8 @@ class CharRNN:
                         self.targets: y,
                         self.keep_prob: self.train_keep_prob,
                         self.initial_state: new_state}
+                # 启动计算图，final_state、loss是通过前面build_lstm层于build_loss计算得到的，运行optimizer优化器进行优化。
+                # 最终记录batch_loss，使用final_state来替代new_state，new_state又作为下一个feed，从而形成循环
                 batch_loss, new_state, _ = sess.run([self.loss,
                                                      self.final_state,
                                                      self.optimizer],

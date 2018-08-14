@@ -1,3 +1,5 @@
+#coding=utf-8
+
 import tensorflow as tf
 from read_utils import TextConverter, batch_generator
 from model import CharRNN
@@ -5,6 +7,14 @@ import os
 import codecs
 
 FLAGS = tf.flags.FLAGS
+
+"""
+python train.py --input_file data/shakespeare.txt --name shakespeare --num_steps 50 --num_seqs 32 --learning_rate 0.01 --max_steps 20000
+python sample.py --converter_path model/shakespeare/converter.pkl --checkpoint_path model/shakespeare/ --max_length 1000
+
+python train.py --use_embedding --input_file data/poetry.txt --name poetry --learning_rate 0.005 --num_steps 26 --num_seqs 32 --max_steps 10000
+python sample.py --use_embedding --converter_path model/poetry/converter.pkl --checkpoint_path model/poetry/ --max_length 300
+"""
 
 tf.flags.DEFINE_string('name', 'default', 'name of the model')
 tf.flags.DEFINE_integer('num_seqs', 100, 'number of seqs in one batch')
@@ -33,7 +43,7 @@ def main(_):
 
     arr = converter.text_to_arr(text)
     g = batch_generator(arr, FLAGS.num_seqs, FLAGS.num_steps)
-    print(converter.vocab_size)
+    print('converter.vocab_size ', converter.vocab_size)
     model = CharRNN(converter.vocab_size,
                     num_seqs=FLAGS.num_seqs,
                     num_steps=FLAGS.num_steps,
