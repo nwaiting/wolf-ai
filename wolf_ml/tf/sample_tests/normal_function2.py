@@ -83,9 +83,14 @@ def func4():
     """
     pass
 
+#通过启动传递参数
+#python normal_function2.py --name namename
+FLAGS = tf.flags.FLAGS
+tf.flags.DEFINE_string('name', '10086', 'describe for name')
 
 def main(_):
     print('this is test tf')
+    print(FLAGS.name)
 
 def func5():
     """
@@ -131,14 +136,32 @@ def func6():
     with tf.Session() as sess:
         print(sess.run(b))
     """
-    b = [[1 0 0 0 0 0 0 0]
-         [0 1 0 0 0 0 0 0]
-         [0 0 1 0 0 0 0 0]
-         [0 0 0 1 0 0 0 0]
-         [0 0 0 0 1 0 0 0]
-         [0 0 0 0 0 1 0 0]
-         [0 0 0 0 0 0 1 0]
-         [0 0 0 0 0 0 0 1]]
+    b = [[1. 0. 0. 0. 0. 0. 0. 0.]
+         [0. 1. 0. 0. 0. 0. 0. 0.]
+         [0. 0. 1. 0. 0. 0. 0. 0.]
+         [0. 0. 0. 1. 0. 0. 0. 0.]
+         [0. 0. 0. 0. 1. 0. 0. 0.]
+         [0. 0. 0. 0. 0. 1. 0. 0.]
+         [0. 0. 0. 0. 0. 0. 1. 0.]
+         [0. 0. 0. 0. 0. 0. 0. 1.]]
+    """
+
+    label1=tf.constant([[0,1,2],[3,4,5],[6,7,7]])
+    b = tf.one_hot(label1, 8, dtype=tf.int32)
+    with tf.Session() as sess:
+        print(sess.run(b))
+    """
+    [[[1 0 0 0 0 0 0 0]
+      [0 1 0 0 0 0 0 0]
+      [0 0 1 0 0 0 0 0]]
+
+     [[0 0 0 1 0 0 0 0]
+      [0 0 0 0 1 0 0 0]
+      [0 0 0 0 0 1 0 0]]
+
+     [[0 0 0 0 0 0 1 0]
+      [0 0 0 0 0 0 0 1]
+      [0 0 0 0 0 0 0 1]]]
     """
 
 def func7():
@@ -192,11 +215,10 @@ if __name__ == '__main__':
     #func4()
 
     # 启动 main(_) 函数，注意main里面有一个参数
-    #import tensorflow as tf
     #tf.app.run()
 
     #func5()
 
-    #func6()
+    func6()
 
-    func7()
+    #func7()
