@@ -37,6 +37,8 @@
 
         http://blog.topspeedsnail.com/archives/10542    TensorFlow例子char-rnn、生成图片、评论分类、游戏AI
 
+        https://github.com/litoeknee/tensorflow/blob/master/tensorflow/examples/tutorials/word2vec/simple_skip_gram.ipynb  TensorFlow实现word2vec
+
 - **掘金翻译计划：**
         https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
         https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化

@@ -96,6 +96,38 @@ def func5():
     print(a.shape[0]) #2
 
 
+def func6():
+    """
+    np.squeeze()：
+        squeeze 函数：从数组的形状中删除单维度条目，即把shape中为1的维度去掉
+        >>> a = e.reshape(1,1,10)
+        array([[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]]])
+        >>> np.squeeze(a)
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+    np.reshape()：
+        reshape函数：改变数组的维数
+        >>> e= np.arange(10)
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        >>> e.reshape(1,1,10)
+        array([[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]]])
+
+    np.argsort()：
+        argsort函数返回的是数组值从小到大的索引值
+        >>> x = np.array([[0, 3], [2, 2]])
+        array([[0, 3],
+               [2, 2]])
+
+        >>> np.argsort(x, axis=0) #按列排序
+        array([[0, 1],
+               [1, 0]])
+
+        >>> np.argsort(x, axis=1) #按行排序
+        array([[0, 1],
+               [0, 1]])
+    """
+    pass
+
 if __name__ == '__main__':
     #func1()
 
@@ -105,4 +137,6 @@ if __name__ == '__main__':
 
     #func4()
 
-    func5()
+    #func5()
+
+    func6()

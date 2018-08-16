@@ -98,12 +98,13 @@ class CharRNN:
         # 使用clipping gradients
         # tf.trainable_variables()会返回所有可训练的参数
         tvars = tf.trainable_variables()
-        # tf.clip_by_global_norm是clipping gradients操作，对tvars（具体是每个单一变量）关于loss求梯度时，对那些梯度数值超过了梯度全局范数的进行缩小操作，全局范数定义是所有梯度的平方和的平方根
+        # tf.clip_by_global_norm是clipping gradients操作，对tvars（具体是每个单一变量）关于loss求梯度时，
+        # 对那些梯度数值超过了梯度全局范数的进行缩小操作，全局范数定义是所有梯度的平方和的平方根
         # 其返回值grads是修剪后的梯度。
         grads, _ = tf.clip_by_global_norm(tf.gradients(self.loss, tvars), self.grad_clip)
         # 使用adam优化算法进行优化，同时通过clipping gradients算法解决梯度爆炸的问题
         train_op = tf.train.AdamOptimizer(self.learning_rate)
-        # train_op.apply_gradients是在优化器中应用梯度修建
+        # train_op.apply_gradients是在优化器中应用梯度修剪
         self.optimizer = train_op.apply_gradients(zip(grads, tvars))
 
     def train(self, batch_generator, max_steps, save_path, save_every_n, log_every_n):

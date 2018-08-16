@@ -6,12 +6,19 @@ def func1():
     """
     tf.shape()：
         获取变量的shape
+    var.get_shape()
+        获取变量的shape
+        x.get_shape()返回static shape，只有tensor有这个方法，返回是元组
     """
     t = tf.Variable(tf.random_normal([10, 100]))
     with tf.Session() as sess:
         sess.run(tf.global_variables_initializer())
         print(tf.shape(t))
         print(sess.run(tf.shape(t)))
+
+        # get_shape()
+        logits_ = tf.Variable()
+        print(logits_.get_shape())
 
 def func2():
     """
