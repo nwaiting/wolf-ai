@@ -33,10 +33,22 @@ def func3():
     ss = '你好不好不好啊'
     print(set(ss))
 
+def func4():
+    """
+    os.stat()
+        获取文件属性
+    """
+    import os
+    statinfo = os.stat(os.path.abspath(__file__))
+    print(statinfo.st_size)
+    #当前文件的字节数
+
+    print(dir(statinfo))
+    #'count', 'index', 'n_fields', 'n_sequence_fields', 'n_unnamed_fields', 'st_atime', 'st_atime_ns', 'st_ctime', 'st_ctime_ns', 'st_dev', 'st_file_attributes', 'st_gid', 'st_ino', 'st_mode', 'st_mtime', 'st_mtime_ns', 'st_nlink', 'st_size', 'st_uid'
+
 
 if __name__ == '__main__':
     #func1()
-
     #func2()
-
-    func3()
+    #func3()
+    func4()
