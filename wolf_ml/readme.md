@@ -47,6 +47,9 @@
 - **hashmap源码详解：**
         https://www.jianshu.com/p/24ed6e962533
 
+- **CRF源码详解：**
+        https://blog.csdn.net/App_12062011/article/details/53869687     CRF++源码分析
+
 - **简书NLP的深度学习汇总：**
         https://www.jianshu.com/p/28f02bb59fe5
 
