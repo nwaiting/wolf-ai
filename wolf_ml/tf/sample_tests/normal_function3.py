@@ -50,7 +50,34 @@ def func2():
             [False False  True]
         """
 
+def func3():
+    import os
+    #os.environ["CUDA_VISIBLE_DEVICES"] = "1"       # 使用第二块GPU（从0开始）
+    #os.environ["CUDA_VISIBLE_DEVICES"] = "0, 2"    # 使用第一, 三块GPU
+    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"       #禁用GPU
+
+    os.environ["TF_CPP_MIN_LOG_LEVEL"]='0' # 0也是默认值，输出所有信息
+    #os.environ["TF_CPP_MIN_LOG_LEVEL"]='1' # 屏蔽通知信息
+    #os.environ["TF_CPP_MIN_LOG_LEVEL"]='2' # 只显示 warning 和 Error 屏蔽通知信息和警告信息
+    #os.environ["TF_CPP_MIN_LOG_LEVEL"]='3' # 只显示 Error 屏蔽通知信息、警告信息和报错信息
+
+    #使用config配置Session运行参数
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True  #动态申请显存
+    config.gpu_options.per_process_gpu_memory_fraction = 0.2  # 占用20%显存
+
+
+    tf.ConfigProto(log_device_placement=True,allow_soft_placement=True)
+    log_device_placement=True # 是否打印设备分配日志
+    allow_soft_placement=True # 如果你指定的设备不存在，允许TF自动分配设备
+
+    hello = tf.constant('hello word')
+    with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
+        print(sess.run(hello))
+
 if __name__ == '__main__':
     #func1()
 
-    func2()
+    #func2()
+
+    func3()
