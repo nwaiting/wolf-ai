@@ -9,6 +9,7 @@ from tensorflow.train import AdamOptimizer, AdagradOptimizer, AdadeltaOptimizer,
 from tensorflow.contrib import rnn
 from tensorflow.contrib import crf
 from tensorflow.contrib.layers import xavier_initializer
+from text_handler import batch_generator, tag2label, pad_sequences
 
 class BiLSTM_CRF(object):
     def __init__(self, batch_size, epoch, hidden_size, embeddings, crf, update_embedding, dropout_keepprob, optimizer, learning_rate, clip, tag2label, vocab, shuffle, paths, config):
@@ -30,7 +31,7 @@ class BiLSTM_CRF(object):
         self.summary_path_ = paths
         self.result_path_ = paths
         self.config_ = config
-        self.init_optimizer_ = None
+        self.init_global_variables_ = None
 
     def build_graph(self):
         self.init_variables()
@@ -39,7 +40,7 @@ class BiLSTM_CRF(object):
         self.softmax_prediction_optimizer()
         self.loss_optimizer()
         self.train_optimizer()
-        self.init_optimizer_ = tf.global_variables_initializer()
+        self.init_global_variables_ = tf.global_variables_initializer()
 
     def init_variables(self):
         self.word_ids_ = tf.placeholder(tf.int32, shape=[None, None], name='word_ids_')
@@ -58,7 +59,7 @@ class BiLSTM_CRF(object):
         with tf.variable_scope('bi-lstm'):
             cell_fw = rnn.BasicLSTMCell(self.hidden_size_)
             cell_bw = rnn.BasicLSTMCell(self.hidden_size_)
-            output_fw_seq, output_bw_seq,_ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell_fw, cell_bw=cell_bw, inputs=self.word_embeddings_, sequence_length=self.sequence_length_,dtype=tf.float32)
+            output_fw_seq, output_bw_seq, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell_fw, cell_bw=cell_bw, inputs=self.word_embeddings_, sequence_length=self.sequence_length_,dtype=tf.float32)
             output = tf.concat([output_fw_seq, output_bw_seq], axis=-1)
             output = tf.nn.dropout(output, self.dropout_ph_)
 
@@ -103,6 +104,18 @@ class BiLSTM_CRF(object):
             else:
                 opt = GradientDescentOptimizer(learning_rate=self.learning_rate_ph_)
 
+            """"
+            #修正梯度参数的另一种写法
+            #获取全部可以训练的参数tf_variables
+            tf_variables = tf.trainable_variables()
+            #提前计算梯度
+            tf_grads = tf.gradients(self.loss_, tf_variables)
+            #由它们的范数之和之比求多个张量的值
+            tf_grads,_ = tf.clip_by_global_norm(tf_grads, self.clip_grad_)
+            #将前面clip过的梯度应用到可训练的参数上
+            self.train_optimizer_ = opt.apply_gradients(zip(tf_grads, tf_variables))
+            """"
+
             # 获取参数，提前计算梯度
             grads_and_vars = opt.compute_gradients(self.loss_)
             # 修正梯度值
@@ -114,19 +127,55 @@ class BiLSTM_CRF(object):
         self.merged_ = tf.summary.merge_all()
         self.file_writer_ = tf.summary.FileWriter(self.summary_path_, sess.graph)
 
-    def train(self):
-        pass
+    def train(self, train, dev):
+        train_saver = tf.train.Saver(tf.global_variables())
+        with tf.Session(config=self.config_) as sess:
+            sess.run(self.init_global_variables_)
+            sess.add_summary(sess)
+
+            for epoch in range(self.epoch_):
+                self.run_one_epoch(sess, train, dev, tag2label, epoch, train_saver)
 
     def test(self):
         pass
     def demo_one(self):
         pass
     def run_one_epoch(self, sess, train, dev, tag2label, epoch, saver):
+        num_batches = (len(train) + self.batch_size_ - 1) // self.batch_size_
+        start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+        one_batch = batch_generator(train, self.batch_size, self.vocab_, tag2label, shuffle=self.shuffle_)
+        for step,(seqs,labels) in enumerate(one_batch):
+            print('handle {0} batch {1} batches'.format(step+1, num_batches))
+            step_num = epoch * num_batches + step + 1
+            feed_dict, _ = self.get_feed_dict(seqs, labels, self.learning_rate_, self.dropout_keepprob_)
+            run_ops = [self.train_optimizer_, self.loss_, self.merged_, self.global_step_]
+            _, loss_train, summary, step_num_ = sess.run(run_ops, feed_dict=feed_dict)
+            if (step+1 == 1) or \
+                (step + 1) % 300 == 0 or \
+                step + 1 == num_batches:
+                print('{0} epoch {1}, step {2}, loss {3:.4}, global_step {4}'.format(start_time, epoch+1, step+1, loss_train, step_num))
+            #这里设置的step_num是否有问题?
+            self.file_writer_.add_summary(summary, step_num)
+            #global_step设置是否有问题
+            if step + 1 == num_batches:
+                saver.save(sess, self.model_path_, global_step=step_num)
+        print('validation / test')
         
 
 
-    def get_feed_dict(self):
-        pass
+    def get_feed_dict(self, seqs, labels=None, learning_rate=None, dropout=None):
+        word_ids,seq_len_list = pad_sequences(seqs)
+        feed_dict = {self.word_ids_:word_ids,
+                    self.sequence_length_:seq_len_list}
+        if labels is not None:
+            lbs,_ = pad_sequences(labels)
+            feed_dict[self.labels_] = lbs
+        if learning_rate is not None:
+            feed_dict[self.learning_rate_ph_] = learning_rate
+        if dropout is not None:
+            feed_dict[self.dropout_ph_] = dropout
+        return feed_dict,seq_len_list
+
     def dev_one_epoch(self):
         pass
     def prediction_one_batch(self):
