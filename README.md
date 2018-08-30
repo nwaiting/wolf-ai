@@ -7,7 +7,11 @@
     >主要是机器学习一些常规算法
 - **wolf_nlp**
     >主要是NLP相关
+- **wolf_others**
+    >一些其他的资源
 - **wolf_outer**
     >主要是一些其他的程序
+- **wolf_pl**
+    >pl:programming learning，程序设计学习
 - **wolf_spider**
     >主要是一些爬虫

@@ -46,9 +46,17 @@ def func4():
     print(dir(statinfo))
     #'count', 'index', 'n_fields', 'n_sequence_fields', 'n_unnamed_fields', 'st_atime', 'st_atime_ns', 'st_ctime', 'st_ctime_ns', 'st_dev', 'st_file_attributes', 'st_gid', 'st_ino', 'st_mode', 'st_mtime', 'st_mtime_ns', 'st_nlink', 'st_size', 'st_uid'
 
+def func5():
+    """
+    下划线在python中的作用，有时候是为了省略，有时候不关心内部格式时，可以直接输出
+    """
+    data = {'a':1, 'b':2}
+    for _ in data.items():
+        print(_)
 
 if __name__ == '__main__':
     #func1()
     #func2()
     #func3()
-    func4()
+    #func4()
+    func5()

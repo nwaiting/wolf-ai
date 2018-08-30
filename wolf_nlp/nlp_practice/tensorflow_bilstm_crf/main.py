@@ -30,7 +30,9 @@ def main(_):
     print('start app')
     text_handler = TextHandler()
     print(tf.__version__)
-
+    a = {'a':0,'b':1}
+    for _ in a.items():
+        print(_)
 
 if __name__ == '__main__':
     tf.app.run()

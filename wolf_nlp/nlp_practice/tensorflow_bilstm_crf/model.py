@@ -9,7 +9,7 @@ from tensorflow.train import AdamOptimizer, AdagradOptimizer, AdadeltaOptimizer,
 from tensorflow.contrib import rnn
 from tensorflow.contrib import crf
 from tensorflow.contrib.layers import xavier_initializer
-from text_handler import batch_generator, tag2label, pad_sequences
+from text_handler import batch_generator, tag2label, pad_sequences, conlleval
 
 class BiLSTM_CRF(object):
     def __init__(self, batch_size, epoch, hidden_size, embeddings, crf, update_embedding, dropout_keepprob, optimizer, learning_rate, clip, tag2label, vocab, shuffle, paths, config):
@@ -136,8 +136,14 @@ class BiLSTM_CRF(object):
             for epoch in range(self.epoch_):
                 self.run_one_epoch(sess, train, dev, tag2label, epoch, train_saver)
 
-    def test(self):
-        pass
+    def test(self, test):
+        saver = tf.train.Saver()
+        with tf.Session(config=self.config_) as sess:
+            print('=========test===========')
+            saver.restore(sess, self.model_path_)
+            label_list, seq_len_list = self.dev_one_epoch(sess, test)
+            self.evaluate()
+
     def demo_one(self):
         pass
     def run_one_epoch(self, sess, train, dev, tag2label, epoch, saver):
@@ -160,7 +166,7 @@ class BiLSTM_CRF(object):
             if step + 1 == num_batches:
                 saver.save(sess, self.model_path_, global_step=step_num)
         print('validation / test')
-        
+        self.dev_one_epoch()
 
 
     def get_feed_dict(self, seqs, labels=None, learning_rate=None, dropout=None):
@@ -176,9 +182,48 @@ class BiLSTM_CRF(object):
             feed_dict[self.dropout_ph_] = dropout
         return feed_dict,seq_len_list
 
-    def dev_one_epoch(self):
-        pass
-    def prediction_one_batch(self):
-        pass
-    def evaluate(self):
-        pass
+    def dev_one_epoch(self, sess, dev):
+        """
+        validate one epoch
+        """
+        label_list = []
+        seq_len_list = []
+        for seqs,lables in batch_generator(dev, self.batch_size_, self.vocab_, self.tag2tag2label_):
+            tmp_lables_list,tmp_seq_list = self.prediction_one_batch(sess, seqs)
+            label_list.append(tmp_lables_list)
+            seq_len_list.append(tmp_seq_list)
+        return label_list,seq_len_list
+
+    def prediction_one_batch(self, sess, seqs):
+        feed_dict,seq_len_list = self.get_feed_dict(seqs, dropout=0.1)
+        if self.crf_:
+            logits, transition_params = sess.run([self.logits_, self.transition_params_], feed_dict=feed_dict)
+            label_list = []
+            for logit,seq_len in zip(logits, seq_len_list):
+                viterbi_seq, _ = crf.viterbi_decode(logit[:seq_len], transition_params)
+                label_list.append(viterbi_seq)
+            return label_list, seq_len_list
+        else:
+            label_list = sess.run(self.labels_softmax_, feed_dict=feed_dict)
+            return label_list, seq_len_list
+
+
+    def evaluate(self, label_list, seq_len_list, data, epoch=None):
+        label2tag = {}
+        for k,v in self.tag2label_.items():
+            label2tag[v] = k if v != 0 else v
+
+        model_prediction = []
+        for label, (sent, tag) in zip(label_list, data):
+            tag_list = [label2tag[lab] for lab in label]
+            sent_res = []
+            if len(label) != len(sent):
+                print('sentence {0}, len label {1}, tag {2}'.format(sent, len(label), tag_list))
+            for i in range(len(sent)):
+                sent_res.append([sent[i], tag[i], tag_list[i]])
+            model_prediction.append(sent_res)
+        epoch_num = str(epoch + 1) if epoch != None else 'test'
+        label_path = os.path.join(self.result_path_, 'label_' + epoch_num)
+        metric_path = os.path.join(self.result_path_, 'result_metic_' + epoch_num)
+        for _ in conlleval(model_prediction, label_path, metric_path):
+            print(_)

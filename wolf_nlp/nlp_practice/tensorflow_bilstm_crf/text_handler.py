@@ -52,6 +52,25 @@ def pad_sequences(sequences, pad_mask=0):
         seq_len_list.append(min(len(seq), max_len))
     return seq_list,seq_len_list
 
+def conlleval(label_prediction, label_path, metric_path):
+    """
+    """
+    eval_perl = './conlleval_rev.pl'
+    with open(label_path, 'w') as fw:
+        line = []
+        for sent_result in label_prediction:
+            for ch, tag, tag_ in sent_result:
+                tag = '0' if tag == 'O' else tag
+                ch = ch.encode('utf-8')
+                line.append('{} {} {}\n'.format(ch, tag, tag_))
+            line.append('\n')
+        fw.write(line)
+    #os.system("perl {} < {} > {}".format(eval_perl, label_path, metric_path))
+    with open(metric_path) as fr:
+        merics = [line.strip() for line in fr.readlines()]
+    return merics
+
+
 class TextHandler(object):
     def __init__(self):
         pass
