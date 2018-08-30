@@ -54,9 +54,51 @@ def func5():
     for _ in data.items():
         print(_)
 
+def func6():
+    """
+    list的extend()
+    extend()：即为两个list相加
+    """
+    aList = [123, 'xyz', 'zara', 'abc', 123]
+    bList = [2009, 'manni']
+
+    #方法1
+    aList_copy = aList[:]
+    aList_copy += bList
+    print(aList_copy)
+
+    #方法2
+    print(aList + bList)
+
+    #方法3
+    aList.extend(bList)
+    print(aList)
+
+def func7():
+    """
+    判断字符串是否只由空格组成
+    """
+    str = "       "
+    print(str.isspace())    # 结果为True
+
+    str = "This is string example....wow!!!";
+    print(str.isspace())    #结果为False
+
+def func8(_):
+    """
+    locals() 函数会以字典类型返回当前位置的全部局部变量
+    """
+    data1 = [1,2,3]
+    data2 = 1
+    print(locals())  #结果 {'data2': 1, 'data1': [1, 2, 3], '_': 1}
+
+
 if __name__ == '__main__':
     #func1()
     #func2()
     #func3()
     #func4()
-    func5()
+    #func5()
+    #func6()
+    #func7()
+    func8(1)

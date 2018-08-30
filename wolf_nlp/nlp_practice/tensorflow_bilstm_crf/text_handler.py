@@ -1,6 +1,10 @@
 #coding=utf-8
 
 import random
+import os
+import sys
+import pickle
+import numpy as np
 
 # tag-BIO
 tag2label = {"O":0,
@@ -69,6 +73,106 @@ def conlleval(label_prediction, label_path, metric_path):
     with open(metric_path) as fr:
         merics = [line.strip() for line in fr.readlines()]
     return merics
+
+def read_dictionary(data_path):
+    with open(data_path, 'rb') as f:
+        word2id = pickle.load(f)
+        print('data len {0}'.format(len(word2id)))
+    return word2id
+
+def random_embedding(vocab, embedding_dim):
+    embedding_matri = np.random.uniform(-0.25, 0.25, (len(vocab), embedding_dim))
+    return np.float32(embedding_matri)
+
+def read_corpus(data_path):
+    """
+    return：[(sentence,tag)]
+    """
+    data = []
+    with open(data_path, encoding='utf-8') as f:
+        sents,tags = [], []
+        for line in f.readlines():
+            if line != '\n':
+                [ch,tag] = line.strip('\r\n ').split()
+                sents.append(ch)
+                tags.append(tag)
+            else:
+                data.append((sents,tags))
+                sents = []
+                tags = []
+    return data
+
+def get_entiry(tag_seq, char_seq):
+    loc = get_LOC_entity(tag_seq, char_seq)
+    per = get_PER_entity(tag_seq, char_seq)
+    org = get_ORG_entity(tag_seq, char_seq)
+    return per, loc, org
+def get_PER_entity(tag_seq, char_seq):
+    char_seq_len = len(char_seq)
+    PER = []
+    for i,(char,tag) in enumerate(zip(char_seq, tag_seq)):
+        if tag == 'B-PER':
+            if 'per' in locals().keys():
+                PER.append(per)
+                del per
+            per = char
+            if i+1 == char_seq_len:
+                PER.append(per)
+        if tag == 'I-PER':
+            per += char
+            if i+1 == char_seq_len:
+                PER.append(per)
+        if tag not in ['I-PER', 'B-PER']:
+            if 'per' in locals().keys():
+                PER.append(per)
+                del per
+            continue
+    return PER
+
+def get_LOC_entity(tag_seq, char_seq):
+    char_seq_len = len(char_seq)
+    LOC = []
+    for i,(char,tag) in enumerate(zip(char_seq, tag_seq)):
+        if tag == 'B-LOC':
+            if 'loc' in locals().keys():
+                LOC.append(loc)
+                del loc
+            loc = char
+            if i+1 == char_seq_len:
+                LOC.append(loc)
+        if tag == 'I-LOC':
+            loc += char
+            if i+1 == char_seq_len:
+                LOC.append(loc)
+        if tag not in ['B-LOC','I-LOC']:
+            if 'loc' in locals().keys():
+                LOC.append(loc)
+                del loc
+            continue
+    return LOC
+
+
+def get_ORG_entity(tag_seq, char_seq):
+    char_seq_len = len(char_seq)
+    ORG = []
+    for i, (char, tag) in enumerate(zip(char_seq, tag_seq)):
+        if tag == 'B-ORG':
+            if 'org' in locals().keys():
+                ORG.append(org)
+                del org
+            org = char
+            if i+1 == char_seq_len:
+                ORG.append(org)
+        if tag == 'I-ORG':
+            org += char
+            if i+1 == char_seq_len:
+                ORG.append(org)
+        if tag not in ['I-ORG', 'B-ORG']:
+            if 'org' in locals().keys():
+                ORG.append(org)
+                del org
+            continue
+    return ORG
 
 
 class TextHandler(object):

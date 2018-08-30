@@ -12,7 +12,7 @@ from tensorflow.contrib.layers import xavier_initializer
 from text_handler import batch_generator, tag2label, pad_sequences, conlleval
 
 class BiLSTM_CRF(object):
-    def __init__(self, batch_size, epoch, hidden_size, embeddings, crf, update_embedding, dropout_keepprob, optimizer, learning_rate, clip, tag2label, vocab, shuffle, paths, config):
+    def __init__(self, batch_size, epoch, hidden_size, embeddings, crf, update_embedding, dropout_keepprob, optimizer, learning_rate, clip, tag2label, vocab, shuffle, model_p, summary_p, results_p, config):
         self.batch_size_ = batch_size
         self.epoch_ = epoch
         self.hidden_size_ = hidden_size
@@ -142,10 +142,19 @@ class BiLSTM_CRF(object):
             print('=========test===========')
             saver.restore(sess, self.model_path_)
             label_list, seq_len_list = self.dev_one_epoch(sess, test)
-            self.evaluate()
+            self.evaluate(label_list, seq_len_list, test)
 
-    def demo_one(self):
-        pass
+    def demo_one(self, sess, sent):
+        label_list = []
+        for seqs, labels in batch_generator(sent, self.batch_size_, self.vocab_, self.tag2label_):
+            tmp_label_list, _ = self.prediction_one_batch(sess, seqs)
+            label_list.append(tmp_label_list)
+        label2tag = {}
+        for t,l in self.tag2label_.items():
+            label2tag[l] = t if l != 0 else l
+        tags = [label2tag[l] for l in label_list[0]]
+        return tags
+
     def run_one_epoch(self, sess, train, dev, tag2label, epoch, saver):
         num_batches = (len(train) + self.batch_size_ - 1) // self.batch_size_
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
