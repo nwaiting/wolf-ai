@@ -197,7 +197,6 @@ def Viterbi(obs,states,start_prob,emit_prob,trans_prob):
             max_prob_state = y
     return path[max_prob_state]
 
-
 def Viterbi2(obs, states, start_prob, trans_prob, emit_prob):
     V= [{}]
     # 先初始化V
@@ -229,6 +228,37 @@ def Viterbi2(obs, states, start_prob, trans_prob, emit_prob):
         pre = V[t][pre]["prev"]
 
     print("max prob {0} path {1}".format(max_prob, " ".join(opt)))
+
+def viterbi(obs, states, start_prob, trans_prob, emit_prob):
+    V = [{}]
+    #先初始化
+    for i in states:
+        V[0][i] = {'prob':start_prob[i] * emit_prob[i][obs[0]], 'prev':None}
+    #开始进行viterbi计算
+    for t in range(1, len(obs)):
+        for y in states:
+            max_prob = 0.0
+            pre_state = None
+            for y0 in states:
+                #前一时刻不同状态的概率 * 不同状态转移到当前状态概率 * 当前状态的发射概率
+                prob = V[t-1][y0]['prob'] * trans_prob[y0][y] * emit_prob[y][obs[t]]
+                if prob > max_prob:
+                    max_prob = prob
+                    pre_state = y0
+            V[t][y] = {'prob':max_prob, 'prev':pre_state}
+    opt = []
+    max_prob = 0.0
+    pre_state = None
+    #先找出最后一个最大概率的
+    for p,s in V[-1].item():
+        if p > max_prob:
+            max_prob = p
+            opt = [s]
+            pre_state = s
+    #从最后一个逆向遍历
+    for t in range(len(V[-1])-1,-1,-1):
+        opt.insert(0, V[-1][pre_state]['prev'])
+        pre_state = V[-1][pre_state]['prev']
 
 if __name__ == "__main__":
     Viterbi()

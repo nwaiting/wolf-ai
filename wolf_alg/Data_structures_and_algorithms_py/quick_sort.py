@@ -46,7 +46,7 @@ def qsort_bark(data_list, left, right):
 def qsort_middle(data_list, left, right):
     if left >= right:
         return data_list
-    key_index = (right + left)/2
+    key_index = int((right + left)/2)
     key = data_list[key_index]
     lp, rp = left, right
     while lp < rp:
@@ -63,10 +63,29 @@ def qsort_middle(data_list, left, right):
 
 def quick_sort(data_list):
     return qsort(data_list, 0, len(data_list) - 1)
-    # return qsort_middle(data_list, 0, len(data_list) - 1)
-    # return qsort_bark(data_list, 0, len(data_list) - 1)
+    #return qsort_middle(data_list, 0, len(data_list) - 1)  error
+    #return qsort_bark(data_list, 0, len(data_list) - 1)  error
 
+#20180830
+def quick_s(data, left, right):
+    if left >= right:
+        return data
+    l = left
+    r = right
+    key = data[l]
+    while l < r:
+        #注：先从右边开始遍历寻找
+        while data[r] >= key and l < r:
+            r -= 1
+        while data[l] <= key and l < r:
+            l += 1
+        data[l],data[r] = data[r],data[l]
+    data[left],data[l] = data[l],data[left]
+    quick_s(data, left, l-1)
+    quick_s(data, l+1, right)
+    return data
 
 if __name__ == "__main__":
     data_list = [44678, 2, 4676, 67868, 4546, 464, 8, 56, 67, 676]
-    print (quick_sort(data_list))
+    #print (quick_sort(data_list))
+    print(quick_s(data_list, 0, len(data_list)-1))
