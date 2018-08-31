@@ -208,8 +208,10 @@ class BiLSTM_CRF(object):
         seq_len_list = []
         for seqs,lables in batch_generator(dev, self.batch_size_, self.vocab_, self.tag2label_):
             tmp_lables_list,tmp_seq_list = self.prediction_one_batch(sess, seqs)
-            label_list.append(tmp_lables_list)
-            seq_len_list.append(tmp_seq_list)
+            label_list += tmp_lables_list
+            seq_len_list += tmp_seq_list
+            #label_list.append(tmp_lables_list)
+            #seq_len_list.append(tmp_seq_list)
         return label_list,seq_len_list
 
     def prediction_one_batch(self, sess, seqs):
@@ -233,6 +235,7 @@ class BiLSTM_CRF(object):
 
         model_prediction = []
         for label, (sent, tag) in zip(label_list, data):
+            #print('label {}'.format(label))
             tag_list = [label2tag[lab] for lab in label]
             sent_res = []
             if len(label) != len(sent):
