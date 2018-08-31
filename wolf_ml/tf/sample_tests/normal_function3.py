@@ -75,9 +75,93 @@ def func3():
     with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
         print(sess.run(hello))
 
+def func4():
+    """
+    saver = tf.train.Saver()
+    saver.save()
+    saver.restore()
+        模型保存与加载
+    """
+    flag = 1
+    if flag == 0:
+        W = tf.Variable([[1,2,3],[2,3,4],[3,4,5]], dtype=tf.float32, name='weights')
+        b = tf.Variable([[1,2,3]], dtype=tf.float32, name='biases')
+        saver = tf.train.Saver()
+        with tf.Session() as sess:
+            #tf.initialize_all_variables() 该函数将不再使用，在 2017年3月2号以后；
+            #用 tf.global_variables_initializer() 替代 tf.initialize_all_variables()
+            sess.run(tf.global_variables_initializer())
+            import os
+            save_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'save','tf_model.ckpt')
+            sp = saver.save(sess, save_path)
+            print(sp)
+    elif flag == 1:
+        import numpy as np
+        W = tf.Variable(np.arange(9).reshape((3,3)), dtype=tf.float32, name='weights')
+        b = tf.Variable(np.arange(3).reshape((1,3)), dtype=tf.float32, name='biases')
+        #restore 之前不需要initialize_all_variables
+        saver = tf.train.Saver()
+        with tf.Session() as sess:
+            import os
+            save_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'save','tf_model.ckpt')
+            saver.restore(sess, save_path)
+            print('weights {0}'.format(sess.run(W)))
+            print('biases {0}'.format(sess.run(b)))
+
+def func5():
+    """
+    Variable变量
+    tf.Variable()
+
+    __init__(
+    initial_value=None,
+    trainable=True,
+    collections=None,
+    validate_shape=True,
+    caching_device=None,
+    name=None,
+    variable_def=None,
+    dtype=None,
+    expected_shape=None,
+    import_scope=None,
+    constraint=None
+    )
+    params:
+        trainable：
+            If True, the default, also adds the variable to the graph collection GraphKeys.TRAINABLE_VARIABLES
+            如果Ture ，新变量添加到图集合GraphKeys.TRAINABLE_VARIABLES
+    """
+    pass
+
+def func6():
+    """
+    运用tensorboard进行网络的可视化
+    可视化项目：
+        events:
+            loss的变化过程
+            添加events的变量：
+                tf.scalar_summary()
+        images：
+            pass
+        graph：
+            网络的构造过程，网络流程图
+        histograms:
+            训练过程，各种变量的变化过程，比如weights等的变化过程
+            添加histogram的变量：
+                tf.histogram_summary()
+
+        对所有的summary进行合并打包写入到文件中：
+            tf.merge_all_summary()
+            tf.summary.merge_all()
+    """
+    with tf.Session() as sess:
+        sess.run()
+        tf.summary.FileWriter(path, sess.graph)
+
 if __name__ == '__main__':
     #func1()
-
     #func2()
-
-    func3()
+    #func3()
+    #func4()
+    #func5()
+    func6()

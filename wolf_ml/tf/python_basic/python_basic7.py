@@ -92,6 +92,21 @@ def func8(_):
     data2 = 1
     print(locals())  #结果 {'data2': 1, 'data1': [1, 2, 3], '_': 1}
 
+def func9():
+    """
+    sys.stdout.write和print的区别
+    sys.stdout.write('\r')  当只有换行时，一直在一样显示
+    """
+    import sys
+    import time
+    for _ in range(10):
+        time.sleep(0.5)
+        print('hello')
+
+    #
+    for _ in range(10):
+        time.sleep(0.5)
+        sys.stdout.write('hello {}\r'.format(_))
 
 if __name__ == '__main__':
     #func1()
@@ -101,4 +116,5 @@ if __name__ == '__main__':
     #func5()
     #func6()
     #func7()
-    func8(1)
+    #func8(1)
+    func9()

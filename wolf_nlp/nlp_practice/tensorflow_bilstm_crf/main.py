@@ -12,9 +12,9 @@ from text_handler import TextHandler, read_dictionary, random_embedding, read_co
 
 tf.flags.DEFINE_string('train_data', 'data_path', 'train data source')
 tf.flags.DEFINE_string('test_data', 'data_path', 'test data source')
-tf.flags.DEFINE_integer('batch_size', 128, 'sample of each minibatch')
-tf.flags.DEFINE_integer('epoch', 50, 'epoch of training')
-tf.flags.DEFINE_integer('hidden_size', 128, 'dim of hidden size')
+tf.flags.DEFINE_integer('batch_size', 64, 'sample of each minibatch')
+tf.flags.DEFINE_integer('epoch', 40, 'epoch of training')
+tf.flags.DEFINE_integer('hidden_size', 300, 'dim of hidden size')
 tf.flags.DEFINE_string('optimizer', 'Adam', 'Adam/Adadelta/Adagrad/RMSProp/Momentum/SGD')
 tf.flags.DEFINE_boolean('CRF', True, 'use CRF at the top layer,if false, use softmax')
 tf.flags.DEFINE_float('learning_rate', 0.001, 'learning rate')
@@ -45,7 +45,7 @@ def main(_):
         embedding_path = 'pretrain_embedding.npy'
         data_embeddings = np.array(np.load(embedding_path), dtype='float32')
 
-    if FLAGS.model != 'demo':
+    if FLAGS.mode != 'demo':
         train_file = os.path.join(FLAGS.train_data, 'train_data')
         test_file = os.path.join(FLAGS.test_data, 'test_data')
         train_data = read_corpus(train_file)
@@ -73,12 +73,12 @@ def main(_):
                             FLAGS.epoch,
                             FLAGS.hidden_size,
                             data_embeddings,
-                            FLAGS.crf,
+                            FLAGS.CRF,
                             FLAGS.update_embedding,
-                            FLAGS.dropout_keepprob,
+                            FLAGS.dropout,
                             FLAGS.optimizer,
                             FLAGS.learning_rate,
-                            FLAGS.clip,
+                            FLAGS.clipping,
                             tag2label,
                             word2id,
                             FLAGS.shuffle,
@@ -96,12 +96,12 @@ def main(_):
                             FLAGS.epoch,
                             FLAGS.hidden_size,
                             data_embeddings,
-                            FLAGS.crf,
+                            FLAGS.CRF,
                             FLAGS.update_embedding,
-                            FLAGS.dropout_keepprob,
+                            FLAGS.dropout,
                             FLAGS.optimizer,
                             FLAGS.learning_rate,
-                            FLAGS.clip,
+                            FLAGS.clipping,
                             tag2label,
                             word2id,
                             FLAGS.shuffle,
@@ -120,12 +120,12 @@ def main(_):
                             FLAGS.epoch,
                             FLAGS.hidden_size,
                             data_embeddings,
-                            FLAGS.crf,
+                            FLAGS.CRF,
                             FLAGS.update_embedding,
-                            FLAGS.dropout_keepprob,
+                            FLAGS.dropout,
                             FLAGS.optimizer,
                             FLAGS.learning_rate,
-                            FLAGS.clip,
+                            FLAGS.clipping,
                             tag2label,
                             word2id,
                             FLAGS.shuffle,

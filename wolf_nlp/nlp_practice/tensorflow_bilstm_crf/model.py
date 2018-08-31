@@ -27,11 +27,11 @@ class BiLSTM_CRF(object):
         self.num_tags_ = len(tag2label)
         self.vocab_ = vocab
         self.shuffle_ = shuffle
-        self.model_path_ = paths
-        self.summary_path_ = paths
-        self.result_path_ = paths
+        self.model_path_ = model_p
+        self.summary_path_ = summary_p
+        self.result_path_ = results_p
         self.config_ = config
-        self.init_global_variables_ = None
+        #self.init_global_variables_ = None
 
     def build_graph(self):
         self.init_variables()
@@ -45,11 +45,12 @@ class BiLSTM_CRF(object):
     def init_variables(self):
         self.word_ids_ = tf.placeholder(tf.int32, shape=[None, None], name='word_ids_')
         self.labels_ = tf.placeholder(tf.int32, shape=[None, None], name='labels_')
-        self.sequence_length_ = tf.placeholder(tf.int32, shape=[None,], name='sequence_length_')
+        self.sequence_length_ = tf.placeholder(tf.int32, shape=[None], name='sequence_length_')
         self.dropout_ph_ = tf.placeholder(tf.float32, shape=[], name='dropout_ph_')
         self.learning_rate_ph_ = tf.placeholder(tf.float32, shape=[], name='learning_rate_ph_')
 
     def lookup_layer(self):
+        #在可视化的时候，后面的变量是在words图层下的
         with tf.variable_scope('words'):
             _word_embeddings = tf.Variable(self.embeddings_, dtype=tf.float32, trainable=self.update_embedding_, name='_word_embeddings')
             word_embeddings = tf.nn.embedding_lookup(params=_word_embeddings, ids=self.word_ids_, name='word_embeddings')
@@ -59,12 +60,16 @@ class BiLSTM_CRF(object):
         with tf.variable_scope('bi-lstm'):
             cell_fw = rnn.BasicLSTMCell(self.hidden_size_)
             cell_bw = rnn.BasicLSTMCell(self.hidden_size_)
-            output_fw_seq, output_bw_seq, _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell_fw, cell_bw=cell_bw, inputs=self.word_embeddings_, sequence_length=self.sequence_length_,dtype=tf.float32)
+            # sequence_length：[batch_size]
+            # time_major == False (default)
+            # output_fw: [batch_size, max_time, cell_fw.output_size]
+            # output_bw: [batch_size, max_time, cell_bw.output_size]
+            (output_fw_seq, output_bw_seq), _ = tf.nn.bidirectional_dynamic_rnn(cell_fw=cell_fw, cell_bw=cell_bw, inputs=self.word_embeddings_, sequence_length=self.sequence_length_,dtype=tf.float32)
             output = tf.concat([output_fw_seq, output_bw_seq], axis=-1)
             output = tf.nn.dropout(output, self.dropout_ph_)
 
         with tf.variable_scope('proj'):
-            W = tf.get_variable(shape=[2 * self.hidden_size_, self.num_tags_], initializer=xavier_initializer, dtype=tf.float32, name='W')
+            W = tf.get_variable(shape=[2 * self.hidden_size_, self.num_tags_], initializer=xavier_initializer(), dtype=tf.float32, name='W')
             b = tf.get_variable(shape=[self.num_tags_], initializer=tf.zeros_initializer(), name='b')
             s = tf.shape(output)
             output = tf.reshape(output, [-1, 2*self.hidden_size_])
@@ -74,7 +79,7 @@ class BiLSTM_CRF(object):
 
     def loss_optimizer(self):
         if self.crf_:
-            log_likelihood,self.transition_params_ = crf_log_likelihood(inputs=self.logits_, tag_indices=self.labels_, sequence_lengths=self.sequence_length_)
+            log_likelihood,self.transition_params_ = crf.crf_log_likelihood(inputs=self.logits_, tag_indices=self.labels_, sequence_lengths=self.sequence_length_)
             self.loss_ = -tf.reduce_mean(log_likelihood)
         else:
             losses = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=self.logits_, labels=self.labels_)
@@ -104,7 +109,7 @@ class BiLSTM_CRF(object):
             else:
                 opt = GradientDescentOptimizer(learning_rate=self.learning_rate_ph_)
 
-            """"
+            """
             #修正梯度参数的另一种写法
             #获取全部可以训练的参数tf_variables
             tf_variables = tf.trainable_variables()
@@ -114,7 +119,7 @@ class BiLSTM_CRF(object):
             tf_grads,_ = tf.clip_by_global_norm(tf_grads, self.clip_grad_)
             #将前面clip过的梯度应用到可训练的参数上
             self.train_optimizer_ = opt.apply_gradients(zip(tf_grads, tf_variables))
-            """"
+            """
 
             # 获取参数，提前计算梯度
             grads_and_vars = opt.compute_gradients(self.loss_)
@@ -124,6 +129,8 @@ class BiLSTM_CRF(object):
             self.train_optimizer_ = opt.apply_gradients(grads_and_vars_clip, global_step=self.global_step_)
 
     def add_summary(self, sess):
+        # 运用tensorboard，将graph图写入到文件中，展示出来
+        # self.merged_ 需要被sess.run()，和其他变量一样，然后写入到文件中
         self.merged_ = tf.summary.merge_all()
         self.file_writer_ = tf.summary.FileWriter(self.summary_path_, sess.graph)
 
@@ -131,7 +138,7 @@ class BiLSTM_CRF(object):
         train_saver = tf.train.Saver(tf.global_variables())
         with tf.Session(config=self.config_) as sess:
             sess.run(self.init_global_variables_)
-            sess.add_summary(sess)
+            self.add_summary(sess)
 
             for epoch in range(self.epoch_):
                 self.run_one_epoch(sess, train, dev, tag2label, epoch, train_saver)
@@ -158,9 +165,10 @@ class BiLSTM_CRF(object):
     def run_one_epoch(self, sess, train, dev, tag2label, epoch, saver):
         num_batches = (len(train) + self.batch_size_ - 1) // self.batch_size_
         start_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
-        one_batch = batch_generator(train, self.batch_size, self.vocab_, tag2label, shuffle=self.shuffle_)
+        one_batch = batch_generator(train, self.batch_size_, self.vocab_, tag2label, shuffle=self.shuffle_)
         for step,(seqs,labels) in enumerate(one_batch):
-            print('handle {0} batch {1} batches'.format(step+1, num_batches))
+            #print('handle {0} batch {1} batches'.format(step+1, num_batches))
+            sys.stdout.write('handle {0} batch {1} batches\r'.format(step+1, num_batches))
             step_num = epoch * num_batches + step + 1
             feed_dict, _ = self.get_feed_dict(seqs, labels, self.learning_rate_, self.dropout_keepprob_)
             run_ops = [self.train_optimizer_, self.loss_, self.merged_, self.global_step_]
@@ -169,14 +177,15 @@ class BiLSTM_CRF(object):
                 (step + 1) % 300 == 0 or \
                 step + 1 == num_batches:
                 print('{0} epoch {1}, step {2}, loss {3:.4}, global_step {4}'.format(start_time, epoch+1, step+1, loss_train, step_num))
-            #这里设置的step_num是否有问题?
+            #这里设置的step_num是否有问题
+            # 将变量全部打包，需要对summary进行run，然后写入到文件中，step_num记录的频率
             self.file_writer_.add_summary(summary, step_num)
             #global_step设置是否有问题
             if step + 1 == num_batches:
                 saver.save(sess, self.model_path_, global_step=step_num)
-        print('validation / test')
-        self.dev_one_epoch()
-
+        print('validation / test =================')
+        label_list_dev, seq_len_list_dev = self.dev_one_epoch(sess, dev)
+        self.evaluate(label_list_dev, seq_len_list_dev, dev, epoch)
 
     def get_feed_dict(self, seqs, labels=None, learning_rate=None, dropout=None):
         word_ids,seq_len_list = pad_sequences(seqs)
@@ -197,7 +206,7 @@ class BiLSTM_CRF(object):
         """
         label_list = []
         seq_len_list = []
-        for seqs,lables in batch_generator(dev, self.batch_size_, self.vocab_, self.tag2tag2label_):
+        for seqs,lables in batch_generator(dev, self.batch_size_, self.vocab_, self.tag2label_):
             tmp_lables_list,tmp_seq_list = self.prediction_one_batch(sess, seqs)
             label_list.append(tmp_lables_list)
             seq_len_list.append(tmp_seq_list)
