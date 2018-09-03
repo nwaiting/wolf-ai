@@ -39,6 +39,14 @@
 
         https://github.com/litoeknee/tensorflow/blob/master/tensorflow/examples/tutorials/word2vec/simple_skip_gram.ipynb  TensorFlow实现word2vec
 
+        https://yq.aliyun.com/articles/590317   学习笔记CB014:TensorFlow seq2seq模型步步进阶
+        https://yq.aliyun.com/articles/460299?spm=a2c4e.11153940.blogcont590317.31.5eef7a39Wu9CoK   302页吴恩达Deeplearning.ai课程笔记，详记基础知识与作业代码
+
+        https://blog.csdn.net/wangyangzhizhou/article/details/79055662  2017年文章汇总--自然语言处理篇
+        https://mp.weixin.qq.com/s?__biz=MjM5MzA1Mzc3Nw==&mid=2247484162&idx=1&sn=b7a6ed1851925972ae422775ebe71e52&chksm=a69dae3c91ea272ab9d152ea211da30fcd42c79277bc4a782e82139f6bdd8edde197dbb06993#rd  2017文章汇总--机器学习篇
+
+        https://blog.csdn.net/wuzqChom/article/details/75792501     Attention-based Model模型
+
 - **掘金翻译计划：**
         https://github.com/xitu/gold-miner    可能是最好的英译中技术社区
         https://github.com/xitu/tensorflow-docs/blob/zh-hans/performance/quantization.md   TensorFlow的定点量化

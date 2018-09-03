@@ -68,7 +68,8 @@ def conlleval(label_prediction, label_path, metric_path):
                 ch = ch.encode('utf-8')
                 line.append('{} {} {}\n'.format(ch, tag, tag_))
             line.append('\n')
-        fw.write(line)
+        #fw.write(line)
+        fw.writelines(line)
     #os.system("perl {} < {} > {}".format(eval_perl, label_path, metric_path))
     with open(metric_path) as fr:
         merics = [line.strip() for line in fr.readlines()]
