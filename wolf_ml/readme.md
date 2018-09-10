@@ -102,6 +102,10 @@
         个人比较全自然语言的博客：
             http://fornlp.com/2018/01/
 
+        知识图谱：
+            http://pelhans.com/2018/03/15/xiaoxiangkg-note1/    知识图谱入门（一到九）
+            https://zhuanlan.zhihu.com/datagrand    达观数据文本算法
+
 - **资料：**
         机器学习入门经典《统计学习方法》pdf下载
         链接:https://pan.baidu.com/s/1o99BsV4  密码:b2ul
