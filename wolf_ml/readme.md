@@ -105,6 +105,28 @@
         知识图谱：
             http://pelhans.com/2018/03/15/xiaoxiangkg-note1/    知识图谱入门（一到九）
             https://zhuanlan.zhihu.com/datagrand    达观数据文本算法
+            https://github.com/ownthink/KnowledgeGraph?tdsourcetag=s_pcqq_aiomsg    开放的知识图谱项目
+
+        情感分析：
+            https://mp.weixin.qq.com/s/8nB765fPzIi2s7Zfxbtf7A  基于LSTM搭建文本情感分类的深度学习模型:准确率95%：
+                语料下载，和采集到的评论数据
+                链接:https://pan.baidu.com/s/1Sv2gXu4x7RxRiJxjkIhyRw
+                密码:1pur
+            https://mp.weixin.qq.com/s/Cm-DNNLMqgcp_DJqUeM-Tw   大神总结的机器学习的数学基础，掌握这些足够
+            https://mp.weixin.qq.com/s/4BO74EtpFML65Tq0IIk1jA   《统计学习方法》中每一章的算法实现一遍
+            https://mp.weixin.qq.com/s/BswtWH3dPtD6LmKRWMaaMw   《21个项目玩转深度学习：基于TensorFlow的实践详解》完整版PDF+附书代码
+
+
+- **数据集：**
+        nlp数据：
+            http://icrc.hitsz.edu.cn/info/1037/1141.htm?tdsourcetag=s_pcqq_aiomsg   哈工大 LCSTS: A Large-Scale Chinese Short Text Summarization Dataset
+            http://icrc.hitsz.edu.cn/xszy/yjzy.htm      哈工大NLP数据集
+
+        微软中文分词语料：
+            http://sighan.cs.uchicago.edu/bakeoff2005/
+
+- **系统学习：**
+        https://github.com/jwasham/coding-interview-university/blob/master/translations/README-cn.md    完整的学习手册Google Interview University
 
 - **资料：**
         机器学习入门经典《统计学习方法》pdf下载
