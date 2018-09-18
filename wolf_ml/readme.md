@@ -128,6 +128,9 @@
 - **系统学习：**
         https://github.com/jwasham/coding-interview-university/blob/master/translations/README-cn.md    完整的学习手册Google Interview University
 
+- **基本功：**
+        https://blog.csdn.net/tick_tock97/article/category/6895664  ACM-搜索、图论、数论等
+
 - **资料：**
         机器学习入门经典《统计学习方法》pdf下载
         链接:https://pan.baidu.com/s/1o99BsV4  密码:b2ul
