@@ -312,7 +312,10 @@ sources_url_math = [
             "第10课 第二节 最大间隔与决策公式,http://v2.julyedu.com/ts/41/512/d2c3c0a4.m3u8",
             "第10课 第三节 目标函数与优化理论,http://v2.julyedu.com/ts/41/513/782d2527.m3u8",
             "第10课 第四节 核方法,http://v2.julyedu.com/ts/41/514/5ec9b408.m3u8",
-            "第10课 第五节 Hinge loss及课程回顾,http://v2.julyedu.com/ts/41/515/9dc31300.m3u8"
+            "第10课 第五节 Hinge loss及课程回顾,http://v2.julyedu.com/ts/41/515/9dc31300.m3u8",
+            "论文公开课 第一期 随机梯度下降算法综述,http://v3.julyedu.com/video/69/646/e93a886e99.m3u8",
+            "论文公开课 第二期 深度学习中的归一化,http://v3.julyedu.com/video/69/686/6463661235.m3u8",
+            "论文公开课 第三期 AlphaGo Zero背后的算法,http://v3.julyedu.com/video/69/794/553ab8fd79.m3u8"
             ]
 
 def parse_titles():
