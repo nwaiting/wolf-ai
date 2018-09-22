@@ -57,6 +57,7 @@
 
 - **CRF源码详解：**
         https://blog.csdn.net/App_12062011/article/details/53869687     CRF++源码分析
+        https://applenob.github.io/crf.html     算法详解
 
 - **简书NLP的深度学习汇总：**
         https://www.jianshu.com/p/28f02bb59fe5
@@ -121,6 +122,12 @@
         nlp数据：
             http://icrc.hitsz.edu.cn/info/1037/1141.htm?tdsourcetag=s_pcqq_aiomsg   哈工大 LCSTS: A Large-Scale Chinese Short Text Summarization Dataset
             http://icrc.hitsz.edu.cn/xszy/yjzy.htm      哈工大NLP数据集
+
+        一份非常全面的开源数据集：
+            https://www.itcodemonkey.com/article/8867.html
+            https://www.jiqizhixin.com/articles/2017-02-14-2    最好的公开数据集
+            https://www.jiqizhixin.com/articles/2017-10-14-5    自然语言处理领域重要论文&资源全索引
+            https://handbook.jiqizhixin.com/Technical/2cfb0c46-37ed-47f3-9ac6-4a3d646aecc1  机器之心-AI商用搜索-自然语言处理
 
         微软中文分词语料：
             http://sighan.cs.uchicago.edu/bakeoff2005/
