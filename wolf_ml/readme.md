@@ -130,6 +130,7 @@
 
 - **基本功：**
         https://blog.csdn.net/tick_tock97/article/category/6895664  ACM-搜索、图论、数论等
+        https://github.com/hit-computer/Algorithm   常规算法
 
 - **资料：**
         机器学习入门经典《统计学习方法》pdf下载
