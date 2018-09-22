@@ -148,29 +148,29 @@ sources_math = """
         /video/play/41/515</span><span class="video-catalog-left">(63) 第10课 第五节 Hinge loss及课程回顾</span><span>(21:33)</span></a></li>
 """
 
-sources_urls = ["第1课（上）微积分,/67/615/585b7925ff.m3u8",
-            "第1课（下）概率论,/67/1316/8fc04380c4.m3u8",
-            "第2课（上） 线性代数,/67/617/689129cdec.m3u8",
-            "第2课（下） 凸优化,/67/1317/65fed5fa90.m3u8",
-            "第3课 回归问题与应用,/67/620/f45c5d2d88.m3u8",
-            "第4课 决策树、随机森林、GBDT,/67/625/3738907e1b.m3u8",
-            "第5课 SVM,/67/659/3f8cb40619.m3u8",
-            "第6课 最大熵与EM算法（上）,/67/641/ee810d8f85.m3u8",
-            "第6课 最大熵与EM算法（下）,/67/1358/35d55e1522.m3u8",
-            "第7课 机器学习中的特征工程处理,/67/639/b708635864.m3u8",
-            "第8课 多算法组合与模型最优化,/67/666/299d366254.m3u8",
-            "第9课 sklearn与机器学习实战,/67/676/d524c0c2e8.m3u8",
-            "第10课 高级工具xgboost/lightGBM与建模实战,/67/677/2dc0222e0b.m3u8",
-            "第11课 用户画像与推荐系统,/67/682/cc4990c83f.m3u8",
-            "第12课 聚类,/67/685/4096fbe221.m3u8",
-            "第13课 聚类与推荐系统实战,/67/692/f9f91cd421.m3u8",
-            "第14课 贝叶斯网络,/67/695/5dfe57e51f.m3u8",
-            "第15课 隐马尔科夫模型HMM,/67/696/89bab3178f.m3u8",
-            "第16课 主题模型,/67/697/357374ff1d.m3u8",
-            "第17课 神经网络初步,/67/702/1ce717ac40.m3u8",
-            "第18课 卷积神经网络与计算机视觉,/67/706/44462aa908.m3u8",
-            "第19课 循环神经网络与自然语言处理,/67/708/cf9fd481fc.m3u8",
-            "第20课 深度学习实践,/67/714/a90b06c249.m3u8"
+sources_urls = ["第1课（上）微积分,http://v3.julyedu.com/video/67/615/585b7925ff.m3u8",
+            "第1课（下）概率论,http://v3.julyedu.com/video/67/1316/8fc04380c4.m3u8",
+            "第2课（上） 线性代数,http://v3.julyedu.com/video/67/617/689129cdec.m3u8",
+            "第2课（下） 凸优化,http://v3.julyedu.com/video/67/1317/65fed5fa90.m3u8",
+            "第3课 回归问题与应用,http://v3.julyedu.com/video/67/620/f45c5d2d88.m3u8",
+            "第4课 决策树、随机森林、GBDT,http://v3.julyedu.com/video/67/625/3738907e1b.m3u8",
+            "第5课 SVM,http://v3.julyedu.com/video/67/659/3f8cb40619.m3u8",
+            "第6课 最大熵与EM算法（上）,http://v3.julyedu.com/video/67/641/ee810d8f85.m3u8",
+            "第6课 最大熵与EM算法（下）,http://v3.julyedu.com/video/67/1358/35d55e1522.m3u8",
+            "第7课 机器学习中的特征工程处理,http://v3.julyedu.com/video/67/639/b708635864.m3u8",
+            "第8课 多算法组合与模型最优化,http://v3.julyedu.com/video/67/666/299d366254.m3u8",
+            "第9课 sklearn与机器学习实战,http://v3.julyedu.com/video/67/676/d524c0c2e8.m3u8",
+            "第10课 高级工具xgboost/lightGBM与建模实战,http://v3.julyedu.com/video/67/677/2dc0222e0b.m3u8",
+            "第11课 用户画像与推荐系统,http://v3.julyedu.com/video/67/682/cc4990c83f.m3u8",
+            "第12课 聚类,http://v3.julyedu.com/video/67/685/4096fbe221.m3u8",
+            "第13课 聚类与推荐系统实战,http://v3.julyedu.com/video/67/692/f9f91cd421.m3u8",
+            "第14课 贝叶斯网络,http://v3.julyedu.com/video/67/695/5dfe57e51f.m3u8",
+            "第15课 隐马尔科夫模型HMM,http://v3.julyedu.com/video/67/696/89bab3178f.m3u8",
+            "第16课 主题模型,http://v3.julyedu.com/video/67/697/357374ff1d.m3u8",
+            "第17课 神经网络初步,http://v3.julyedu.com/video/67/702/1ce717ac40.m3u8",
+            "第18课 卷积神经网络与计算机视觉,http://v3.julyedu.com/video/67/706/44462aa908.m3u8",
+            "第19课 循环神经网络与自然语言处理,http://v3.julyedu.com/video/67/708/cf9fd481fc.m3u8",
+            "第20课 深度学习实践,http://v3.julyedu.com/video/67/714/a90b06c249.m3u8"
             ]
 
 sources_urls_lianghua = [
@@ -415,6 +415,8 @@ def downnew():
 
                         ts_url = new_url_pre + res_line
                         file_name = os.path.join(items[0],res_line)
+                        if os.path.exists(file_name):
+                            continue
                         print(ts_url, file_name)
                         dts(ts_url, file_name)
             except Exception as e:
