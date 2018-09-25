@@ -35,117 +35,19 @@ sources_ml = """
     /video/play/67/714</span><span class="video-catalog-left">(23) 第20课 深度学习实践</span><span>(01:46:37)</span></a></li>
     """
 sources_langhua=u"""
-    <li c/video/play/50/257</span><span class="video-catalog-left">(1) 第一课 自动化交易综述</span><span>(01:58:49)</span></a></li>
-    /video/play/50/1035</span><span class="video-catalog-left">(2) 第1课 第1节 算法交易综述</span><span>(36:09)</span></a></li>
-    /video/play/50/1036</span><span class="video-catalog-left">(3) 第1课 第2节 机器学习流程</span><span>(38:16)</span></a></li>
-    /video/play/50/1037</span><span class="video-catalog-left">(4) 第1课 第3节 量化交易评估</span><span>(22:47)</span></a></li>
-    /video/play/50/1038</span><span class="video-catalog-left">(5) 第1课 第4节 量化交易策略</span><span>(22:32)</span></a></li>
-    /video/play/50/258</span><span class="video-catalog-left">(6) 第二课  量化交易系统综述</span><span>(01:56:09)</span></a></li>
-    /video/play/50/1039</span><span class="video-catalog-left">(7) 第2课 第1节 掌握Python语言和常用的数据处理包</span><span>(25:55)</span></a></li>
-    /video/play/50/1040</span><span class="video-catalog-left">(8) 第2课 第2节 量化交易技术介绍</span><span>(35:11)</span></a></li>
-    /video/play/50/1041</span><span class="video-catalog-left">(9) 第2课 第3节 从技术分析到机器学习</span><span>(55:40)</span></a></li>
-    /video/play/50/272</span><span class="video-catalog-left">(10) 第三课 搭建自己的量化数据库</span><span>(01:53:20)</span></a></li>
-    /video/play/50/1042</span><span class="video-catalog-left">(11) 第3课 第1节 数据的获取、清理及存储</span><span>(50:54)</span></a></li>
-    /video/play/50/1043</span><span class="video-catalog-left">(12) 第3课 第2节 金融策略</span><span>(38:29)</span></a></li>
-    /video/play/50/1044</span><span class="video-catalog-left">(13) 第3课 第3节 机器学习途径实现</span><span>(19:56)</span></a></li>
-    /video/play/50/276</span><span class="video-catalog-left">(14) 第四课 用Python进行金融数据分析</span><span>(02:02:30)</span></a></li>
-    /video/play/50/1045</span><span class="video-catalog-left">(15) 第4课 第1节 OLS</span><span>(42:24)</span></a></li>
-    /video/play/50/1046</span><span class="video-catalog-left">(16) 第4课 第2节 Ridge\Lasso</span><span>(42:02)</span></a></li>
-    /video/play/50/1047</span><span class="video-catalog-left">(17) 第4课 第3节 Hands on sklearn</span><span>(38:38)</span></a></li>
-    /video/play/50/282</span><span class="video-catalog-left">(18) 第五课 策略建模综述</span><span>(01:57:51)</span></a></li>
-    /video/play/50/1048</span><span class="video-catalog-left">(19) 第5课 第1节 特征的选择及实现</span><span>(44:35)</span></a></li>
-    /video/play/50/1049</span><span class="video-catalog-left">(20) 第5课 第2节 训练集和模型建立</span><span>(46:02)</span></a></li>
-    /video/play/50/1050</span><span class="video-catalog-left">(21) 第5课 第3节 模型介绍</span><span>(27:50)</span></a></li>
-    /video/play/50/289</span><span class="video-catalog-left">(22) 第六课 策略建模：基于机器学习的策略建模</span><span>(02:11:58)</span></a></li>
-    /video/play/50/1051</span><span class="video-catalog-left">(23) 第6课 第1节 特征选择</span><span>(18:47)</span></a></li>
-    /video/play/50/1052</span><span class="video-catalog-left">(24) 第6课 第2节 遗传算法</span><span>(39:22)</span></a></li>
-    /video/play/50/1053</span><span class="video-catalog-left">(25) 第6课 第3节 深入理解BP算法</span><span>(46:25)</span></a></li>
-    /video/play/50/1054</span><span class="video-catalog-left">(26) 第6课 第4节 RNN</span><span>(28:17)</span></a></li>
-    /video/play/50/292</span><span class="video-catalog-left">(27) 第七课 模型评估与风险控制</span><span>(01:58:01)</span></a></li>
-    /video/play/50/1055</span><span class="video-catalog-left">(28) 第7课 第1节 作业点评</span><span>(16:27)</span></a></li>
-    /video/play/50/1056</span><span class="video-catalog-left">(29) 第7课 第2节 量化交易实战</span><span>(15:47)</span></a></li>
-    /video/play/50/1057</span><span class="video-catalog-left">(30) 第7课 第3节 集成学习</span><span>(35:09)</span></a></li>
-    /video/play/50/1058</span><span class="video-catalog-left">(31) 第7课 第4节 adaBoost自适应学习方法</span><span>(51:38)</span></a></li>
-    /video/play/50/295</span><span class="video-catalog-left">(32) 第八课 自动交易系统的搭建</span><span>(01:50:50)</span></a></li>
-    /video/play/50/1059</span><span class="video-catalog-left">(33) 第8课 第1节 极简主义的NLP与量化建模课程</span><span>(01:03:20)</span></a></li>
-    /video/play/50/1060</span><span class="video-catalog-left">(34) 第8课 第2节 风险控制part I</span><span>(15:42)</span></a></li>
-    /video/play/50/1061</span><span class="video-catalog-left">(35) 第8课 第3节 基于事件驱动的量化交易</span><span>(32:24)</span></a></li>
-    /video/play/50/330</span><span class="video-catalog-left">(36) 第九课 量化策略的实现</span><span>(02:07:36)</span></a></li>
-    /video/play/50/1062</span><span class="video-catalog-left">(37) 第9课 第1节 面试工作闲谈</span><span>(12:16)</span></a></li>
-    /video/play/50/1063</span><span class="video-catalog-left">(38) 第9课 第2节 矩阵特征值</span><span>(49:04)</span></a></li>
-    /video/play/50/1064</span><span class="video-catalog-left">(39) 第9课 第3节 资产组合权重</span><span>(45:37)</span></a></li>
-    /video/play/50/1065</span><span class="video-catalog-left">(40) 第9课 第4节 paper</span><span>(21:09)</span></a></li>
-    /video/play/50/331</span><span class="video-catalog-left">(41) 第十课 策略优化与课程总结</span><span>(01:54:34)</span></a></li>
-    /video/play/50/1066</span><span class="video-catalog-left">(42) 第10课 第1节 前九课回顾</span><span>(11:27)</span></a></li>
-    /video/play/50/1067</span><span class="video-catalog-left">(43) 第10课 第2节 paper 1</span><span>(25:39)</span></a></li>
-    /video/play/50/1068</span><span class="video-catalog-left">(44) 第10课 第3节 paper 2</span><span>(26:12)</span></a></li>
-    /video/play/50/1069</span><span class="video-catalog-left">(45) 第10课 第4节 相关国外课程推荐</span><span>(52:06)</span></a></li>
     """
 
 sources_math = """
-        /video/play/41/200</span><span class="video-catalog-left">(1) 第一课 机器学习与数学基础</span><span>(02:03:15)</span></a></li>
-        /video/play/41/362</span><span class="video-catalog-left">(2) 第1课 第一节 机器学习的分类</span><span>(24:54)</span></a></li>
-        /video/play/41/363</span><span class="video-catalog-left">(3) 第1课 第二节 机器学习的一般思路</span><span>(12:48)</span></a></li>
-        /video/play/41/364</span><span class="video-catalog-left">(4) 第1课 第三节 微积分基础</span><span>(17:39)</span></a></li>
-        /video/play/41/365</span><span class="video-catalog-left">(5) 第1课 第四节 概率与统计基础</span><span>(36:00)</span></a></li>
-        /video/play/41/366</span><span class="video-catalog-left">(6) 第1课 第五节 线性代数基础</span><span>(23:05)</span></a></li>
-        /video/play/41/203</span><span class="video-catalog-left">(7) 第二课 微积分选讲</span><span>(02:06:16)</span></a></li>
-        /video/play/41/375</span><span class="video-catalog-left">(8) 第2课 第一节 极限</span><span>(20:50)</span></a></li>
-        /video/play/41/376</span><span class="video-catalog-left">(9) 第2课 第二节 函数导数</span><span>(32:42)</span></a></li>
-        /video/play/41/378</span><span class="video-catalog-left">(10) 第2课 第三节 泰勒级数逼近</span><span>(23:49)</span></a></li>
-        /video/play/41/379</span><span class="video-catalog-left">(11) 第2课 第四节 牛顿法与梯度下降法</span><span>(26:53)</span></a></li>
-        /video/play/41/380</span><span class="video-catalog-left">(12) 第2课 第五节 Jensen不等式</span><span>(22:26)</span></a></li>
-        /video/play/41/209</span><span class="video-catalog-left">(13) 第三课 概率论选讲</span><span>(02:20:46)</span></a></li>
-        /video/play/41/381</span><span class="video-catalog-left">(14) 第3课 第一节 积分学</span><span>(20:35)</span></a></li>
-        /video/play/41/382</span><span class="video-catalog-left">(15) 第3课 第二节 概率空间</span><span>(41:13)</span></a></li>
-        /video/play/41/383</span><span class="video-catalog-left">(16) 第3课 第三节 大数定律</span><span>(50:57)</span></a></li>
-        /video/play/41/384</span><span class="video-catalog-left">(17) 第3课 第四节 中心极限定理</span><span>(28:31)</span></a></li>
-        /video/play/41/211</span><span class="video-catalog-left">(18) 第四课 参数估计</span><span>(02:01:20)</span></a></li>
-        /video/play/41/385</span><span class="video-catalog-left">(19) 第4课 第一节 矩估计</span><span>(15:58)</span></a></li>
-        /video/play/41/386</span><span class="video-catalog-left">(20) 第4课 第二节 极大似然估计</span><span>(20:51)</span></a></li>
-        /video/play/41/387</span><span class="video-catalog-left">(21) 第4课 第三节 点估计概述</span><span>(18:38)</span></a></li>
-        /video/play/41/388</span><span class="video-catalog-left">(22) 第4课 第四节 评判标准</span><span>(42:24)</span></a></li>
-        /video/play/41/389</span><span class="video-catalog-left">(23) 第4课 第五节 置信区间</span><span>(24:21)</span></a></li>
-        /video/play/41/215</span><span class="video-catalog-left">(24) 第五课 线性代数初步</span><span>(02:01:28)</span></a></li>
-        /video/play/41/390</span><span class="video-catalog-left">(25) 第5课 第一节 线性空间与基</span><span>(25:13)</span></a></li>
-        /video/play/41/391</span><span class="video-catalog-left">(26) 第5课 第二节 矩阵作为线性映射的代数表达方式</span><span>(34:40)</span></a></li>
-        /video/play/41/392</span><span class="video-catalog-left">(27) 第5课 第三节 线性方程的几何意义</span><span>(14:55)</span></a></li>
-        /video/play/41/393</span><span class="video-catalog-left">(28) 第5课 第四节 方程求解、几何逼近中的线性回归</span><span>(22:20)</span></a></li>
-        /video/play/41/394</span><span class="video-catalog-left">(29) 第5课 第五节 最小二乘法</span><span>(25:25)</span></a></li>
-        /video/play/41/217</span><span class="video-catalog-left">(30) 第六课 线性代数进阶</span><span>(02:25:37)</span></a></li>
-        /video/play/41/485</span><span class="video-catalog-left">(31) 第6课 第一节 相似变换</span><span>(38:03)</span></a></li>
-        /video/play/41/486</span><span class="video-catalog-left">(32) 第6课 第二节 相合变换</span><span>(12:46)</span></a></li>
-        /video/play/41/487</span><span class="video-catalog-left">(33) 第6课 第三节 正交相似变换</span><span>(22:07)</span></a></li>
-        /video/play/41/488</span><span class="video-catalog-left">(34) 第6课 第四节 主成分分析</span><span>(33:27)</span></a></li>
-        /video/play/41/489</span><span class="video-catalog-left">(35) 第6课 第五节 PCA例子</span><span>(41:15)</span></a></li>
-        /video/play/41/222</span><span class="video-catalog-left">(36) 第七课 凸优化初步</span><span>(02:20:27)</span></a></li>
-        /video/play/41/490</span><span class="video-catalog-left">(37) 第7课 第一节 优化与凸优化简介</span><span>(15:21)</span></a></li>
-        /video/play/41/491</span><span class="video-catalog-left">(38) 第7课 第二节 凸集合与凸函数的关系</span><span>(29:46)</span></a></li>
-        /video/play/41/492</span><span class="video-catalog-left">(39) 第7课 第三节 凸组合</span><span>(19:41)</span></a></li>
-        /video/play/41/493</span><span class="video-catalog-left">(40) 第7课 第四节 集合相交</span><span>(10:52)</span></a></li>
-        /video/play/41/494</span><span class="video-catalog-left">(41) 第7课 第五节 线性组合与微分</span><span>(12:29)</span></a></li>
-        /video/play/41/495</span><span class="video-catalog-left">(42) 第7课 第六节 光学投影</span><span>(13:20)</span></a></li>
-        /video/play/41/496</span><span class="video-catalog-left">(43) 第7课 第七节 凸集分离定理</span><span>(20:10)</span></a></li>
-        /video/play/41/497</span><span class="video-catalog-left">(44) 第7课 第八节 凸优化问题举例</span><span>(20:40)</span></a></li>
-        /video/play/41/223</span><span class="video-catalog-left">(45) 第八课 凸优化进阶</span><span>(02:29:30)</span></a></li>
-        /video/play/41/498</span><span class="video-catalog-left">(46) 第8课 第一节 共轭函数</span><span>(21:22)</span></a></li>
-        /video/play/41/499</span><span class="video-catalog-left">(47) 第8课 第二节 拉格朗日对偶函数</span><span>(30:36)</span></a></li>
-        /video/play/41/500</span><span class="video-catalog-left">(48) 第8课 第三节 共轭函数与拉格朗日对偶函数</span><span>(18:22)</span></a></li>
-        /video/play/41/501</span><span class="video-catalog-left">(49) 第8课 第四节 对偶性</span><span>(17:28)</span></a></li>
-        /video/play/41/502</span><span class="video-catalog-left">(50) 第8课 第五节 应用举例</span><span>(21:31)</span></a></li>
-        /video/play/41/503</span><span class="video-catalog-left">(51) 第8课 第六节 总结寄语</span><span>(36:24)</span></a></li>
-        /video/play/41/228</span><span class="video-catalog-left">(52) 第九课 从数学到机器学习分类问题</span><span>(02:11:46)</span></a></li>
-        /video/play/41/506</span><span class="video-catalog-left">(53) 第9课 第一节 定义与问题引入</span><span>(24:31)</span></a></li>
-        /video/play/41/507</span><span class="video-catalog-left">(54) 第9课 第二节 损失函数与梯度下降</span><span>(36:04)</span></a></li>
-        /video/play/41/508</span><span class="video-catalog-left">(55) 第9课 第三节 从线性回归到分类</span><span>(12:35)</span></a></li>
-        /video/play/41/509</span><span class="video-catalog-left">(56) 第9课 第四节 逻辑回归</span><span>(26:51)</span></a></li>
-        /video/play/41/510</span><span class="video-catalog-left">(57) 第9课 第五节 多分类，Softmax与LinearSVM</span><span>(32:55)</span></a></li>
-        /video/play/41/229</span><span class="video-catalog-left">(58) 第十课 深入理解SVM</span><span>(01:44:07)</span></a></li>
-        /video/play/41/511</span><span class="video-catalog-left">(59) 第10课 第一节 课程前瞻</span><span>(15:11)</span></a></li>
-        /video/play/41/512</span><span class="video-catalog-left">(60) 第10课 第二节 最大间隔与决策公式</span><span>(13:33)</span></a></li>
-        /video/play/41/513</span><span class="video-catalog-left">(61) 第10课 第三节 目标函数与优化理论</span><span>(32:57)</span></a></li>
-        /video/play/41/514</span><span class="video-catalog-left">(62) 第10课 第四节 核方法</span><span>(21:47)</span></a></li>
-        /video/play/41/515</span><span class="video-catalog-left">(63) 第10课 第五节 Hinge loss及课程回顾</span><span>(21:33)</span></a></li>
+"""
+
+sources_others = """
+    /video/play/27/19</span><span class="video-catalog-left">(1) 实战动态规划（直播coding）</span><span>(33:45)</span></a></li>
+    /video/play/27/23</span><span class="video-catalog-left">(2) 排序查找实战（直播coding）</span><span>(30:05)</span></a></li>
+    /video/play/27/34</span><span class="video-catalog-left">(3) 图搜索实战（直播coding）</span><span>(33:25)</span></a></li>
+    /video/play/27/81</span><span class="video-catalog-left">(4) 数组实战（直播coding）</span><span>(35:24)</span></a></li>
+    /video/play/27/82</span><span class="video-catalog-left">(5) 字符串实战（直播coding）</span><span>(36:45)</span></a></li>
+    /video/play/27/83</span><span class="video-catalog-left">(6) 链表实战（直播coding）</span><span>(27:12)</span></a></li>
+    /video/play/27/166</span><span class="video-catalog-left">(7) 树实战（直播coding）</span><span>(29:22)</span></a></li>
 """
 
 sources_urls = ["第1课（上）微积分,http://v3.julyedu.com/video/67/615/585b7925ff.m3u8",
@@ -318,6 +220,69 @@ sources_url_math = [
             "论文公开课 第三期 AlphaGo Zero背后的算法,http://v3.julyedu.com/video/69/794/553ab8fd79.m3u8"
             ]
 
+sources_url_others = [
+            "(1) 实战动态规划（直播coding）,http://v2.julyedu.com/ts/27/19/888ddc11.m3u8",
+            "(2) 排序查找实战（直播coding）,http://v2.julyedu.com/ts/27/23/91c2a83b.m3u8",
+            "(3) 图搜索实战（直播coding）,http://v2.julyedu.com/ts/27/34/26f136fb.m3u8",
+            "(4) 数组实战（直播coding）,http://v2.julyedu.com/ts/27/81/c34ee1e3.m3u8",
+            "(5) 字符串实战（直播coding）,http://v2.julyedu.com/ts/27/82/8c1a3ec6.m3u8",
+            "(6) 链表实战（直播coding）,http://v2.julyedu.com/ts/27/83/aa550b8a.m3u8",
+            "(7) 树实战（直播coding）,http://v2.julyedu.com/ts/27/166/9d1cb8c2.m3u8",
+            "概率统计-第1课 概率论基础,http://v3.julyedu.com/video/68/619/5bf7d175c9.m3u8",
+            "概率统计-第2课 参数估计,http://v3.julyedu.com/video/68/623/cf296ffd06.m3u8",
+            "概率统计-第3课 参数估计的渐进性质,http://v3.julyedu.com/video/68/635/3362eb01c2.m3u8",
+            "概率统计-第4课 概率统计在机器学习中的应用,http://v3.julyedu.com/video/68/640/f5fc05c8fc.m3u8",
+            "数学第二期-第一课：微分学基本概念,http://v3.julyedu.com/video/106/928/0098d622f9.m3u8",
+            "数学第二期-第二课：微分学进阶,http://v3.julyedu.com/video/106/929/0670b39ab0.m3u8",
+            "数学第二期-第三课：概率论简介,http://v3.julyedu.com/video/106/930/e183c6dcc6.m3u8",
+            "数学第二期-第四课：极大似然估计,http://v3.julyedu.com/video/106/931/cbfd0c2578.m3u8",
+            "数学第二期-第五课：线性代数基础(唐博士),http://v3.julyedu.com/video/106/932/df8eefdb50.m3u8",
+            "数学第二期-第六课：线性代数进阶(唐博士),http://v3.julyedu.com/video/106/933/9940cd4a03.m3u8",
+            "数学第二期-第七课：凸优化简介,http://v3.julyedu.com/video/106/934/4dbece0638.m3u8",
+            "数学第二期-第八课：优化的稳定性,http://v3.julyedu.com/video/106/935/4916516d77.m3u8",
+            "数学第二期-第九课：从线性模型谈起的机器学习分类与回归,http://v3.julyedu.com/video/106/937/07e66669a8.m3u8",
+            "数学第二期-第十课：从信息论到工业界最爱的树模型,http://v3.julyedu.com/video/106/938/e89acfacdb.m3u8",
+            "Tensorflow基础-第1课 Tensorflow基础,http://v3.julyedu.com/video/86/718/85144b4f82.m3u8",
+            "Tensorflow基础-第2课 详解深度神经网络案例,http://v3.julyedu.com/video/86/720/dc3b1ae716.m3u8",
+            "Tensorflow基础-第3课 卷积神经网络与图像应用,http://v3.julyedu.com/video/86/724/5309058c84.m3u8",
+            "Tensorflow基础-第4课 海量图像训练预处理,http://v3.julyedu.com/video/86/725/93208e12a3.m3u8",
+            "Tensorflow基础-第5课 循环神经网络与应用,http://v3.julyedu.com/video/86/728/4e392ec3e9.m3u8",
+            "Tensorflow基础-第6课 Tensorboard工具与模型优化,http://v3.julyedu.com/video/86/729/d711ac7749.m3u8",
+            "Tensorflow基础-第7课 Tensorflow应用案例,http://v3.julyedu.com/video/86/738/3c9d1adcfa.m3u8",
+            "Tensorflow基础-第8课 Tensorflow之上的工具库,http://v3.julyedu.com/video/86/730/ecb9b1c95e.m3u8",
+            "NLP课程-第1课 NLP理论基础,http://v2.julyedu.com/ts/55/324/dcacf215.m3u8",
+            "NLP课程-第2课 Word2Vec理论基础,http://v2.julyedu.com/ts/55/325/023ea87d.m3u8",
+            "NLP课程-第3课 Word2Vec实战案例课-Kaggle竞赛案例,http://v2.julyedu.com/ts/55/332/eeb0163b.m3u8",
+            "NLP课程-第4课 从Word2Vec到FastText的新发展+案例,http://v2.julyedu.com/ts/55/333/99d72976.m3u8",
+            "机器学习算法-词嵌入word embedding,http://v2.julyedu.com/ts/35/156/e7c4357c.m3u8",
+            "机器学习算法-第1课 机器学习与微积分,http://v2.julyedu.com/ts/35/162/c065228c.m3u8",
+            "机器学习算法-第2课 数理统计和参数估计,http://v2.julyedu.com/ts/35/163/20eb6e6f.m3u8",
+            "机器学习算法-第3课 矩阵分析与应用,http://v2.julyedu.com/ts/35/164/17763d6e.m3u8",
+            "机器学习算法-第4课 凸优化初步,http://v2.julyedu.com/ts/35/165/6b754fd6.m3u8",
+            "机器学习算法-第5课 线性回归与逻辑回归,http://v2.julyedu.com/ts/35/167/68c33175.m3u8",
+            "机器学习算法-第6课 特征工程,http://v2.julyedu.com/ts/35/168/c35af50e.m3u8",
+            "机器学习算法-第7课 工作流程与模型调优,http://v2.julyedu.com/ts/35/169/81672be7.m3u8",
+            "机器学习算法-第8课 最大熵与EM算法,http://v2.julyedu.com/ts/35/172/ccf8ee8e.m3u8",
+            "机器学习算法-第9课 推荐系统,http://v2.julyedu.com/ts/35/174/e7b10fe3.m3u8",
+            "机器学习算法-第10课 聚类算法与应用,http://v2.julyedu.com/ts/35/176/fe2358fb.m3u8",
+            "机器学习算法-第11课 决策树、随机森林、Adaboost,http://v2.julyedu.com/ts/35/179/f9b788d2.m3u8",
+            "机器学习算法-第12课 SVM,http://v2.julyedu.com/ts/35/182/bc70f821.m3u8",
+            "机器学习算法-第13课 贝叶斯方法,http://v2.julyedu.com/ts/35/185/8445a50c.m3u8",
+            "机器学习算法-第14课 主题模型,http://v2.julyedu.com/ts/35/188/778cd10f.m3u8",
+            "机器学习算法-第15课 采样与变分,http://v2.julyedu.com/ts/35/193/513eb1c3.m3u8",
+            "机器学习算法-第16课 人工神经网络,http://v2.julyedu.com/ts/35/194/5b488172.m3u8",
+            "机器学习算法-第17课 卷积神经网络,http://v2.julyedu.com/ts/35/197/92ce8ab5.m3u8",
+            "机器学习算法-第18课 循环神经网络与LSTM,http://v2.julyedu.com/ts/35/198/a762a365.m3u8",
+            "机器学习算法-第19课 关于框架,http://v2.julyedu.com/ts/35/201/0920f308.m3u8",
+            "机器学习算法-第20课 概率图模型初步,http://v2.julyedu.com/ts/35/205/de49656f.m3u8",
+            "矩阵与凸优化-第1课 理解矩阵,http://v2.julyedu.com/ts/62/517/9d827dbc.m3u8",
+            "矩阵与凸优化-第2课 理解微积分和凸优化,http://v2.julyedu.com/ts/62/520/50b7d57c.m3u8",
+            "矩阵与凸优化-第3课 微积分与逼近论,http://v3.julyedu.com/video/62/588/db23c2d0ef.m3u8",
+            "矩阵与凸优化-第4课 凸优化初步,http://v3.julyedu.com/video/62/592/9fc334adef.m3u8",
+            "矩阵与凸优化-第5课 凸优化进阶,http://v3.julyedu.com/video/62/596/14014212c5.m3u8",
+            "矩阵与凸优化-第6课 凸优化在机器学习中的应用,http://v3.julyedu.com/video/62/602/78a7f9f507.m3u8"
+            ]
+
 def parse_titles():
     with open('parse.txt', 'wb') as f:
         for line in sources_math.split('\n'):
@@ -379,7 +344,7 @@ def main():
                 f.write("{0},{1},{2}\n".format(title, title_url, line_item))
 
 def downnew():
-    for item in [sources_urls_lianghua,sources_graph_practice,sources_url_math]:
+    for item in [sources_urls_lianghua,sources_graph_practice,sources_url_math,sources_url_others]:
         for line in item:
             title = None
             title_url = None
@@ -409,7 +374,7 @@ def downnew():
                     for res_line in res.text.split('\n'):
                         if res_line.startswith('#'):
                             continue
-                        time.sleep(0.5)
+                        time.sleep(0.1)
                         res_line = res_line.strip('\r\n ')
                         line_item = res_line
 
