@@ -132,6 +132,9 @@
         微软中文分词语料：
             http://sighan.cs.uchicago.edu/bakeoff2005/
 
+        Amazon数据标记：
+            https://www.mturk.com/
+
 - **系统学习：**
         https://github.com/jwasham/coding-interview-university/blob/master/translations/README-cn.md    完整的学习手册Google Interview University
 
