@@ -18,11 +18,10 @@
         源码解析作者博客
         http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/  Tensorflow常用函数、博客资料、源码及应用
 
-        详细的深度学习资料：
-        https://deeplearning4j.org/cn/lstm
-
-        一个c++11开发的word2vec:
-        https://github.com/jdeng/word2vec
+        https://deeplearning4j.org/cn/lstm  详细的深度学习资料
+        https://github.com/jdeng/word2vec   一个c++11开发的word2vec
+        https://www.jianshu.com/search?q=tensorflow%E4%BB%A3%E7%A0%81%E5%85%A8%E8%A7%A3%E6%9E%90&page=1&type=note   简书上的TensorFlow详解
+        http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/  Tensorflow常用函数以及常用应用
 
     TensorFlow实战：
         https://github.com/aymericdamien/TensorFlow-Examples    非常全和从基础到高阶的代码和说明，带notebook的详细说明
