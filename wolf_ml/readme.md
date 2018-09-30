@@ -84,6 +84,9 @@
         统计相关学习笔记：
             http://www.loyhome.com/elements_of_statistical_learining_lecture_notes/
 
+        Logistic回归计算过程的推导：
+            https://blog.csdn.net/ligang_csdn/article/details/53838743
+
 - **NLP相关：**
         自然语言处理之深度学习：
             https://zh.gluon.ai/chapter_natural-language-processing/index.html  深度学习之自然语言处理
