@@ -37,6 +37,7 @@
         http://blog.topspeedsnail.com/archives/10542    TensorFlow例子char-rnn、生成图片、评论分类、游戏AI
 
         https://github.com/litoeknee/tensorflow/blob/master/tensorflow/examples/tutorials/word2vec/simple_skip_gram.ipynb  TensorFlow实现word2vec
+        https://github.com/NELSONZHAO/zhihu/tree/master/basic_seq2seq   TensorFlow基本的Seq2Seq模型
 
         https://yq.aliyun.com/articles/590317   学习笔记CB014:TensorFlow seq2seq模型步步进阶
         https://yq.aliyun.com/articles/460299?spm=a2c4e.11153940.blogcont590317.31.5eef7a39Wu9CoK   302页吴恩达Deeplearning.ai课程笔记，详记基础知识与作业代码
