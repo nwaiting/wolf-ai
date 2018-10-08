@@ -141,6 +141,9 @@
         Amazon数据标记：
             https://www.mturk.com/
 
+        100+ Chinese Word Vectors 上百种预训练中文词向量：
+            https://github.com/Embedding/Chinese-Word-Vectors
+
 - **系统学习：**
         https://github.com/jwasham/coding-interview-university/blob/master/translations/README-cn.md    完整的学习手册Google Interview University
 
