@@ -106,6 +106,9 @@
         个人比较全自然语言的博客：
             http://fornlp.com/2018/01/
 
+        徐阿横的工作笔记：
+            http://www.shuang0420.com/works/
+
         知识图谱：
             http://pelhans.com/2018/03/15/xiaoxiangkg-note1/    知识图谱入门（一到九）
             https://zhuanlan.zhihu.com/datagrand    达观数据文本算法
