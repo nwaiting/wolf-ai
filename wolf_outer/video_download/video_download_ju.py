@@ -283,6 +283,30 @@ sources_url_others = [
             "矩阵与凸优化-第6课 凸优化在机器学习中的应用,http://v3.julyedu.com/video/62/602/78a7f9f507.m3u8"
             ]
 
+sources_chatbot_list = [
+            "聊天机器人第1课 聊天机器人的基础模型与综述,http://v3.julyedu.com/video/64/590/e18268eb86.m3u8",
+            "聊天机器人第2课 NLP基础及扫盲,http://v3.julyedu.com/video/64/591/a776b32a13.m3u8",
+            "聊天机器人第3课 用基础机器学习方法制作聊天机器人,http://v3.julyedu.com/video/64/597/37e1ab59ef.m3u8",
+            "聊天机器人第4课 深度学习基础及扫盲,http://v3.julyedu.com/video/64/600/f16fe0646b.m3u8",
+            "聊天机器人第5课 深度学习聊天机器人原理,http://v3.julyedu.com/video/64/604/39b6531118.m3u8",
+            "聊天机器人第6课 用深度学习方法制作聊天机器人,http://v3.julyedu.com/video/64/606/4b9408b359.m3u8",
+            "聊天机器人第7课 看图回答VQA,http://v3.julyedu.com/video/64/622/5d74bc66be.m3u8",
+            "聊天机器人第8课 简单易用的聊天机器人开发平台与展望,http://v3.julyedu.com/video/64/626/706f6f2e55.m3u8"
+            ]
+
+#条件随机场的视频
+crf_addr = ["http://www.kengso.com/s?wd=machine+learning%E9%82%B9%E5%8D%9A%E7%9A%84%E8%AF%BE%E7%A8%8B-%E4%B8%83%E6%9C%88%E7%AE%97%E6%B3%95+%E6%9D%A1%E4%BB%B6%E9%9A%8F%E6%9C%BA%E5%9C%BA%28%E4%B8%8B%29.flv&st=0&p=1",
+            "https://pan.baidu.com/share/home?uk=891979294&suk=LJYNPU2zf_8xpr4caS07EA#category/type=0"] #百度个人主页
+
+#七月的条件随机场
+jl_crf = "https://www.bilibili.com/video/av26119295/?p=9"
+
+#炼数成金自然语言处理
+bilibili_addr = "https://www.bilibili.com/video/av27183045/?p=84"
+
+
+
+
 def parse_titles():
     with open('parse.txt', 'wb') as f:
         for line in sources_math.split('\n'):

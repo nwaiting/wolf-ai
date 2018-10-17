@@ -106,7 +106,7 @@
         个人比较全自然语言的博客：
             http://fornlp.com/2018/01/
 
-        徐阿横的工作笔记：
+        徐阿横的NLP和搜索引擎工作笔记：
             http://www.shuang0420.com/works/
 
         知识图谱：
@@ -153,6 +153,11 @@
 - **基本功：**
         https://blog.csdn.net/tick_tock97/article/category/6895664  ACM-搜索、图论、数论等
         https://github.com/hit-computer/Algorithm   常规算法
+
+- **大神总结的机器学习的数学基础**
+        https://zhuanlan.zhihu.com/p/35280763       图解机器学习的数学基础：线性代数，微积分，PCA的直觉(完结)
+        https://mp.weixin.qq.com/s/Cm-DNNLMqgcp_DJqUeM-Tw   大神总结的机器学习的数学基础，掌握这些足够
+        https://mp.weixin.qq.com/s/4BO74EtpFML65Tq0IIk1jA   《统计学习方法》中每一章的算法实现一遍
 
 - **资料：**
         机器学习入门经典《统计学习方法》pdf下载
