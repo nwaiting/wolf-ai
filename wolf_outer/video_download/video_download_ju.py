@@ -304,7 +304,8 @@ jl_crf = "https://www.bilibili.com/video/av26119295/?p=9"
 #炼数成金自然语言处理
 bilibili_addr = "https://www.bilibili.com/video/av27183045/?p=84"
 
-
+#邹博图、树等数据结构和动态规划等算法
+zb_addr = ["https://www.bilibili.com/video/av18109226/?spm_id_from=333.788.videocard.11"]
 
 
 def parse_titles():
