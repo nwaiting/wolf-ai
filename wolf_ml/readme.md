@@ -125,6 +125,21 @@
 
         nlp面试：
             http://cheesezhe.github.io/2016/03/11/sina-nlp-2nd-round-interview/     新浪-自然语言处理工程师-第2轮面试
+            http://www.peachcolonys.com/2018/09/28/job-mianshijingyanzongjie-yi/    [Job] 面试经验总结
+
+- **GitHub上的NLP项目：**
+        https://github.com/imhuay/Algorithm_Interview_Notes-Chinese     2018/2019/校招/春招/秋招/算法/NLP/C/C++/Python/面试笔记
+        https://github.com/crownpku/Awesome-Chinese-NLP     A curated list of resources for Chinese NLP 中文自然语言处理相关资料
+        https://github.com/apachecn/AiLearning/tree/master      中文开源组织自然语言处理 NLP、AiLearning: 机器学习
+        https://github.com/Roshanson/TextInfoExp    文本分类、聚类、文档摘要、情感识别（使用搜狗数据集）
+        https://github.com/Samurais/text-dependency-parser      自然语言处理之依存关系分析
+        https://github.com/SophonPlus/ChineseNlpCorpus      中文 自然语言处理 语料/数据集
+        https://github.com/yinchuandong/NLPinPython     自然语言处理的一些算法Python实现
+        https://github.com/aespresso/chinese_sentiment      用tensorflow进行中文自然语言处理的情感分析  !!!!
+        https://github.com/excelsimon/AI    自然语言处理、计算机视觉等AI领域相关技术的算法推导及应用
+        https://github.com/SeanLee97/nlp_learning       语言模型、HMM、PCFG、Word2vec、完形填空式阅读理解任务、朴素贝叶斯分类器、TFIDF、PCA、SVD
+        https://github.com/Decalogue/NlpMindmap     建立你的自然语言处理地图：学习笔记，资源，代码分享；NLP 算法工程师：从小白到专家
+
 
 
 - **数据集：**
@@ -146,6 +161,16 @@
 
         100+ Chinese Word Vectors 上百种预训练中文词向量：
             https://github.com/Embedding/Chinese-Word-Vectors
+
+        公司名语料库：
+            https://github.com/wainshine/Company-Names-Corpus
+
+        中文 自然语言处理 语料/数据集：
+            https://github.com/SophonPlus/ChineseNlpCorpus
+
+        腾讯800万词向量：
+            https://ai.tencent.com/ailab/nlp/embedding.html
+            https://mp.weixin.qq.com/s?__biz=MzIzOTg4MjEwNw==&mid=2247483950&idx=1&sn=d539f68a83b75e251b505d4184b8d684&chksm=e922183ade55912c91664bbec73d40ef0928189c39855fb2d04a80231f45139b345014114a49&mpshare=1&scene=23&srcid=1019CnQfcRoxmuV3L9kq1Ls9#rd （公众号新闻）
 
 - **系统学习：**
         https://github.com/jwasham/coding-interview-university/blob/master/translations/README-cn.md    完整的学习手册Google Interview University
