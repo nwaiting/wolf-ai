@@ -140,7 +140,7 @@
         https://github.com/excelsimon/AI    自然语言处理、计算机视觉等AI领域相关技术的算法推导及应用
         https://github.com/SeanLee97/nlp_learning       语言模型、HMM、PCFG、Word2vec、完形填空式阅读理解任务、朴素贝叶斯分类器、TFIDF、PCA、SVD
         https://github.com/Decalogue/NlpMindmap     建立你的自然语言处理地图：学习笔记，资源，代码分享；NLP 算法工程师：从小白到专家
-
+        https://github.com/search?q=chatterbot      ChatterBot聊天机器人
 
 
 - **数据集：**
