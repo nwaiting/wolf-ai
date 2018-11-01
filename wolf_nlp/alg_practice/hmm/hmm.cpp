@@ -7,8 +7,45 @@ using namespace std;
 
 /*
     参考：https://en.wikipedia.org/wiki/Viterbi_algorithm#Example
+        https://www.jianshu.com/nb/18954627
 */
-    
+
+/*
+    //http://www.52nlp.cn/hmm-learn-best-practices-five-forward-algorithm-4
+    hmm一个模型，俩个假设，五个基本元素，4大问题，几种算法（前向、后向、EM、BaumWelch、viterbi）
+    三大假设：
+        1、齐次性假设（隐状态仅与前一个有关）
+        2、观测独立性假设（输出只与当前状态有关）
+*/
+
+typedef struct {
+    int32_t N;  //隐状态数目
+    int32_t M;  //观测状态数目
+    double **A;   //转移矩阵A[N][N]
+    double **B;   //发射矩阵B[N][M]
+    double *pi;    //初始概率分布pi[N]
+}HMMInfo;
+
+void Forward(HMMInfo *phmm, int32_t T, int32_t *O, double **alpha, double **pprob)
+{
+    /*1、初始化：计算t=1时刻所有状态的局部概率alpha*/
+
+    /*2、归纳：递归计算每个时间点的局部概率*/
+
+    /*3、观测序列的概率等于T时刻所有局部概率之和*/
+
+}
+
+void Backward(HMMInfo *phmm, int32_t T, int32_t *O, double **beta, double **pprob)
+{
+    /*1、初始化*/
+
+    /*2、归纳*/
+
+    /*3、结束*/
+
+}
+
 class HMM
 {
 public:

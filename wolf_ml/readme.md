@@ -1,17 +1,14 @@
 ### 学习资源
-- **深度学习相关：**
-    tensorflow 架构分析：
+- **tensorflow 架构分析：**
         https://www.jianshu.com/p/a5574ebcdeab  TensorFlow架构与设计：概述 原文：刘光聪·简书
         http://www.cnblogs.com/ningskyer/articles/6481902.html  TensorFlow 架构与设计-编程模型【转】 原文：刘光聪·简书
         https://www.jianshu.com/u/49d1f3b7049e 刘光聪·简书 个人主页
         http://www.cnblogs.com/ningskyer/articles/6481898.html TensorFlow 架构与设计-四大组件【转】 原文：刘光聪·简书
         http://www.tensorfly.cn/tfdoc/how_tos/overview.html TensorFlow的中文社区
-
         http://www.cnblogs.com/libinggen/p/7399339.html 学习笔记TF044:TF.Contrib组件、统计分布、Layer、性能分析器tfprof
-
         https://www.w3cschool.cn/tensorflow_python/tensorflow_python-3szt2c8q.html    TensorFlow全面的中文文档
 
-    TensorFlow源码：
+- **TensorFlow源码：**
         http://gonewithgt.github.io/2017/04/20/Tensorflow%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/  Tensorflow源码解析
         https://github.com/yao62995/tensorflow   图解tensorflow 源码
 
@@ -23,7 +20,7 @@
         https://www.jianshu.com/search?q=tensorflow%E4%BB%A3%E7%A0%81%E5%85%A8%E8%A7%A3%E6%9E%90&page=1&type=note   简书上的TensorFlow详解
         http://gonewithgt.github.io/2017/03/20/Tensorflow%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/  Tensorflow常用函数以及常用应用
 
-    TensorFlow实战：
+- **TensorFlow实战：**
         https://github.com/aymericdamien/TensorFlow-Examples    非常全和从基础到高阶的代码和说明，带notebook的详细说明
         https://github.com/yongyehuang/Tensorflow-Tutorial      一些神经网络的实战项目 带notebook的详细说明
 
@@ -58,6 +55,9 @@
 - **CRF源码详解：**
         https://blog.csdn.net/App_12062011/article/details/53869687     CRF++源码分析
         https://applenob.github.io/crf.html     算法详解
+
+- **HMM详解：**
+        https://www.jianshu.com/nb/18954627     HMM共8讲
 
 - **简书NLP的深度学习汇总：**
         https://www.jianshu.com/p/28f02bb59fe5
@@ -113,6 +113,7 @@
             http://pelhans.com/2018/03/15/xiaoxiangkg-note1/    知识图谱入门（一到九）
             https://zhuanlan.zhihu.com/datagrand    达观数据文本算法
             https://github.com/ownthink/KnowledgeGraph?tdsourcetag=s_pcqq_aiomsg    开放的知识图谱项目
+            https://github.com/search?q=Agriculture     开源的农业知识图谱
 
         情感分析：
             https://mp.weixin.qq.com/s/8nB765fPzIi2s7Zfxbtf7A  基于LSTM搭建文本情感分类的深度学习模型:准确率95%：
