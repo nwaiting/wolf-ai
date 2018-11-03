@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <vector>
 #include <stdint.h>
 #include <random>
@@ -35,8 +35,8 @@ void mymerge(vector<int32_t> &d, int32_t l, int32_t m, int32_t r, vector<int32_t
     while (l <= r) d[l++] = dest[k++];
 }
 
-//Ë¼ÏëÊÇÏÈ¹éÈ»ºóÔÚºÏ²¢£¬µÝ¹éË¼Ïë
-//ÍâÅÅÐò
+//æ€æƒ³æ˜¯å…ˆå½’ç„¶åŽåœ¨åˆå¹¶ï¼Œé€’å½’æ€æƒ³
+//å¤–æŽ’åº
 void merge_sort(vector<int32_t> &d, int32_t l, int32_t r, vector<int32_t> &dest)
 {
     if (l >= r){

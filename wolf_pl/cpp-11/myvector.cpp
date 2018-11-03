@@ -45,6 +45,20 @@ void func1() {
     // 1, 5
 }
 
+void func2()
+{
+    /*
+        vector的6种初始化方法
+    */
+    vector<int> v1; //默认初始化
+    vector<int> v2(v1); //使用其他的vector进行初始化
+    vector<int> v3 = { 1, 2, 3, 4 };    //直接赋值
+    vector<int> v4(v3.begin(), v3.begin()+5);   //使用其他的vector进行赋值
+    vector<int> v5(v4.begin(), v4.end() - 1);   //使用其他的vector进行赋值
+    vector<int> v6(7);  //包含7个缺省的值
+    vector<int> v7(7,10);   //7个10的vector
+}
+
 int main(int argc, char const *argv[])
 {
     func1();

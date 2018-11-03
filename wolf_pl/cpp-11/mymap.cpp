@@ -13,7 +13,8 @@ using namespace std;
     如果需要内部元素自动排序，使用map，不需要排序使用unordered_map
     如果是自定义类型，那么就需要自己重载operator<或者hash_value()了
 
-
+    cplusplus中明确指出m[key]和m.at(key)的差别是：
+    对于map<class K, class T> m，当key不存在时，m[key]将调用T的默认构造函数，强制将序对<key, T()>插入，并返回T()的引用；而后者将抛出exception。
 */
 
 void func1()
@@ -46,7 +47,7 @@ void func1()
 
     int32_t res = umap_int.at(9);
     cout << "key is 9, value is " << res << endl;
-    
+
     umap_int.at(9) = 10086;
     cout << "key is 9, value is " << umap_int.at(9) << endl;
 

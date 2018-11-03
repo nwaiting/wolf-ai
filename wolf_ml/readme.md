@@ -114,6 +114,8 @@
             https://zhuanlan.zhihu.com/datagrand    达观数据文本算法
             https://github.com/ownthink/KnowledgeGraph?tdsourcetag=s_pcqq_aiomsg    开放的知识图谱项目
             https://github.com/search?q=Agriculture     开源的农业知识图谱
+            https://zhuanlan.zhihu.com/kg-qa    漆桂林教授知识图谱知乎专栏
+            https://blog.csdn.net/tgqdt3ggamdkhaslzv/article/details/78509967   csdn上知识图谱比较全的博客
 
         情感分析：
             https://mp.weixin.qq.com/s/8nB765fPzIi2s7Zfxbtf7A  基于LSTM搭建文本情感分类的深度学习模型:准确率95%：
@@ -142,7 +144,7 @@
         https://github.com/SeanLee97/nlp_learning       语言模型、HMM、PCFG、Word2vec、完形填空式阅读理解任务、朴素贝叶斯分类器、TFIDF、PCA、SVD
         https://github.com/Decalogue/NlpMindmap     建立你的自然语言处理地图：学习笔记，资源，代码分享；NLP 算法工程师：从小白到专家
         https://github.com/search?q=chatterbot      ChatterBot聊天机器人
-
+        https://github.com/charlesXu86      带web的聊天机器人
 
 - **数据集：**
         nlp数据：
