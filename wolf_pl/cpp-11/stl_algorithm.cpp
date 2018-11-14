@@ -5,12 +5,18 @@
 #include <functional>
 
 /*
+    http://c.biancheng.net/stl/algorithms/  c++详细基础
+    
     算法1：sort()
     算法2：partial_sort()  实现局部排序，如寻找最大的前4个数
     算法3：nth_element()   实现取第几大的数据
     算法4：max_element()   取最大值或者索引
     算法5：min_element()   取最小值或索引
     算法6：find()  查找
+    算法7：transform()	在指定的范围内应用于给定的操作，并将结果存储在指定的另一个范围内
+    算法8：for_each()	在指定的范围内应用于给定的操作
+	算法9：reverse()		反转排序容器内指定范围中的元素
+	算法10：reverse_copy()	反转排序容器内指定范围中的元素,!!!!!!!! 注：输入和输出不能是同一个迭代器，即不能在内部反转
 */
 
 
@@ -69,7 +75,7 @@ void func4()
 }
 
 //算法6：find()  查找
-void func5()
+void func6()
 {
     std::vector<int32_t> a;
     for (auto i = 1; i <= 10; i++){
@@ -83,12 +89,75 @@ void func5()
     std::cout << vecIte - a.begin() << std::endl;
 }
 
+// 算法7：transform()	在指定的范围内应用于给定的操作，并将结果存储在指定的另一个范围内
+//		std::transform的两个声明，一个是对应于一元操作，一个是对应于二元操作
+//		std::transform(first1, last1, first2, result, op_add);	详解：将first1和first2开头的范围内的每个元素相加，然后依次存储到result中
+// 算法8：for_each()	在指定的范围内应用于给定的操作
+// 算法7和算法8的区别：
+// 1、直接改变元素；for_each()和transform()都具有这种能力
+// 2、复制到另一个区间的过程中改变元素的值，这种情况下，源区间的值不会发生变化，只有transform()具有这种能力
+
+int op_increase(int i) { return i+=1; }
+int op_sum(int i, int j) { return i + j; }
+void func7()
+{
+	std::vector<int32_t> a;
+	for (auto i = 1; i <= 10; i++){
+		a.push_back(i);
+	}
+	Printf(a);
+
+	std::vector<int32_t> b(a);
+	std::for_each(b.begin(), b.end(), [](int32_t &n){n *= 5; });
+	Printf(b);
+
+	std::vector<int32_t> b1(a);
+	std::for_each(b1.begin(), b1.end(), op_increase);	//测试显示，如果op_increase中参数不适用引起，那么b1结果不会改变	
+	Printf(b1);
+
+	std::vector<int32_t> b2(a);
+	std::transform(b2.begin(), b2.end(), b2.begin(), op_increase);	//如果op_increase中参数不使用引用，那么b2中任然会被改变
+	Printf(b2);
+
+	std::vector<int32_t> c(a);
+	std::vector<int32_t> d(a);
+	std::transform(c.begin(), c.end(), d.begin(), c.begin(), op_sum);	//二元操作,将c和d开头的范围内的每个元素相加，然后依次存储到c中
+	Printf(c);
+	Printf(d);
+}
+
+//算法9：reverse()		反转排序容器内指定范围中的元素
+//算法10：reverse_copy()	反转排序容器内指定范围中的元素
+//		std::reverse_copy与std::reverse唯一的区别是：reverse_copy会将结果拷贝到另外一个容器中，而不影响原容器的内容。
+void func9()
+{
+	std::vector<int32_t> data = {23,2342,45,645,56,32,55,9,32,342,943};
+	Printf(data);
+
+	std::vector<int32_t> data1(data);
+	std::reverse(data1.begin(), data1.end());
+	Printf(data1);
+	
+	std::vector<int32_t> data2(data);
+	std::reverse_copy(data2.begin(), data2.end(), data2.begin());	//！！！！注：输入和输出为同一个空间，反转有问题
+	Printf(data2);
+
+	std::vector<int32_t> data4(data);
+	std::vector<int32_t> data5(data4.size());	//!!!! data5必须要初始化空间大小
+	std::reverse_copy(data4.begin(), data4.end(), data5.begin());
+	Printf(data5);
+}
+
 int main()
 {
     //func2();
     //func3();
     //func4();
-    func5();
+    //func5();
+
+	//func6();
+
+	func9();
 
     std::cin.get();
     return 0;
