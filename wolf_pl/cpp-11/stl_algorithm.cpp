@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <algorithm>
 #include <functional>
+#include <numeric>
 
 /*
     http://c.biancheng.net/stl/algorithms/  c++详细基础
@@ -17,6 +18,8 @@
     算法8：for_each()	在指定的范围内应用于给定的操作
 	算法9：reverse()		反转排序容器内指定范围中的元素
 	算法10：reverse_copy()	反转排序容器内指定范围中的元素,!!!!!!!! 注：输入和输出不能是同一个迭代器，即不能在内部反转
+    算法11：iota(begin, end, start);   从start开始递增加1，从start开始递增加1，然后赋值到begin到end空间
+    算法12：accumulate(begin, end, start); 从start开始累加到end，然后在加上start
 */
 
 
@@ -148,6 +151,25 @@ void func9()
 	Printf(data5);
 }
 
+//算法11：iota(begin, end, start);   从start开始递增加1，然后赋值到begin到end空间
+//算法12：accumulate(begin, end, start); 从start开始累加到end，然后在加上start 头文件：#include <numeric>
+//       accumulate (InputIterator first, InputIterator last, T init,BinaryOperation binary_op);  可自定义二元操作
+int32_t myfunc11(int32_t x, int32_t y){ return x + 3 * y; }
+void func11()
+{
+    std::vector<int32_t> data = { 1, 2, 3, 4, 5 };
+    int32_t sum = std::accumulate(data.begin(), data.end(), 0);
+    std::cout << "sum is " << sum << std::endl;
+
+    std::vector<int32_t> data1(data);
+    std::iota(data1.begin(), data1.end(), 50);
+    Printf(data1);
+
+    std::vector<int32_t> data2(data);
+    int32_t sum2 = std::accumulate(data2.begin(), data2.end(), 50, myfunc11);
+    std::cout << "sum2 is " << sum2 << std::endl;
+}
+
 int main()
 {
     //func2();
@@ -157,7 +179,9 @@ int main()
 
 	//func6();
 
-	func9();
+	//func9();
+
+    func11();
 
     std::cin.get();
     return 0;

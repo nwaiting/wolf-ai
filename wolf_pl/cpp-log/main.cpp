@@ -28,7 +28,7 @@ int main()
 	std::string logpath("E:\\worker\\gitwork\\wolf-ai\\wolf_pl\\cpp-log");
 	log4z->setLoggerPath(log4z->findLogger("Main"), logpath.c_str());
 	log4z->setLoggerDisplay(log4z->findLogger("Main"), true);
-	log4z->setLoggerLimitsize(log4z->findLogger("Main"), 100);	//ÉèÖÃÎª100M
+	log4z->setLoggerLimitsize(log4z->findLogger("Main"), 100);	//è®¾ç½®ä¸º100M
 
 	log4z->createLogger("Main");
 	log4z->createLogger("engine");
