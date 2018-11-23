@@ -7,7 +7,7 @@
 
 /*
     http://c.biancheng.net/stl/algorithms/  c++详细基础
-    
+
     算法1：sort()
     算法2：partial_sort()  实现局部排序，如寻找最大的前4个数
     算法3：nth_element()   实现取第几大的数据
@@ -20,6 +20,7 @@
 	算法10：reverse_copy()	反转排序容器内指定范围中的元素,!!!!!!!! 注：输入和输出不能是同一个迭代器，即不能在内部反转
     算法11：iota(begin, end, start);   从start开始递增加1，从start开始递增加1，然后赋值到begin到end空间
     算法12：accumulate(begin, end, start); 从start开始累加到end，然后在加上start
+    算法13：replace_if() 替换
 */
 
 
@@ -74,7 +75,7 @@ void func4()
 
     std::vector<int32_t>::iterator smallone = min_element(a.begin(), a.end());
     std::cout << *smallone << std::endl;      //获取最大值
-    std::cout << smallone - a.begin() << std::endl;   //获取最大值的索引，从0开始   
+    std::cout << smallone - a.begin() << std::endl;   //获取最大值的索引，从0开始
 }
 
 //算法6：find()  查找
@@ -115,7 +116,7 @@ void func7()
 	Printf(b);
 
 	std::vector<int32_t> b1(a);
-	std::for_each(b1.begin(), b1.end(), op_increase);	//测试显示，如果op_increase中参数不适用引起，那么b1结果不会改变	
+	std::for_each(b1.begin(), b1.end(), op_increase);	//测试显示，如果op_increase中参数不适用引起，那么b1结果不会改变
 	Printf(b1);
 
 	std::vector<int32_t> b2(a);
@@ -140,7 +141,7 @@ void func9()
 	std::vector<int32_t> data1(data);
 	std::reverse(data1.begin(), data1.end());
 	Printf(data1);
-	
+
 	std::vector<int32_t> data2(data);
 	std::reverse_copy(data2.begin(), data2.end(), data2.begin());	//！！！！注：输入和输出为同一个空间，反转有问题
 	Printf(data2);
