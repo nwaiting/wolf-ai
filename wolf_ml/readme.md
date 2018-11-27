@@ -145,6 +145,7 @@
         https://github.com/Decalogue/NlpMindmap     建立你的自然语言处理地图：学习笔记，资源，代码分享；NLP 算法工程师：从小白到专家
         https://github.com/search?q=chatterbot      ChatterBot聊天机器人
         https://github.com/charlesXu86      带web的聊天机器人
+        https://github.com/zheng5yu9/nlu_context    工程代码 ！！！针对小语料的，采用句式模板，关键词分类，tfidf相似度匹配的,预处理模块，上下文补全模块 工程代码，线上效果还不错
 
 - **数据集：**
         nlp数据：
