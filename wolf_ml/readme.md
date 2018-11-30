@@ -126,6 +126,10 @@
             https://mp.weixin.qq.com/s/4BO74EtpFML65Tq0IIk1jA   《统计学习方法》中每一章的算法实现一遍
             https://mp.weixin.qq.com/s/BswtWH3dPtD6LmKRWMaaMw   《21个项目玩转深度学习：基于TensorFlow的实践详解》完整版PDF+附书代码
 
+        NLP常用技术：
+            https://yq.aliyun.com/articles/236723   NLP入门+实战必读：最常见的10种自然语言处理技术（附代码）
+            https://yq.aliyun.com/articles/259082?spm=a2c4e.11153940.blogcont236723.19.3b165c30o04Ca1   最常见的10种NLP处理技术
+
         nlp面试：
             http://cheesezhe.github.io/2016/03/11/sina-nlp-2nd-round-interview/     新浪-自然语言处理工程师-第2轮面试
             http://www.peachcolonys.com/2018/09/28/job-mianshijingyanzongjie-yi/    [Job] 面试经验总结
