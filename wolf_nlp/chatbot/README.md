@@ -1,10 +1,19 @@
 # wolfChat
+
+## 概述
 > 主要关于机器人的相关内容
 
-- ## 概述
->
-
 - ## 其他
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
 >
 
 - ## 参考
@@ -15,4 +24,6 @@
 > https://github.com/llSourcell/tensorflow_chatbot  Tensorflow chatbot demo
 > https://github.com/dotnetcore/BotSharp    The Open Source AI Chatbot Platform
 > https://github.com/zulip/zulip    Zulip server - powerful open source team chat
-> https://github.com/higepon/tensorflow_seq2seq_chatbot     seq2seq chatbot 
+> https://github.com/higepon/tensorflow_seq2seq_chatbot     seq2seq chatbot
+> https://github.com/zpppy/seqGan_chatbot   seqGAN实现中文对话系统
+> 
