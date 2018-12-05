@@ -307,6 +307,8 @@ bilibili_addr = "https://www.bilibili.com/video/av27183045/?p=84"
 #邹博图、树等数据结构和动态规划等算法
 zb_addr = ["https://www.bilibili.com/video/av18109226/?spm_id_from=333.788.videocard.11"]
 
+#邹博比较早的机器学习课程
+bilibili_addr2 = "https://www.bilibili.com/video/av23416351/?p=13"
 
 def parse_titles():
     with open('parse.txt', 'wb') as f:
