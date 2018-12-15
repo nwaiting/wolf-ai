@@ -63,9 +63,34 @@ void func2()
 
 }
 
+/*
+    FILE *pf = fopen("a.txt", "rb");
+    fseek(pf,0,SEEK_END);
+    int32_t file_len = ftell(pf);
+    rewind(pf); //移动到起始位置
+    int32_t read_size = fread(data,1,len,pf);   //最多多去len个字节的数据
+
+    文件权限访问功能：（windows上）
+        创建文件时，fopen_s和freopen_s功能通过设置文件保护并使用独占访问权限打开文件来保护文件免受未经授权的访问，从而提高安全性。
+        _file = _fsopen(path, mod, _SH_DENYNO); //创建文件时设置文件权限
+    fseek(文件指针,偏移量,起始点);
+        功能：把文件指针从起始点移动偏移量到一个指定位置
+            SEEK_SET文件头
+            SEEK_CUR文件当前位置
+            SEEK_END文件末尾
+            偏移量：如果是正数，往文件尾部方向移动;如果是负数，往文件头方向移动
+
+*/
+
+void func3()
+{
+
+}
+
 int main()
 {
-    func1();
+    //func1();
+    func2();
 
     cin.get();
     return 0;
