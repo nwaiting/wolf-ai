@@ -315,6 +315,9 @@
 >       6、外排序
 >           外部排序
 >           多路平衡归并的排序
+>       排序时间复杂度如下：
+> ![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/pic/sort1.jpg)
+> ![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/pic/sort2.jpg)
 >
 >
 

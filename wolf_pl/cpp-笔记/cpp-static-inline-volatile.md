@@ -1,9 +1,11 @@
 ## cpp-笔记 - static、inline、volatile的作用
 - **概述：**
->
->
->
->
+>       C/C++常见修饰符：
+>           inline
+>           static
+>           const
+>           extern
+>           volatile
 >
 >
 >
@@ -52,7 +54,7 @@
 >
 
 - **待续：**
->
+>       参考：http://durant35.github.io/2017/07/06/programPearls_inline$static$const$extern$volatile/  C/C++常见修饰符（inline&static&const&extern&volatile）
 >
 >
 >
