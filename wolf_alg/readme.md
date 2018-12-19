@@ -322,7 +322,7 @@
 >
 
 - **待续**
->
+>       参考：http://outofmemory.cn/data-structure/tutorial/3-2-stack-application-instance     
 >
 >
 >
