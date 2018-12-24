@@ -321,8 +321,20 @@
 >
 >
 
+- **常用的五大算法（解决问题的思路）**
+>       1、动态规划
+>       2、分治法
+>       3、贪心求解法
+>       4、回溯法
+>       5、分支限界法
+>       
+>
+>
+>
+>
+
 - **待续**
->       参考：http://outofmemory.cn/data-structure/tutorial/3-2-stack-application-instance     
+>       参考：http://outofmemory.cn/data-structure/tutorial/3-2-stack-application-instance
 >
 >
 >
