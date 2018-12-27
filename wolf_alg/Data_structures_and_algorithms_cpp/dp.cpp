@@ -1,5 +1,12 @@
 ﻿#include <iostream>
+#include <vector>
 using namespace std;
+
+/*
+*   动态规划是运筹学的一个分支，是解决决策过程最优化的数学方法。
+*   问题可以分解成若干相互联系的阶段，在每一个阶段都要做出决策，形成一个决策序列，改决策序列也称为一个策略。
+*   策略都是在变化的状态中产生出来的，故有动态的含义。
+*/
 
 /**
     * No1.塔树选择和最大问题
@@ -24,7 +31,7 @@ using namespace std;
     *      max(dp[x-1,y-1],dp[x-1,y]) + array[x][y] 当x!=0;
     * }
 */
-void func1()
+void func1(const std::vector<int32_t> &vec)
 {
 
 }
