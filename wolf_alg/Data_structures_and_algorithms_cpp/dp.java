@@ -87,6 +87,44 @@ public class DynamicProgramming {
         }
     }
 
+
+    /*动态规划实现数塔求解*/
+    void tower_walk()
+    {
+        // dp初始化
+        for (int i = 0; i < n; ++i)
+        {
+            dp[n - 1][i] = data[n - 1][i];
+        }
+        int temp_max;
+        for (int i = n - 1; i >= 0; --i)
+        {
+            for (int j = 0; j <= i; ++j)
+            {
+                // 使用递推公式计算dp的值
+                temp_max = max(dp[i + 1][j], dp[i + 1][j + 1]);
+                dp[i][j] = temp_max + data[i][j];
+            }
+        }
+    }
+    /*打印最终结果*/
+    void print_result()
+    {
+        cout << "最大路径和：" << dp[0][0] << '\n';
+        int node_value;
+        // 首先输出塔顶元素
+        cout << "最大路径：" << data[0][0];
+        int j = 0;
+        for (int i = 1; i < n; ++i)
+        {
+            node_value = dp[i - 1][j] - data[i - 1][j];
+            /* 如果node_value == dp[i][j]则说明下一步应该是data[i][j]；如果node_value == dp[i][j + 1]则说明下一步应该是data[i][j + 1]*/
+            if (node_value == dp[i][j + 1]) ++j;
+            cout << "->" << data[i][j];
+        }
+        cout << endl;
+    }
+
     /**
      * No2.∑乘法表问题
      *
