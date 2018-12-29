@@ -7,7 +7,7 @@
 using namespace std;
 
 /*
-*   LCS(最长公共子序列)、LIS（最长递增子序列）、最大子序列、最长公共子串（要求连续）
+*   LCS(最长公共子序列)、最长公共子串（要求连续）
 *
 *
 *
@@ -78,7 +78,7 @@ void showLCS(const std::string &s1, const std::string &s2)
 }
 
 
-///////////////////最长功能字串
+///////////////////最长公共子串
 
 int32_t LCSubstring(const std::string &s1, const std::string &s2)
 {
