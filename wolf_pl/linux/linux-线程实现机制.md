@@ -49,7 +49,7 @@
 - **参考：**
 >       https://www.ibm.com/developerworks/cn/linux/kernel/l-thread/index.html  Linux 线程实现机制分析
 >       https://cn.aliyun.com/jiaocheng/128492.html
->       
+>       https://pan.baidu.com/s/1PvEZ78DjITVnWmCF2NRqxw 提取码: fqks   linux内核设计与实现
 >
 >
 >
