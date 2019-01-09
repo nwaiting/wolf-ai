@@ -13,7 +13,6 @@
 >           NGX_ADDON_SRCS  指定模块的源代码
 >           ngx_addon_dir   可以设置ngx_addon_dir变量，等价于configure执行时的-add-module=PATH
 >
->       参考：https://blog.csdn.net/qq_18810607/article/details/79886076
 >       nginx开发c++模块步骤：
 >           1、首先创建newmodule文件夹
 >           2、配置config文件
@@ -84,7 +83,6 @@
 >
 
 - **编写流程：**
->       参考：https://www.cnblogs.com/gaohj/p/7019712.html
 >       1、定义模块配置结构
 >           struct ngx_http_newmodule_loc_conf_t{ngx_str_t ed;};
 >           定义newmodule模块的指令和参数转化函数：
@@ -162,8 +160,8 @@
 >
 
 - **待续：**
->
->
+>       参考：https://www.cnblogs.com/gaohj/p/7019712.html     实战开发一个Nginx扩展 (Nginx Module)
+>       参考：https://blog.csdn.net/qq_18810607/article/details/79886076       开发一个Nginx模块(C语言和c++版本)
 >
 >
 >
