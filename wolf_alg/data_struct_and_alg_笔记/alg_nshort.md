@@ -8,6 +8,7 @@
 
 - **算法详解：**
 > ![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/pic/nshort1.png)
+> 
 >       如图，计算过程如下：
 >       (1)、首先将最后一个元素压入堆栈(例如6号节点)，当这个元素弹出时任务结束。
 >       (2)、对于每个节点的PreNode队列，维护了一个当前指针，初始状态都指向PreNode队列中第一个元素
@@ -22,6 +23,7 @@
 >       再往下，0,1,2都被弹出堆栈，3被弹出堆栈后，由于它对应的6号元素preNode队列记录指针仍然可以下移，因此将5压入堆栈并依次将其PreNode入栈，直到0被入栈。
 >           此时输出第3条最短路径:0,1,2,4,5,6。如下图：
 > ![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/pic/nshort3.png)
+>
 >       输出完成后，紧接着又是出栈，此时已经没有任何堆栈元素对应的PreNode队列指针可以下移，于是堆栈中的最后一个元素6也被弹出堆栈，此时输出工作完全结束。最后我们得出3条最短路径，分别为：
 >           0,1,3,6
 >           0,1,2,3,6
