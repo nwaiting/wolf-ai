@@ -161,8 +161,8 @@
 
 - **待续：**
 >       参考：https://www.cnblogs.com/gaohj/p/7019712.html     实战开发一个Nginx扩展 (Nginx Module)
->       参考：https://blog.csdn.net/qq_18810607/article/details/79886076       开发一个Nginx模块(C语言和c++版本)
->
+>       https://blog.csdn.net/qq_18810607/article/details/79886076       开发一个Nginx模块(C语言和c++版本)
+>       https://www.kancloud.cn/digest/understandingnginx/202604    Nginx源码解析
 >
 >
 >
