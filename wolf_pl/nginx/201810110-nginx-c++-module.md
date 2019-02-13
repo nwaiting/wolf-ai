@@ -149,14 +149,33 @@
 >                   }
 >
 >
+
+- **添加nginx.conf模块实例：**
+>
+>       如在nginx.conf中添加统计模块，如下，
+>           server {
+>               listen 81;
+>               location /rtmp-stat {
+>                   rtmp_stat all;
+>               }
+>           }
+>       则在nginx中定义步骤：
+>       1、
+>           static ngx_command_t  ngx_rtmp_stat_commands[] = {
+>           ngx_string("rtmp_stat"),
+>           NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_1MORE,
+>           ngx_rtmp_stat, (执行的handler)
+>           ...
+>           }
+>
+>       2、
+>           static ngx_http_module_t  ngx_rtmp_stat_module_ctx = {
 >
 >
->
->
->
->
->
->
+>       3、
+>           ngx_module_t  ngx_rtmp_stat_module = {
+>               
+>           }
 >
 
 - **待续：**
