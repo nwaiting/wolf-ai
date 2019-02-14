@@ -170,11 +170,20 @@
 >
 >       2、
 >           static ngx_http_module_t  ngx_rtmp_stat_module_ctx = {
->
+>               NULL,                               /* preconfiguration */
+>               ngx_rtmp_stat_postconfiguration,    /* postconfiguration */
+>               ...
+>               ngx_rtmp_stat_create_loc_conf,      /* create location configuration */
+>               ngx_rtmp_stat_merge_loc_conf,       /* merge location configuration */
+>           }
 >
 >       3、
 >           ngx_module_t  ngx_rtmp_stat_module = {
->               
+>                   NGX_MODULE_V1,
+>                   &ngx_rtmp_stat_module_ctx,          /* module context */
+>                   ngx_rtmp_stat_commands,             /* module directives */
+>                   NGX_HTTP_MODULE,                    /* module type */
+>                   ...
 >           }
 >
 
