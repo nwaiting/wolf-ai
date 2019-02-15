@@ -1,6 +1,18 @@
 ## nginx - nginx rtmp 模块
 - **概述：**
 >
+>       本文主要内容：
+>           nginx-rtmp开发
+>           RTMP启动流程
+>           调用各个RTMP模块preconfiguration
+>           初始化事件处理，主要是AMF消息，特殊消息，处理回调注册
+>           nginx-rtmp-module目录结构
+>           notify模块
+>           nginx-rtmp各模块主要功能
+>
+>
+>
+>
 >
 
 - **nginx-rtmp开发：**
@@ -196,7 +208,7 @@
 >
 
 - **待续：**
->
+>       参考：https://blog.evanxia.com/2017/02/1264    Nginx-rtmp-module模块源码学习
 >
 >
 >
