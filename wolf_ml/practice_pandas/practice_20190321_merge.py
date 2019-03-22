@@ -34,11 +34,11 @@ import pandas as pd
 def main():
     left = pd.DataFrame({'id':[1,2,3,4,5],
             'Name': ['Alex', 'Amy', 'Allen', 'Alice', 'Ayoung'],
-            'subject_id':['sub1','sub2','sub4','sub6','sub5']}
+            'subject_id':['sub1','sub2','sub4','sub6','sub6']}
             )
-    right = pd.DataFrame({'id':[1,2,3,4,5],
-            'Name': ['Billy', 'Brian', 'Bran', 'Bryce', 'Betty'],
-            'subject_id':['sub2','sub4','sub3','sub6','sub5']}
+    right = pd.DataFrame({'id':[1,2,3,4,5,5],
+            'Name': ['Billy', 'Brian', 'Bran', 'Bryce', 'Betty','Bettydouble'],
+            'subject_id':['sub2','sub4','sub3','sub6','sub5','subdouble']}
             )
     print(left)
     print("="*64)
@@ -56,6 +56,16 @@ def main():
     # 合并使用how
     print(pd.merge(left, right, on=['subject_id']))
     print(pd.merge(left, right, on=['subject_id'], how='left'))
+    print(pd.merge(left, right, on=['subject_id'], how='left').subject_id.shift(1).values)
+    first = pd.merge(left, right, on=['subject_id'], how='left').id_x.values
+    second = pd.merge(left, right, on=['subject_id'], how='left').id_x.shift(1).values
+    ac_pairs = list(zip(first, second))
+    print("ac_pairs=",ac_pairs)
+    ac_pairs.pop(0)
+    print("ac_pairs=",ac_pairs)
+    print(list(map(lambda s: str(int(s[0])) + '_' + str(int(s[1])), ac_pairs)))
+    print("="*64)
+    return
     print(pd.merge(left, right, on=['subject_id'], how='right'))
     print(pd.merge(left, right, on=['subject_id'], how='inner'))
     print(pd.merge(left, right, on=['subject_id'], how='outer'))

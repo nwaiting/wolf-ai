@@ -31,7 +31,7 @@ def main():
             index=[1,2,3,4,5]
             )
     two = pd.DataFrame({
-            'Name': ['Billy', 'Brian', 'Bran', 'Bryce', 'Betty'],
+            'Name': ['Billy', 'Brian', 'Bran', 'Alice', 'Betty'],
             'subject_id':['sub2','sub4','sub3','sub6','sub5'],
             'Marks_scored':[89,80,79,97,88]},
             index=[1,2,3,4,5]
@@ -43,6 +43,10 @@ def main():
     print("="*64)
     print(pd.concat([one,two]))
     print("="*64)
+
+    df_tmp = pd.concat([one,two])
+    print(df_tmp[df_tmp.Name=="Alice"])
+    print("+"*64)
 
     print(pd.concat([one,two], keys=['x','y']))
     print("="*64)

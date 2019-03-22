@@ -30,16 +30,58 @@ def main():
         'Rank': [1, 2, 2, 3, 3,4 ,1 ,1,2 , 4,1,2],
         'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
         'Points':[876,789,863,673,741,812,756,788,694,701,804,690]})
+    df2 = pd.DataFrame({'Team': ['Riders', 'Riders', 'Devils', 'Devils', 'Kings','kings', 'Kings', 'Kings', 'Riders', 'Royals', 'Royals', 'Riders'],
+        'Rank': [1, 2, 2, 3, 3,4 ,1 ,1,2 , 4,1,2],
+        'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
+        'Points':[876,789,863,673,741,812,756,788,694,701,804,690],
+        'Points2':[876,789,863,673,741,812,756,788,694,701,804,690],
+        'Points3':[876,789,863,673,741,812,756,788,694,701,804,690]}
+        )
     print(df)
+    print("=="*32)
+
+    print(df.index)
+    print(df.columns)
+    print(df.columns.values)
+
+    train_feats = df2.columns.values
+    test_feats = df.columns.values
+    drop_columns = list(filter(lambda x: x not in test_feats,train_feats))
+    print(df2.drop(drop_columns, axis=1)) #删除多余的项，保证train和test项相同
+    print("=="*64)
+
+    print(df2.Year.value_counts())
+    print(df2.Year.value_counts().index.values)
+    print(df2.Year.value_counts().values)
+    print("=="*64)
+
+    df2 = df2[df2.Year==2014].copy()
+    print(df2)
+    print(df2.rename(columns={'Rank': 'Rank_{}'.format(10086)}, inplace=False))
+    print(df2)
+
+
+    # Team字段整体下移一步
+    print(df.Team.shift())
     print("=="*32)
 
     print(df.groupby('Team')) #返回的是一个对象
     print("=="*32)
-    print(df.groupby('Team').groups)
+    # 获取每一个分组中的最后一个
+    print(df.groupby('Team').tail(1))
     print("=="*32)
+    print(df.groupby('Team').groups)
+    print("!! ++"*32)
     #多列进行分组
     print(df.groupby(['Team','Year']).groups)
-    print("=="*32)
+    print(df.groupby(['Team','Year']).tail(1))
+    print("!! ++"*32)
+    print(df.groupby(['Team'], as_index=False).count())
+    print(df.groupby(['Team'], as_index=False).count().rename(columns={'country': 'n_total_trip'}, inplace=True))
+    print("=="*64)
+    print(df.groupby(['Team','Year'])["Rank"].agg([("totalRank", np.sum)]))
+    print(df.groupby(['Team','Year'])["Rank"].agg([("totalRank", np.sum)]).reset_index().totalRank)
+    print("=="*64)
 
     #遍历分组
     for name,group in df.groupby('Team'):
