@@ -12,6 +12,7 @@ import os
 import numpy as np
 import pandas as pd
 import xgboost as xgb
+from xgboost.sklearn import XGBClassifier
 from xgboost import plot_importance
 import lightgbm as lgb
 import matplotlib.pyplot as plt
@@ -254,10 +255,43 @@ def decision_tree_xgb():
         #print("accuracy ", metrics.accuracy_score(y_train, dtrain_predictions))
         #print("auc score ", metrics.roc_auc_score(y, dtrain_predprob))
 
+def model_fit(alg, xtrain,ytrain,xtest,ytest,user_traincv=True, cv_fold=5, early_stop_round=50):
+    if user_traincv:
+        xgb_param = alg.get_xgb_params()
+        xgb_dtrain = xgb.DMatrix(xtrain, label=ytrain)
+        xgb_dtest = xgb.DMatrix(xtest, label=ytest)
+        cv_result = xgb.cv(xgb_param, xgb_dtrain, num_boost_round=alg.get_params()["n_estimators"], nfold=cv_fold,
+                            metrics="auc", early_stopping_rounds=early_stop_round, show_stdv=False)
+        alg.set_params(n_estimators=cv_result.shape[0])
+    alg.fit(xtrain, ytrain, eval_metric="auc")
+    train_predictions = alg.predict(xtrain)
+    # predict_proba返回的是一个 n 行 k 列的数组， 第i行第j列上的数值是模型预测第i个预测样本为某个标签的概率，并且每一行的概率和为1
+    train_predprob = alg.predict_proba(xtrain)[:,1]
+    print("model reports:===============================")
+    print("accuarcy:{0}".format(metrics.accuracy_score(ytrain, train_predictions)))
+    print("auc score:{0}".format(metrics.roc_auc_score(ytrain, train_predprob)))
+
+    test_predictions = alg.predict(xtest)
+    test_predprob = alg.predict_proba(xtest)[:,1]
+    print("predict test data result:==============================")
+    print("accuracy:{0}".format(metrics.accuracy_score(ytest, test_predictions)))
+    print("auc score:{0}".format(metrics.roc_auc_score(ytest, test_predprob)))
+
+    #feat_imp = pd.Series(alg.booster().get_fscore()).sort_values(ascending=False)
+    print(alg.feature_importances_)
+    feat_imp = pd.Series(alg.feature_importances_).sort_values(ascending=False)
+    feat_imp.plot(kind='bar', title="Feature Important")
+    plt.ylabel("Feature Important score")
+    plt.show()
+
 
 def decision_tree_xgb_sklearn():
-    from xgboost.sklearn import XGBClassifier
     """
+        方法1：
+        xgb_model = xgb.train()
+        xgb_model.get_fscore()
+
+        方法2：
         model = XGBClassifier()
         model.fit(X, y)
         # feature importance
@@ -265,15 +299,133 @@ def decision_tree_xgb_sklearn():
 
         参考：https://github.com/aarshayj/Analytics_Vidhya/blob/master/Articles/Parameter_Tuning_XGBoost_with_Example/XGBoost%20models.ipynb
     """
-    X,y = load_data()
-    params1 = {"0":0}
-    grid1 = GridSearchCV(estimator=XGBClassifier(),
-                        param_grid=params1,
-                        scoring="roc_auc",
-                        n_jobs=-1,
-                        iid=False,
-                        cv=5)
-    
+    X,y = load_data_df()
+    xtrain,xtest,ytrain,ytest = train_test_split(X, y, test_size=0.2, random_state=10, shuffle=True)
+    flag = 9
+    if flag == 1:
+        params1 = {"max_depth":list(range(3,8,1)), "min_child_weight":list(range(1,6,2))}
+        grid1 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1, n_estimators=140, max_depth=5, min_child_weight=1, gamma=0, subsample=0.8,
+                                                    colsample_bytree=0.8, objective="binary:logistic", scale_pos_weight=1, seed=10),
+                            param_grid=params1,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5)
+        grid1.fit(X,y)
+        print(grid1.grid_scores_)
+        print(grid1.best_params_)
+        print(grid1.best_score_)
+        # {'max_depth': 4, 'min_child_weight': 3} 0.82109573488313
+    if flag == 2:
+        params2 = {"min_child_weight":list(range(2,6,1))}
+        grid2 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1, n_estimators=140, max_depth=4, min_child_weight=1, gamma=0, subsample=0.8,
+                                                    colsample_bytree=0.8, objective="binary:logistic", scale_pos_weight=1, seed=10),
+                            param_grid=params2,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5)
+        grid2.fit(X,y)
+        print(grid2.grid_scores_)
+        print(grid2.best_params_)
+        print(grid2.best_score_)
+        # {'min_child_weight': 3} 0.82109573488313
+    if flag == 3:
+        params3 = {"min_child_weight":list(range(3,10,1))}
+        grid3 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1, n_estimators=140, max_depth=4, min_child_weight=1, gamma=0, subsample=0.9,
+                                                    colsample_bytree=0.9, objective="binary:logistic", scale_pos_weight=1, seed=10),
+                            param_grid = params3,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5)
+        grid3.fit(X, y)
+        print(grid3.grid_scores_)
+        print(grid3.best_params_)
+        print(grid3.best_score_)
+        # {'min_child_weight': 3} 0.81962890625
+    if flag == 4:
+        params4 = {"gamma":[i/10 for i in range(5)]}
+        grid4 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1, n_estimators=140, max_depth=4, min_child_weight=3, gamma=0, subsample=0.9,
+                                                    colsample_bytree=0.9, objective="binary:logistic", scale_pos_weight=1, seed=10),
+                            param_grid=params4,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5
+                            )
+        grid4.fit(X,y)
+        print(grid4.grid_scores_)
+        print(grid4.best_params_)
+        print(grid4.best_score_)
+        # {'gamma': 0.0} 0.81962890625
+    if flag == 5:
+        params5 = {"n_estimators":list(range(100, 150, 10))}
+        grid5 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1, n_estimators=140, max_depth=4, min_child_weight=3, gamma=0, subsample=0.9,
+                                                    colsample_bytree=0.9, objective="binary:logistic", scale_pos_weight=1, seed=10),
+                            param_grid=params5,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5
+                            )
+        grid5.fit(X, y)
+        print(grid5.grid_scores_)
+        print(grid5.best_params_)
+        print(grid5.best_score_)
+        # {'n_estimators': 130} 0.8196741615853659
+
+    #alg = XGBClassifier(n_estimators=140, learning_rate=0.1, max_depth=4, min_child_weight=3, gamma=0, subsample=0.9, colsample_bytree=0.9, objective="binary:logistic",
+    #                    scale_pos_weight=1, seed=10)
+    #model_fit(alg, xtrain, ytrain, xtest, ytest)
+
+    if flag == 6:
+        params6 = {"subsample":[i/10.0 for i in list(range(6,10))],"colsample_bytree":[i/10.0 for i in list(range(6,10))]}
+        grid6 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1,n_estimators=140,max_depth=4,min_child_weight=3,gamma=0,
+                                                    subsample=1,colsample_bytree=1,objective="binary:logistic",scale_pos_weight=1,seed=10),
+                            param_grid=params6,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5)
+        grid6.fit(X,y)
+        print(grid6.grid_scores_)
+        print(grid6.best_params_)
+        print(grid6.best_score_)
+        # {'colsample_bytree': 0.8, 'subsample': 0.8} 0.82109573488313
+
+    if flag == 7:
+        params7 = {"subsample":[i/100.0 for i in list(range(75,90,5))], "colsample_bytree":[i/100.0 for i in list(range(75,90,5))]}
+        grid7 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1,n_estimators=140, max_depth=4,min_child_weight=3,gamma=0,
+                                                    subsample=1, colsample_bytree=1, objective="binary:logistic", scale_pos_weight=1,seed=10),
+                            param_grid=params7,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5)
+        grid7.fit(X, y)
+        print(grid7.grid_scores_)
+        print(grid7.best_params_)
+        print(grid7.best_score_)
+        # {'colsample_bytree': 0.8, 'subsample': 0.8} 0.82109573488313
+
+    if flag == 8:
+        params8 = {"reg_alpha":[i/10.0 for i in list(range(6))]+[0.001,0.005,0.05,0.01]}
+        grid8 = GridSearchCV(estimator=XGBClassifier(learning_rate=0.1,n_estimators=140,max_depth=4,min_child_weight=3,gamma=0,
+                                                    subsample=0.8,colsample_bytree=0.8,objective="binary:logistic",scale_pos_weight=1,seed=10),
+                            param_grid=params8,
+                            scoring="roc_auc",
+                            n_jobs=-1,
+                            iid=False,
+                            cv=5)
+        grid8.fit(X,y)
+        print(grid8.grid_scores_)
+        print(grid8.best_params_)
+        print(grid8.best_score_)
+        # {'reg_alpha': 0.1} 0.8236574250508131
+    alg = XGBClassifier(n_estimators=140, learning_rate=0.1, max_depth=4, min_child_weight=3, gamma=0, subsample=0.9, colsample_bytree=0.9, objective="binary:logistic",
+                        scale_pos_weight=1, seed=10, reg_alpha=0.1)
+    model_fit(alg, xtrain, ytrain, xtest, ytest)
 
 
 def test_xgboost():
@@ -319,6 +471,6 @@ def test_xgboost():
 
 if __name__ == '__main__':
     #test_xgboost()
-    decision_tree_xgb()
-    #decision_tree_xgb_sklearn()
+    #decision_tree_xgb()
+    decision_tree_xgb_sklearn()
     #decision_tree_rf()
