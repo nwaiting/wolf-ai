@@ -5,6 +5,7 @@
     https://blog.csdn.net/han_xiaoyang/article/details/52665396     机器学习系列(12)_XGBoost参数调优完全指南（附Python代码）
         https://blog.csdn.net/sb19931201/article/details/52557382   xgboost入门与实战（原理篇）
         https://blog.csdn.net/sb19931201/article/details/65445514   XGBoost Plotting API以及GBDT组合特征实践
+        https://snaildove.github.io/2018/10/02/get-started-XGBoost/     XGBoost原理和底层实现剖析（非常详细！！！）
 """
 import warnings
 warnings.filterwarnings("ignore")

@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.svm import SVC, LinearSVC, NuSVC
 from sklearn.metrics import accuracy_score,roc_auc_score
+from sklearn.preprocessing import Normalizer,normalize,MinMaxScaler,StandardScaler,scale
 
 """
     SVC, LinearSVC, NuSVC区别：
@@ -79,10 +80,18 @@ from sklearn.metrics import accuracy_score,roc_auc_score
         https://blog.csdn.net/qq_35273499/article/details/79163054  知乎多标签文本分类任务
         https://zhuanlan.zhihu.com/p/28923961   知乎看山杯夺冠记
         http://ruder.io/deep-learning-nlp-best-practices/index.html     Deep Learning for NLP Best Practices
+        https://nbviewer.jupyter.org/github/SnailDove/github-blog/blob/master/Titanic-0.837.ipynb   Titanic特征处理
+        https://nbviewer.jupyter.org/github/SnailDove/github-blog/blob/master/Titanic_with_name_sex_age_and_ticket_features-0.82275.ipynb   Titanic特征处理
 """
 
 def load_data():
-    return None,None
+    file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "train_modified.csv")
+    df = pd.read_csv(file_path)
+    print(df.ix[:,"Disbursed"].value_counts())
+    columns = [x for x in df.columns if x not in ["Disbursed","ID"]]
+    X = df.ix[:, columns].values
+    y = df.ix[:, "Disbursed"]
+    return X,y
 
 def model_fit():
     X,y = load_data()
