@@ -32,7 +32,21 @@
 >           3、relay
 >
 >
+- **流进入和出去的出口：**
 >
+>       进口：
+>           ngx_rtmp_live_av()  收到的数据都走这个接口
+>       出口：
+>           ngx_rtmp_send_message()     出去的数据都走这个接口
+>
+>
+>
+>
+
+- **定时任务：**
+>       定时任务
+>       可以参考
+>       ngx_add_timer(&s->ping_evt,cscf->ping)
 >
 >
 >
