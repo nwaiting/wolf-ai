@@ -1,13 +1,15 @@
-#coding=utf-8
+# coding=utf-8
 
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
+
 def test_version():
     import platform
     print(platform.python_version())
+
 
 def main():
     """
@@ -248,6 +250,7 @@ def f10():
     plt.contourf(X, Y, f(X,Y), 8, alpha=.75, cmap='jet')
     C = plt.contour(X, Y, f(X,Y), 8, colors='black', linewidth=.5)
     plt.show()
+
 
 if __name__ == '__main__':
     #main()
