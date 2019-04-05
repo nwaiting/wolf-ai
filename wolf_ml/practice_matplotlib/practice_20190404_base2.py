@@ -404,6 +404,54 @@ def f12():
     plt.show()
 
 
+def f13():
+    """
+        子图添加图例，即边角的小图标注释
+    """
+    ax1 = plt.subplot(2, 1, 1)
+    x = np.arange(0, 100)
+    ax1.plot(x, x ** 2, color="red", linewidth=5, linestyle="-", label="sine")
+    # 添加边角的小图标注释
+    ax1.legend(loc="upper right")
+
+    ax2 = plt.subplot(2, 1, 2)
+    ax2.plot(x, np.log(x), color="blue", linewidth=5, linestyle="-", label="cosine")
+    # 添加边角的小图标注释
+    ax2.legend(loc="upper left")
+    plt.show()
+
+
+def f14():
+    """
+        显示多图例，即一个figure显示多个图例
+    """
+    x = np.random.uniform(-1, 1, 4)
+    y = np.random.uniform(-1, 1, 4)
+    p1, = plt.plot([1, 2, 3])
+    p2, = plt.plot([3, 2, 1])
+    l1 = plt.legend([p2, p1], ["line 2", "line 1"], loc='upper left')
+
+    p3 = plt.scatter(x[0:2], y[0:2], marker='D', color='r')
+    p4 = plt.scatter(x[2:], y[2:], marker='D', color='g')
+    # This removes l1 from the axes.
+    plt.legend([p3, p4], ['label', 'label1'], loc='lower right', scatterpoints=1)
+    # Add l1 as a separate artist to the axes
+    plt.gca().add_artist(l1)
+    plt.show()
+
+
+    # 或者下面的方法，一个figure显示多个图例
+    line1, = plt.plot([1, 2, 3], label="Line 1", linestyle='--')
+    line2, = plt.plot([3, 2, 1], label="Line 2", linewidth=4)
+    # 为第一个线条创建图例
+    first_legend = plt.legend(handles=[line1], loc=1)
+    # 手动将图例添加到当前轴域
+    ax = plt.gca().add_artist(first_legend)
+    # 为第二个线条创建另一个图例
+    plt.legend(handles=[line2], loc=4)
+    plt.show()
+
+
 if __name__ == "__main__":
     #f1()
     #f2()
@@ -414,7 +462,9 @@ if __name__ == "__main__":
     #f8()
     #f9()
     #f10()
-    f11()
+    #f11()
     #f12()
+    #f13()
+    f14()
 
 
