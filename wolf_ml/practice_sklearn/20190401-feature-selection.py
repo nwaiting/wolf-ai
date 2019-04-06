@@ -1,10 +1,12 @@
-#coding=utf-8
+# coding=utf-8
 
 """
     参考：http://www.cnblogs.com/jasonfreak/p/5448385.html     使用sklearn做单机特征工程
 """
 
 
+def main():
+    pass
 
 
 if __name__ == '__main__':
