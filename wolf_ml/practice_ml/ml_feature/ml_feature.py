@@ -22,49 +22,55 @@
 
 """
 
+import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.datasets import load_iris
-from sklearn.preprocessing import StandardScaler,Binarizer,OneHotEncoder,Normalizer,Imputer,PolynomialFeatures
+from sklearn.preprocessing import StandardScaler,Binarizer,OneHotEncoder,Normalizer,Imputer,PolynomialFeatures,MinMaxScaler,FunctionTransformer,RobustScaler
 from sklearn.feature_selection import SelectKBest, chi2, RFE, SelectFromModel
 from sklearn.decomposition import PCA
+from sklearn.pipeline import Pipeline
 from scipy.stats import pearsonr, pearson3
 
 """
     数据预处理：
         标准化，返回值为标准化后的数据
         StandardScaler().fit_transform(iris.data)
-        
+
         区间缩放法
         区间缩放，返回值为缩放到[0, 1]区间的数据
         MinMaxScaler().fit_transform(iris.data)
-         
-        二值化，阈值设置为3，返回值为二值化后的数据
+
+        二值化，阈值设置为3（大于3为1，小于3为0），返回值为二值化后的数据
         Binarizer(threshold=3).fit_transform(iris.data)
-        
-        哑编码，对IRIS数据集的目标值，返回值为哑编码后的数据
+
+        哑编码，对IRIS数据集的目标值，返回值为哑编码后的数据，只能对数值型数据进行处理
         OneHotEncoder().fit_transform(iris.target.reshape((-1,1)))
-        
+
         归一化，返回值为归一化后的数据
         归一化是依照特征矩阵的行处理数据，其目的在于样本向量在点乘运算或其他核函数计算相似性时，拥有统一的标准，也就是说都转化为“单位向量”
         Normalizer().fit_transform(iris.data)
-        
+
+        如果你的数据有许多异常值，那么使用数据的均值与方差去做标准化就不行了
+        你可以使用robust_scale 和 RobustScaler这两个方法。它会根据中位数或者四分位数去中心化数据
+        RobustScaler()
+
         缺失值计算
         由于IRIS数据集没有缺失值，故对数据集新增一个样本，4个特征均赋值为NaN，表示数据缺失
         缺失值计算，返回值为计算缺失值后的数据
         参数missing_value为缺失值的表示形式，默认为NaN
         参数strategy为缺失值填充方式，默认为mean（均值）
         Imputer().fit_transform(vstack((array([nan, nan, nan, nan]), iris.data)))
-        
+
         数据变换
         常见的数据变换有基于多项式的、基于指数函数的、基于对数函数的
         多项式转换,参数degree为度，默认值为2
         PolynomialFeatures().fit_transform(iris.data)
-        
+
         自定义转换函数为对数函数的数据变换
         基于单变元函数的数据变换可以使用一个统一的方式完成，使用preproccessing库的FunctionTransformer对数据进行对数函数转换
         第一个参数是单变元函数
         FunctionTransformer(log1p).fit_transform(iris.data)
-    
+
     特征选择：
         当数据预处理完成后，我们需要选择有意义的特征输入机器学习的算法和模型进行训练。
         从两个方面来选择特征：
@@ -78,7 +84,7 @@ from scipy.stats import pearsonr, pearson3
                 根据目标函数（通常是效果评分），每次选择若干特征或者排除若干特征）
             3、嵌入法（embedded）
                 先使用某些机器学习算法进行模型训练，得到各个特征的权值系数，根据系数大小选择特征。类似于filter方法
-                
+
         常见方法：
             过滤法：
                 1 方差选择
@@ -104,16 +110,16 @@ from scipy.stats import pearsonr, pearson3
                     为了处理定量数据，最大信息系数法被提出，使用feature_selection库的SelectKBest类结合最大信息系数法来选择特征的代码如下，
                     from sklearn.feature_selection import SelectKBest
                     from minepy import MINE
-                    
+
                     #由于MINE的设计不是函数式的，定义mic方法将其为函数式的，返回一个二元组，二元组的第2项设置成固定的P值0.5
                     def mic(x, y):
                         m = MINE()
                         m.compute_score(x, y)
                         return (m.mic(), 0.5)
-                    
+
                     #选择K个最好的特征，返回特征选择后的数据
                     SelectKBest(lambda X, Y: array(map(lambda x:mic(x, Y), X.T)).T, k=2).fit_transform(iris.data, iris.target)
-                    
+
             包装法 Wrapper：
                 递归特征消除法
                 递归消除特征法使用一个基模型来进行多轮训练，每轮训练后，消除若干权值系数的特征，再基于新的特征集进行下一轮训练
@@ -122,32 +128,32 @@ from scipy.stats import pearsonr, pearson3
                 #参数estimator为基模型
                 #参数n_features_to_select为选择的特征个数
                 RFE(estimator=LogisticRegression(), n_features_to_select=2).fit_transform(iris.data, iris.target)
-                
+
             嵌入法 Embedded：
                 1、基于惩罚项的特征选择法
                     使用带惩罚项的基模型，除了筛选出特征外，同时也进行了降维
                     使用feature_selection库的SelectFromModel类结合带L1惩罚项的逻辑回归模型，来选择特征的代码如下
                     #带L1惩罚项的逻辑回归作为基模型的特征选择
                     SelectFromModel(LogisticRegression(penalty="l1", C=0.1)).fit_transform(iris.data, iris.target)
-                
+
                     L1惩罚项降维的原理在于保留多个对目标值具有同等相关性的特征中的一个，所以没选到的特征不代表不重要。故，可结合L2惩罚项来优化。
                     具体操作为：若一个特征在L1中的权值为1，选择在L2中权值差别不大且在L1中权值为0的特征构成同类集合，将这一集合中的特征平分L1中的权值，故需要构建一个新的逻辑回归模型
                     使用feature_selection库的SelectFromModel类结合带L1以及L2惩罚项的逻辑回归模型，来选择特征的代码如下，
                     # 带L1和L2惩罚项的逻辑回归作为基模型的特征选择，参数threshold为权值系数之差的阈值
                     SelectFromModel(LR(threshold=0.5, C=0.1)).fit_transform(iris.data, iris.target) #LR是自定义的函数，即上面的优化方案
-                
+
                 2、基于树模型的特征选择法
                     树模型中GBDT也可用来作为基模型进行特征选择
                     使用feature_selection库的SelectFromModel类结合GBDT模型，来选择特征的代码如下，
                     # GBDT作为基模型的特征选择
                     SelectFromModel(GradientBoostingClassifier()).fit_transform(iris.data, iris.target)
-            
+
             类	                所属方式	    说明
             VarianceThreshold	Filter	    方差选择法
             SelectKBest	        Filter	    可选关联系数、卡方校验、最大信息系数作为得分计算的方法
             RFE	                Wrapper	    递归地训练基模型，将权值系数较小的特征从特征集合中消除
             SelectFromModel	    Embedded	训练基模型，选择权值系数较高的特征
-            
+
     降维：
         当特征选择完成后，可以直接训练模型了，但是可能由于特征矩阵过大，导致计算量大，训练时间长的问题，因此降低特征矩阵维度也是必不可少的
         常见的降维方法除了以上提到的基于L1惩罚项的模型以外，另外还有主成分分析法（PCA）和线性判别分析（LDA），线性判别分析本身也是一个分类模型
@@ -161,7 +167,7 @@ from scipy.stats import pearsonr, pearson3
             使用decomposition库的PCA类选择特征的代码如下，
             #主成分分析法，返回降维后的数据
             #参数n_components为主成分数目
-            PCA(n_components=2).fit_transform(iris.data)  
+            PCA(n_components=2).fit_transform(iris.data)
         2、LDA 线性判别分析
             使用lda库的LDA类选择特征的代码如下，
             #线性判别分析法，返回降维后的数据
@@ -170,19 +176,49 @@ from scipy.stats import pearsonr, pearson3
 """
 
 
-def main():
-    pass
+def f1():
+    """
+        主要是实现上面介绍的一些方法
+    """
+    iris = load_iris()
+    print(StandardScaler().fit_transform(iris.data))
+    print("=="*64)
+
+    print(MinMaxScaler().fit_transform(iris.data))
+    print("=="*64)
+
+    print(Binarizer(threshold=3.0).fit_transform(iris.data))
+    print("=="*64)
+
+    # sparse=False 不产生稀疏矩阵，
+    print(OneHotEncoder(sparse=False).fit_transform(iris.target.reshape((-1, 1))))
+    print("=="*64)
+
+    """
+    归一化，对行进行处理
+    若为l1时，样本各个特征值除以各个特征值的绝对值之和
+    若为l2时，样本各个特征值除以各个特征值的平方之和
+    若为max时，样本各个特征值除以样本中特征值最大的值
+    """
+    print(Normalizer(norm='l1').fit_transform(iris.data))
+    print("=="*64)
 
 
+def f2():
+    iris = load_iris()
 
+    print(np.vstack((np.array([np.nan, np.nan, np.nan, np.nan]), iris.data)))
+    print("=="*64)
 
+    # 空值填充
+    # missing_values : integer or "NaN", optional (default="NaN")
+    # 参数strategy为缺失值填充方式，默认为mean（均值）
+    print(Imputer().fit_transform(np.vstack((np.array([np.nan, np.nan, np.nan, np.nan]), iris.data))))
+    print("=="*64)
 
-
-
-
-
-
-
+    # 常见的数据变换有基于多项式的、基于指数函数的、基于对数函数的，也可以自定义函数
+    print(FunctionTransformer(np.log1p).fit_transform(iris.data))
+    print("=="*64)
 
 
 
@@ -194,4 +230,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    #f1()
+    f2()

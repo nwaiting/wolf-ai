@@ -5,7 +5,7 @@
     Pandas提供了各种工具(功能)，可以轻松地将Series，DataFrame和Panel对象组合在一起
         pd.concat(objs,axis=0,join='outer',join_axes=None,ignore_index=False)
             objs - 这是Series，DataFrame或Panel对象的序列或映射。
-            axis - {0，1，...}，默认为0，这是连接的轴。
+            axis - {0，1，...}，默认为0，即上下叠加，1则为水平叠加，这是连接的轴。
             join - {'inner', 'outer'}，默认inner。如何处理其他轴上的索引。联合的外部和交叉的内部。
             ignore_index − 布尔值，默认为False。如果指定为True，则不要使用连接轴上的索引值。结果轴将被标记为：0，...，n-1。
             join_axes - 这是Index对象的列表。用于其他(n-1)轴的特定索引，而不是执行内部/外部集逻辑。
@@ -42,6 +42,8 @@ def main():
     print(two)
     print("="*64)
     print(pd.concat([one,two]))
+    print("="*64)
+    print(pd.concat([one,two], axis=1))
     print("="*64)
 
     df_tmp = pd.concat([one,two])

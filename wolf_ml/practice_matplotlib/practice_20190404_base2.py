@@ -7,6 +7,15 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from matplotlib.animation import FuncAnimation
 
 
+"""
+
+    默认图，调用情况：
+        默认情况下，
+        matplotlib 会调用 gca() 来获取当前轴（axes）
+        gca 调用 gcf() 来获取当前 figure，如果没有 figure，它便会调用 figure() 来创建一个，严格地说是创建一个 subplot
+"""
+
+
 def f1():
     #创建自定义图像
     fig = plt.figure(figsize=(4, 3), facecolor='blue')
@@ -396,8 +405,14 @@ def f12():
     """
         自定义子图布局排版
     """
+    x = np.arange(0, 100)
     ax1 = plt.subplot2grid((3, 3), (0, 0), colspan=3)
+    ax1.plot(x, np.log(x), linewidth=6, linestyle="-", label="log")
+    ax1.legend(loc="upper left")
+
     ax2 = plt.subplot2grid((3, 3), (1, 0), colspan=2)
+    ax2.plot(x, x ** 2)
+
     ax3 = plt.subplot2grid((3, 3), (1, 2), rowspan=2)
     ax4 = plt.subplot2grid((3, 3), (2, 0))
     ax5 = plt.subplot2grid((3, 3), (2, 1))
@@ -463,8 +478,6 @@ if __name__ == "__main__":
     #f9()
     #f10()
     #f11()
-    #f12()
+    f12()
     #f13()
-    f14()
-
-
+    #f14()
