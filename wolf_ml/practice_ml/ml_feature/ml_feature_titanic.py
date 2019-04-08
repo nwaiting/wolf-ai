@@ -11,6 +11,12 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from pandas import DataFrame, Series
 
+
+rfr = None
+scaler = None
+age_scale_param = None
+fare_scale_param = None
+
 def load_data():
     return pd.read_csv(train_file)
 
@@ -218,6 +224,7 @@ def f9():
     y = known_age[:, 0]
     x = known_age[:, 1:]
 
+    global rfr
     rfr = RandomForestRegressor(random_state=0, n_estimators=2000, n_jobs=-1)
     rfr.fit(x,y)
 
@@ -228,15 +235,23 @@ def f9():
     return df_train
 
 
+def set_Cabin(data_set):
+    # 两个顺序设置不一样导致结果不一样，具体原因后面分析????
+    #data_set.loc[(data_set.Cabin.isnull()), "Cabin"] = "No"
+    #data_set.loc[(data_set.Cabin.notnull()), "Cabin"] = "Yes"
+
+    data_set.loc[(data_set.Cabin.notnull()), "Cabin"] = "Yes"
+    data_set.loc[(data_set.Cabin.isnull()), "Cabin"] = "No"
+    return data_set
+
+
 def f10():
     """
         对类目型的特征离散/因子化
     """
     df_train = f9()
 
-    df_train.loc[(df_train.Cabin.notnull()), "Cabin"] = "Yes"
-    df_train.loc[(df_train.Cabin.isnull()), "Cabin"] = "No"
-
+    set_Cabin(df_train)
 
     dummies_Cabin = pd.get_dummies(df_train["Cabin"], prefix="Cabin")
     dummies_Embarked = pd.get_dummies(df_train["Embarked"], prefix="Embarked")
@@ -251,13 +266,15 @@ def f10():
         无量纲化，对Age和Fare
     """
     from sklearn.preprocessing import StandardScaler
+    global scaler
     scaler = StandardScaler()
     # 原因是 sklearn 的新版本中，fit_transform的输入必须是 2-D array，而 data_train['Fare'] 返回的 Series 本质上是 1-D array
     # 下面方法使用时，会报错，ValueError: Expected 2D array, got 1D array instead:
     # df_train["Age"] = scaler.fit_transform(df_train["Age"])
     age_scale_param = scaler.fit(df_train[['Age']])
     df_train["Age_scaled"] = scaler.fit_transform(df_train[["Age"]], age_scale_param)
-    df_train["Fare_scaled"] = scaler.fit_transform(df_train[["Fare"]])
+    fare_scale_param = scaler.fit(df_train[["Fare"]])
+    df_train["Fare_scaled"] = scaler.fit_transform(df_train[["Fare"]], fare_scale_param)
     print(df_train.head())
     return df_train
 
@@ -278,6 +295,41 @@ def f11():
     lr = LogisticRegression(penalty='l1', C=1.0)
     lr.fit(X, y)
     
+    return lr
+
+
+def f12():
+    """
+        对测试集做相同操作，构造特征
+    """
+    lr = f11()
+    df_test = pd.read_csv("test.csv")
+
+    df_test.loc[(df_test.Fare.isnull()), "Fare"] = 0
+    tmp_df = df_test[['Age','Fare', 'Parch', 'SibSp', 'Pclass']]
+    null_age = tmp_df[(df_test.Age.isnull())].as_matrix()
+    X = null_age[:, 1:]
+    global rfr
+    predict_ages = rfr.predict(X)
+    df_test.loc[(df_test.Age.isnull()), "Age"] = predict_ages
+    df_test = set_Cabin(df_test)
+    print(df_test)
+    print("=="*64)
+    dummies_Cabin = pd.get_dummies(df_test["Cabin"], prefix="Cabin")
+    dummies_Embarked = pd.get_dummies(df_test["Embarked"], prefix="Embarked")
+    dummies_Sex = pd.get_dummies(df_test["Sex"], prefix="Sex")
+    dummies_Pclass = pd.get_dummies(df_test["Pclass"], prefix="Pclass")
+    df_test = pd.concat([df_test, dummies_Cabin, dummies_Embarked, dummies_Sex, dummies_Pclass], axis=1)
+    df_test.drop(['Pclass', 'Name', 'Sex', 'Ticket', 'Cabin', 'Embarked'], axis=1, inplace=True)
+    global scaler, fare_scale_param, age_scale_param
+    df_test["Age_scaled"] = scaler.fit_transform(df_test[["Age"]], age_scale_param)
+    df_test["Fare_scaled"] = scaler.fit_transform(df_test[["Fare"]], fare_scale_param)
+    print(df_test.head())
+    print("df_test ==" * 64)
+    test_data = df_test.filter(regex='Age_.*|SibSp|Parch|Fare_.*|Cabin_.*|Embarked_.*|Sex_.*|Pclass_.*')
+    predictions = lr.predict(test_data)
+    result = DataFrame({"PassengerId":df_test["PassengerId"].as_matrix(),"Survived":predictions.astype(np.int32)})
+    result.to_csv(os.path.join(os.path.dirname(os.path.realpath(__file__)), "logistic_regression_predictions.csv"), index=False)
 
 
 if __name__ == '__main__':
@@ -298,4 +350,7 @@ if __name__ == '__main__':
     #f8()
     #f9()
     #f10()
-    f11()
+    #f11()
+    f12()
+
+
