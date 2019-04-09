@@ -56,13 +56,31 @@ def f1():
     plt.show()
 
 
+def f2():
+    """
+        翻转反向坐标轴
+    """
+    fig = plt.figure()
+    fig.set(alpha=0.2)
+    plt.rcParams['font.sans-serif'] = ['SimHei'] # 步骤一（替换sans-serif字体）
+    plt.rcParams['axes.unicode_minus'] = False   # 步骤二（解决坐标轴负数的负号显示问题）
+    x = np.arange(0,100)
+    ax1 = plt.subplot2grid((3,3),(0,0))
+    ax1.plot(x, np.log1p(x), label="log(x+1)")
+    ax1.set_title(u"对数", fontproperties="SimHei")
+    plt.ylabel("log")
+    plt.xlabel("x")
+    ax1.legend(loc="upper left")
 
 
-
-
-
-
-
+    ax2 = plt.subplot2grid((3,3),(0,1))
+    ax2.plot(x, np.log1p(x), label="log(x+1)")
+    ax2.set_title(u"对数2", fontproperties="SimHei")
+    plt.gca().invert_yaxis()
+    plt.ylabel("log2")
+    plt.xlabel("x")
+    ax2.legend(loc="upper left")
+    plt.show()
 
 
 
@@ -75,4 +93,5 @@ def f1():
 
 
 if __name__ == '__main__':
-    f1()
+    #f1()
+    f2()

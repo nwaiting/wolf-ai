@@ -3,7 +3,17 @@
 """
     pipe() 表合理函数应用
     apply() 行或列函数应用
+        当想让方程作用在一维的向量上时，可以使用apply来完成
+        如：
+            df[['data1','data2']].apply(...)
     applymap() 元素函数应用
+        如果想让方程作用于DataFrame中的每一个元素，可以使用applymap()
+        如：
+            df.applymap(...)
+    map()
+        map()只要是作用将函数作用于一个Series的每一个元素
+        如：
+            df['data1'].map(...)
 """
 
 
