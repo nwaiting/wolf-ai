@@ -583,7 +583,50 @@ def f14():
             return "aged"
     df_train["AgeCat"] = df_train.apply(handler_agecat, axis=1)
 
+    df_train["Embarked"] = df_train["Embarked"].fillna("S")
+
+    df_train.loc[(df_train["Cabin"].isnull()==True), "Cabin"] = 0.5
+    df_train.loc[(df_train["Cabin"].isnull()==False), "Cabin"] = 1.5
+
+
+    df_train["Fare_Per_Person"] = df_train["Fare"] / (df_train["Family_Size"]+1)
+
+    # age times class
+    df_train["AgeClass"] = df_train["AgeFill"]*df_train["Pclass"]
+    df_train["ClassFare"] = df_train["Pclass"]*df_train["Fare_Per_Person"]
+
+    df_train["HighLow"] = df_train["Pclass"]
+    df_train.loc[(df_train["Fare_Per_Person"]>=8), "HighLow"] = "High"
+    df_train.loc[(df_train["Fare_Per_Person"]<8), "HighLow"]= "Low"
+
+    from sklearn.preprocessing import LabelEncoder
+    le = LabelEncoder()
+    x_sex = le.fit_transform(df_train["Sex"])
+    # 会报错
+    # df_train.loc["Sex"] = x_sex.astype(int)
+    df_train["Sex"] = x_sex.astype(np.float)
+
+    x_ticket = le.fit_transform(df_train["Ticket"])
+    df_train["Ticket_Label"] = x_ticket.astype(np.float)
+
+    x_title = le.fit_transform(df_train["Title"])
+    df_train["Title_Label"] = x_title.astype(np.float)
+
+    x_highlow = le.fit_transform(df_train["HighLow"])
+    df_train["HighLow_Label"] = x_highlow.astype(np.float)
+
+    x_agecat = le.fit_transform(df_train["AgeCat"])
+    df_train["AgeCat_Label"] = x_agecat.astype(np.float)
+
+    x_embarked = le.fit_transform(df_train["Embarked"])
+    df_train["Embarked_Label"] = x_embarked.astype(np.float)
+
+    file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "feature_file.csv")
+    df_train.to_csv(file_path, index=0)
+
+    print("==" * 64)
     print(df_train.head())
+    print("==" * 64)
 
 
 
