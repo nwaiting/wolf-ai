@@ -16,12 +16,25 @@ def main():
     print(df)
     print("=="*64)
     # filter过滤后，会有标签和索引
-    df_filter = df.filter(regex="Ran*|Tea*|^(Survived_Team_)")
+    df_filter = df.filter(regex="(^Survived_Team_)|Ran*|^Tea*", axis=1) # select columns by regular expression
     print(df_filter)
-    print("=="*64)
-    df_filter = df.filter(regex="Ran*|Tea*|(^Survived_Team_.*)")
+    print("1=="*64)
+
+    df_filter = df.filter(regex="Survived_Team_.*", axis=1) # select columns by regular expression
     print(df_filter)
-    print("=="*64)
+    print("2=="*64)
+
+    df_filter = df.filter(regex="(^Survived_Team_)|Ran*|^Tea*", axis=1) # select columns by regular expression
+    print(df_filter)
+    print("22=="*64)
+
+    df_filter = df.filter(like="Survived_Team_", axis=1) #select columns
+    print(df_filter)
+    print("3=="*64)
+
+    df_filter = df.filter(items=['Rank', 'Tea'], axis=1) #select columns
+    print(df_filter)
+    print("4=="*64)
     #print(df_filter.as_matrix())
 
 

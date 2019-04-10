@@ -29,7 +29,7 @@
 import numpy as np
 import pandas as pd
 
-def main():
+def f1():
     s = pd.Series(np.random.randn(6))
     print(s)
     print("=="*32)
@@ -56,7 +56,7 @@ def main():
 
 
 
-def main2():
+def f2():
     d = {'Name':pd.Series(['Tom','James','Ricky','Vin','Steve','Minsu','Jack']),
         'Age':pd.Series([25,26,25,23,30,29,23]),
         'Rating':pd.Series([4.23,3.24,3.98,2.56,3.20,4.6,3.8])
@@ -94,8 +94,17 @@ def main2():
     print('=='*32)
 
 
-
-
+def f3():
+    """
+        将两个list合成一个DataFrame
+    """
+    l1 = range(1,11)
+    l2 = range(101, 111)
+    lall = list(zip(l1, l2))
+    print(lall)
+    names=['id',"predicition"]
+    df = pd.DataFrame(lall, columns=names)
+    print(df)
 
 
 
@@ -106,5 +115,6 @@ def main2():
 
 
 if __name__ == '__main__':
-    #main()
-    main2()
+    #f1()
+    #f2()
+    f3()
