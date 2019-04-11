@@ -13,7 +13,7 @@ def main(model_name):
     elif model_name == "lightgbm":
         file_name = os.path.join(os.path.dirname(os.path.realpath(__file__)), "results_lgm.csv")
         PredictPowerByModel(model_name="lightgbm").predict_data(file_name)
-    elif model_name == "svr"
+    elif model_name == "svr":
         file_name = os.path.join(os.path.dirname(os.path.realpath(__file__)), "results_svr.csv")
         PredictPowerByModel(model_name="svr").predict_data(file_name)
     elif model_name == "stack":
