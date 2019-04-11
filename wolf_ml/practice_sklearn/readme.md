@@ -55,7 +55,8 @@
 
 - **待续：**
 >       参考：https://www.cnblogs.com/nolonely/p/6973745.html  sklearn算法库的顶层设计
->
+>           https://juejin.im/entry/5921354eda2f60005d4c74e1    Scikit-learn使用总结
+>           https://www.jianshu.com/p/516f009c0875      Scikit-learn使用总结（同上）
 >
 >
 >

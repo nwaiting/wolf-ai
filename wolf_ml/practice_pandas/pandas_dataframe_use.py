@@ -97,6 +97,7 @@ def f2():
 def f3():
     """
         将两个list合成一个DataFrame
+        https://programtalk.com/python-examples/pandas.DataFrame.from_items/
     """
     l1 = range(1,11)
     l2 = range(101, 111)
@@ -107,6 +108,19 @@ def f3():
     print(df)
 
 
+def f4():
+    """
+        修改列名：
+            # 显示df每列的名称
+            >>> df.columns.values
+
+            # 将第三列的列名改为'new name'
+            >>> df.rename(columns={ df.columns[2]: "new name" }, inplace=True)
+
+            # 假如df一共有三列，你想把所有列名依次改为'col_1', 'col_2', 'col_3'
+            >>> df.columns = ['col_1', 'col_2', 'col_3']
+    """
+    pass
 
 
 

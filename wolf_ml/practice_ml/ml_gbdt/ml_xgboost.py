@@ -13,7 +13,7 @@ import os
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from xgboost.sklearn import XGBClassifier
+from xgboost.sklearn import XGBClassifier, XGBRegressor
 from xgboost import plot_importance
 import lightgbm as lgb
 import matplotlib.pyplot as plt
@@ -470,8 +470,21 @@ def test_xgboost():
     plot_importance(model)
     plt.show()
 
+def test_xgboost_sklearn_gressor():
+    l1 = []
+    from sklearn.datasets import load_boston
+    boston = load_boston()
+    xgb = XGBRegressor()
+    xgb.fit(boston.data, boston.target)
+
+    predictions = xgb.predict(boston.data)
+    l1 += predictions.tolist()
+    print(predictions)
+    print(type(predictions))
+
 if __name__ == '__main__':
     #test_xgboost()
     #decision_tree_xgb()
-    decision_tree_xgb_sklearn()
+    #decision_tree_xgb_sklearn()
     #decision_tree_rf()
+    test_xgboost_sklearn_gressor()

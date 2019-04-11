@@ -291,15 +291,18 @@ def f2():
 
     #dt.to_csv(to_file, header=0) # 不保存列名
 
-    dt.to_csv(to_file, index=0) #不保存行索引
+    #dt.to_csv(to_file, index=0) #不保存行索引
 
 
-
+    ids = [1,3,5,7,9]
+    values = [1.11,3.33,5.55,7.77,9.99]
+    dt = pd.DataFrame({"ids":ids,"values":values})
+    dt.to_csv(to_file, index=False)
 
 
 
 
 
 if __name__ == '__main__':
-    f1()
-    #f2()
+    #f1()
+    f2()
