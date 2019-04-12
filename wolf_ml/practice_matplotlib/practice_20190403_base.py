@@ -5,6 +5,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
+"""
+    matplotlib常见图形：
+        bar或barh为条形
+        hist为直方图
+        boxplot为盒型图
+        area为“面积”
+        scatter为散点图
+"""
+
 
 def test_version():
     import platform

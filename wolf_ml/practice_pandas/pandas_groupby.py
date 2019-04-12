@@ -21,18 +21,18 @@
 
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 
 
 def main():
     df = pd.DataFrame({'Team': ['Riders', 'Riders', 'Devils', 'Devils', 'Kings','kings', 'Kings', 'Kings', 'Riders', 'Royals', 'Royals', 'Riders'],
         'Rank': [1, 2, 2, 3, 3,4 ,1 ,1,2 , 4,1,2],
-        'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
+        'Year': [2014,2014,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
         'Points':[876,789,863,673,741,812,756,788,694,701,804,690]})
     df2 = pd.DataFrame({'Team': ['Riders', 'Riders', 'Devils', 'Devils', 'Kings','kings', 'Kings', 'Kings', 'Riders', 'Royals', 'Royals', 'Riders'],
         'Rank': [1, 2, 2, 3, 3,4 ,1 ,1,2 , 4,1,2],
-        'Year': [2014,2015,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
+        'Year': [2014,2014,2014,2015,2014,2015,2016,2017,2016,2014,2015,2017],
         'Points':[876,789,863,673,741,812,756,788,694,701,804,690],
         'Points2':[876,789,863,673,741,812,756,788,694,701,804,690],
         'Points3':[876,789,863,673,741,812,756,788,694,701,804,690]}
@@ -43,6 +43,14 @@ def main():
     print(df.index)
     print(df.columns)
     print(df.columns.values)
+
+    print(df2["Year"].value_counts())
+    new_pd = df2.groupby(["Year","Team"]).size().reset_index()
+    print(new_pd)
+    print(type(new_pd))
+    new_pd.plot(kind="bar",stacked=True)
+    plt.show()
+    return
 
     train_feats = df2.columns.values
     test_feats = df.columns.values
@@ -74,10 +82,26 @@ def main():
     print("!! ++"*32)
     #多列进行分组
     print(df.groupby(['Team','Year']).groups)
+
+    print("********* ",df.groupby(['Team','Year']).count())
+
+    pdconcat = pd.concat((df["Team"], df["Year"], df["Points"]), axis=1)
+    pd_count = pdconcat.groupby(['Team','Year']).count()
+    print("----------",pdconcat.groupby(['Team','Year']).count())
+    pd_count.plot(kind="bar")
+    plt.show()
+    print(type(df["Team"]))
+    print('====================')
+
+    for (k1,k2),group in df.groupby(['Team','Year']):
+        print("k1={},k2={},group={}".format(k1,k2,group))
+    return
+
     print(df.groupby(['Team','Year']).tail(1))
     print("!! ++"*32)
     print(df.groupby(['Team'], as_index=False).count())
     print(df.groupby(['Team'], as_index=False).count().rename(columns={'country': 'n_total_trip'}, inplace=True))
+
     print("=="*64)
     print(df.groupby(['Team','Year'])["Rank"].agg([("totalRank", np.sum)]))
     print(df.groupby(['Team','Year'])["Rank"].agg([("totalRank", np.sum)]).reset_index().totalRank)

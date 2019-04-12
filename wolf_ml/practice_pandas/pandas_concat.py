@@ -41,10 +41,15 @@ def main():
     print("="*64)
     print(two)
     print("="*64)
+    # 行拼接
     print(pd.concat([one,two]))
     print("="*64)
     print(pd.concat([one,two], axis=1))
     print("="*64)
+
+    # 对某一个字段进行拼接
+    print(pd.concat([one["Name"], two["Name"]], names="Name"))
+    return
 
     df_tmp = pd.concat([one,two])
     print(df_tmp[df_tmp.Name=="Alice"])
