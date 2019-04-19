@@ -45,10 +45,30 @@ def main():
     print(df.columns.values)
 
     print(df2["Year"].value_counts())
+    print("==============================")
     new_pd = df2.groupby(["Year","Team"]).size().reset_index()
+    #print(new_pd.sort_values(by=["Year","Team"]))
     print(new_pd)
-    print(type(new_pd))
-    new_pd.plot(kind="bar",stacked=True)
+    new_pd_index = new_pd.groupby(["Year"]).size()
+    print("new_pd_index ", new_pd_index)
+    team_list = new_pd["Team"].unique()
+    year_list = new_pd["Year"].unique()
+    print(year_list,team_list)
+    #team_list.sort()
+    #year_list.sort()
+    #print(year_list,team_list)
+
+    for year in year_list:
+        for team in team_list:
+            print("new_pd[year][team]=",new_pd[year][team])
+            if new_pd[year][team].isNan():
+                pass
+
+    for index,row in df.iterrows():
+        if row["Year"] == None:
+            pass
+    new_pd_plot = pd.DataFrame(new_pd, columns=("2014","2015","2016","2017"))
+    new_pd_plot.plot(kind="bar",stacked=True)
     plt.show()
     return
 

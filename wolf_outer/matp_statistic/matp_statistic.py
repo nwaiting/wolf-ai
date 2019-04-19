@@ -53,7 +53,8 @@ def statistic_excel():
     if errors_union is not None:
         errors_union = errors_union.groupby(by=["故障所属主系统","故障处理方式"]).counts()
         #print("errors_union=",errors_union["列车号"])
-        errors_union.plot(kind="hist", stacked=True)
+        #errors_union.plot(kind="hist", stacked=True)
+        errors_union.plot(kind="bar",grid=True,stacked=True)
         plt.title("运营期间系统按故障处理方式占比图", fontsize=20)
         plt.xticks(rotation=45)
         plt.grid(axis='y')
