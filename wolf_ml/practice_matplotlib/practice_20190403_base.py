@@ -163,7 +163,7 @@ def f7():
     """
         填充
     """
-    x = range(1,16)
+    x = range(1,46)
     y = [3.990,3.970,3.980,4.030,3.930,3.970,3.980,3.950,3.940,3.930,3.980,3.990,4.000,4.010,4.020]
     #plt.plot_date(x,y,'-',label='Price')
     plt.plot(x,y,'-',label="Price")
@@ -178,6 +178,23 @@ def f8():
         子图
             讨论一些可能的图表自定义。 为了开始修改子图，我们必须定义它们。 我们很快会谈论他们，但有两种定义并构造子图的主要方法。 现在，我们只使用其中一个，但我们会很快解释它们。
     """
+    import numpy as np
+    x = np.array([i for i in range(30)])
+    #x = np.linspace(1,10,1000)
+    y = np.random.rand(30)
+    #y = np.sin(x)
+    base_split = np.mean(y)
+    print("base_split=",base_split)
+
+    plt.plot(x, y)
+    #plt.fill_between(x, base_split, y, where=[i < base_split for i in y], facecolor='r', alpha=0.5)
+    plt.fill_between(x, base_split, y, facecolor='r', alpha=0.5)
+    #plt.fill_between(x, base_split, y, where=[i >= base_split for i in y], facecolor='b')
+    plt.fill_between(x, base_split, y, facecolor='b')
+
+    plt.show()
+    return
+
     x = range(1,46)
     y = [3.990,3.970,3.980,4.030,3.930,3.970,3.980,3.950,3.940,3.930,3.980,3.990,4.000,4.010,4.020,3.990,3.970,3.980,4.030,3.930,3.970,3.980,3.950,3.940,3.930,3.980,3.990,4.000,4.010,4.020,3.990,3.970,3.980,4.030,3.930,3.970,3.980,3.950,3.940,3.930,3.980,3.990,4.000,4.010,4.020]
     fig = plt.figure()
@@ -214,11 +231,13 @@ def f8():
 
     """
     # 有些点在两部分间交错，所以有些没有画出来
+    import numpy as np
     base_split = 0.5
+    base_split = np.mean(y)
 
     # 增加显示的小图标
-    ax1.plot([],[],linewidth=5, label='loss', color='r',alpha=0.5)
-    ax1.plot([],[],linewidth=5, label='gain', color='g',alpha=0.5)
+    #ax1.plot([],[],linewidth=5, label='loss', color='r',alpha=0.5)
+    #ax1.plot([],[],linewidth=5, label='gain', color='g',alpha=0.5)
 
     #ax1.fill_between(x, base_split, y, facecolor='r')
     ax1.fill_between(x, base_split, y, where=[i > base_split for i in y], facecolor='b')
