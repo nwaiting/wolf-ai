@@ -9,9 +9,9 @@ def bubble_sort(number_list):
 
 
 def select_sort(number_list):
-    for i in xrange(len(number_list)):
+    for i in range(len(number_list)):
         tmp = i
-        for j in xrange(i+1, len(number_list)):
+        for j in range(i+1, len(number_list)):
             if number_list[j] < number_list[tmp]:
                 tmp = j
         if tmp != i:
@@ -32,8 +32,8 @@ def insertion_sort(number_list):
 
 
 if __name__ == "__main__":
-    numbers = [100, 5, 2000, 260, 189, 368, 555, 999, 1649, 2597]
+    numbers = [300, 5, 2000, 260, 189, 368, 555, 999, 1649, 2597]
     #bubble_sort(numbers)
-    #select_sort(numbers)
-    insertion_sort(numbers)
-    print numbers
+    select_sort(numbers)
+    #insertion_sort(numbers)
+    print(numbers)

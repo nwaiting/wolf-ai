@@ -300,7 +300,29 @@ def f2():
     dt.to_csv(to_file, index=False)
 
 
+def f3():
+    """
+        DataFrame.to_excel多次写入不同Sheet
+        >>> writer = pd.ExcelWriter('output.xlsx')
+        >>> df1.to_excel(writer,'Sheet1')
+        >>> df2.to_excel(writer,'Sheet2')
+        >>> writer.save()
+    """
+    
+    """
+    df1,df2均为sql查询来的数据
+    excel_filepath为要生成保存的excel文件地址
+    """
 
+    write = pd.ExcelWriter(excel_filepath)
+    df1 = pd.DataFrame(d_f1)
+    excel_header = ['日期','年龄']#excel的标题
+    df1.to_excel(write,sheet_name='Sheet1',header=excel_header,index=False)
+
+    df2 = pd.DataFrame(d_f2)
+    excel_header = ['日期','人数']
+    df2.to_excel(write,sheet_name='Sheet2',header=excel_header,index=False)
+    write.save()
 
 
 if __name__ == '__main__':
