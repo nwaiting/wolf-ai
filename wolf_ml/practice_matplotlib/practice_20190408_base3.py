@@ -83,13 +83,31 @@ def f2():
     plt.show()
 
 
+def f3():
+    """
+        bar柱形图的使用，以及叠加
+            data = np.array([[10., 30., 19., 22.],
+                    [5., 18., 15., 20.],
+                    [4., 6., 3., 5.]])
+            for i in range(data.shape[0]):#i表示list的索引值
+                ax2.bar(X, data[i],
+                        width=0.2,
+                        bottom = np.sum(data[:i], axis = 0),
+                        color = color_list[i % len(color_list)],
+                        alpha =0.5)
 
-
-
-
-
-
-
+        或者：
+            year = [1,1,1,1,1,1]
+            v1 = [2,2,2,2,2,2]
+            v2 = [2,2,2,2,2,2]
+            v3 = [2,2,2,2,2,2]
+            ax.bar(year,v1,color="green")
+            ax.bar(year,v2,color="red")
+            ax.bar(year,v3,color="blue")
+            ax.legend(["first place","second place","third place"])  #设置图例
+            plt.show()
+    """
+    pass
 
 
 if __name__ == '__main__':

@@ -130,13 +130,20 @@ def statistic_excel():
         sub_err_list = new_error_big_sub_class["故障所属子系统"].unique()
         new_data = []
         for i in main_err_list:
-            one_list = new_error_big_sub_class[new_error_big_sub_class["故障所属主系统"]==i].Size
+            one_list_item = new_error_big_sub_class[new_error_big_sub_class["故障所属主系统"]==i]
             #print("one_list=",one_list)
-            one_list = one_list.values.tolist()
-            one_list += [0]*(len(sub_err_list)-len(one_list))
-            sum_list = np.sum(one_list)
-            one_list = [int(round(j / sum_list * 100, 0)) for j in one_list]
-            new_data.append(one_list)
+            one_list = one_list_item.Size.values.tolist()
+            have_sub_list = one_list_item["故障所属子系统"].values.tolist()
+            new_one_list = [0 for i in list(range(len(sub_err_list)))]
+
+            for i in list(range(len(have_sub_list))):
+                for j in list(range(len(sub_err_list))):
+                    if sub_err_list[j] == have_sub_list[i]:
+                        new_one_list[j] = one_list[i]
+
+            sum_list = np.sum(new_one_list)
+            new_one_list = [int(round(j / sum_list * 100, 0)) for j in new_one_list]
+            new_data.append(new_one_list)
         new_main_err_list = [i[:-2] if i.endswith("系统") else i for i in main_err_list]
         new_data_plot = pd.DataFrame(new_data, columns=sub_err_list, index=new_main_err_list)
         new_data_plot.plot(kind="bar",grid=True,stacked=True)
@@ -276,11 +283,18 @@ def statistic_excel():
         repair_type_list = repair_list_union["故障处理方式"].unique()
         new_data = []
         for i in main_err_list:
-            one_list = repair_list_union[repair_list_union["故障所属主系统"]==i].Size
-            one_list = one_list.values.tolist()
-            one_list += [0]*(len(repair_type_list)-len(one_list))
-            sum_list = np.sum(one_list)
-            new_one_list = [int(round(i/sum_list*100, 0)) for i in one_list]
+            one_list_item = repair_list_union[repair_list_union["故障所属主系统"]==i]
+            one_list = one_list_item.Size.values.tolist()
+            handle_list = one_list_item["故障处理方式"].values.tolist()
+            new_one_list = [0 for i in list(range(len(repair_type_list)))]
+
+            for i in list(range(len(handle_list))):
+                for j in list(range(len(repair_type_list))):
+                    if repair_type_list[j] == handle_list[i]:
+                        new_one_list[j] = one_list[i]
+
+            sum_list = np.sum(new_one_list)
+            new_one_list = [int(round(i/sum_list*100, 0)) for i in new_one_list]
             new_data.append(new_one_list)
         new_main_err_list = [i[:-2] if i.endswith("系统") else i for i in main_err_list]
         new_data_plot = pd.DataFrame(new_data, columns=repair_type_list, index=new_main_err_list)
