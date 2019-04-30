@@ -1,13 +1,5 @@
 #coding=utf-8
 
-import os
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.svm import SVC, LinearSVC, NuSVC
-from sklearn.metrics import accuracy_score,roc_auc_score
-from sklearn.preprocessing import Normalizer,normalize,MinMaxScaler,StandardScaler,scale
-
 """
     SVC, LinearSVC, NuSVC区别：
         SVC：
@@ -84,6 +76,17 @@ from sklearn.preprocessing import Normalizer,normalize,MinMaxScaler,StandardScal
         https://nbviewer.jupyter.org/github/SnailDove/github-blog/blob/master/Titanic_with_name_sex_age_and_ticket_features-0.82275.ipynb   Titanic特征处理
 """
 
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.svm import SVC, LinearSVC, NuSVC
+from sklearn.metrics import accuracy_score,roc_auc_score
+from sklearn.preprocessing import Normalizer,normalize,MinMaxScaler,StandardScaler,scale
+from sklearn.datasets import load_svmlight_file
+from sklearn import datasets
+
+
 def load_data():
     file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "train_modified.csv")
     df = pd.read_csv(file_path)
@@ -101,10 +104,18 @@ def model_fit():
     svc_model.predict()
     svc_model.predict_proba()
 
+def model_svm():
+    digits = datasets.load_digits()
+    model = SVC(C=1.0, gamma='auto')
+    model.fit(digits.data[:-1], digits.target)
+    res = model.predict(digits.data[:-1])
+    print(res)
+    print(digits.target)
+    print("accuracy=",np.mean(res==digits.target))
 
 def grid_search_params():
     pass
 
 
 if __name__ == '__main__':
-    model_fit()
+    model_svm()

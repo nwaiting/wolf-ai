@@ -85,6 +85,50 @@ def quick_s(data, left, right):
     quick_s(data, l+1, right)
     return data
 
+def quick_sort(d, l, r):
+    if l >= r:
+        return d
+
+    random.seed(time.time())
+    r_index = l
+    #r_index = r
+    key = d[r_index]
+    tmp_l,tmp_r = l,r
+    while tmp_l < tmp_r:
+        #这里是先遍历右边还是先遍历左边和初始值选择有关，当初始值选择左边的元素，则先从右边开始遍历
+        while tmp_l < tmp_r and d[tmp_l] <= key:
+            tmp_l += 1
+        while tmp_l < tmp_r and d[tmp_r] >= key:
+            tmp_r -= 1
+        d[tmp_l],d[tmp_r] = d[tmp_r],d[tmp_l]
+        print("d=",d,tmp_l,tmp_r,r_index)
+    d[tmp_r],d[r_index]=d[r_index],d[tmp_r]
+    print("d==",d,tmp_l,tmp_r,r_index)
+    quick_sort(d, l, tmp_l-1)
+    quick_sort(d, tmp_l+1, r)
+    return d
+
+def quick_sort_random(d, l, r):
+    if l >= r:
+        return d
+
+    random.seed(time.time())
+    r_index = random.randint(l, r)
+    key = d[r_index]
+    tmp_l,tmp_r = l,r
+    while tmp_l < tmp_r:
+        while tmp_l < tmp_r and d[tmp_r] >= key:
+            tmp_r -= 1
+        while tmp_l < tmp_r and d[tmp_l] <= key:
+            tmp_l += 1
+        d[tmp_l],d[tmp_r] = d[tmp_r],d[tmp_l]
+        print("d=",d,tmp_l,tmp_r,r_index)
+    d[tmp_r],d[r_index]=d[r_index],d[tmp_r]
+    print("d==",d,tmp_l,tmp_r,r_index)
+    quick_sort_random(d, l, tmp_l-1)
+    quick_sort_random(d, tmp_l+1, r)
+    return d
+
 if __name__ == "__main__":
     data_list = [44678, 2, 4676, 67868, 4546, 464, 8, 56, 67, 676]
     #print (quick_sort(data_list))
