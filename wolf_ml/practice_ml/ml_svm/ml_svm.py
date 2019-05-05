@@ -80,11 +80,17 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.svm import SVC, LinearSVC, NuSVC
+from sklearn.svm import SVC, LinearSVC, NuSVC, OneClassSVM
 from sklearn.metrics import accuracy_score,roc_auc_score
 from sklearn.preprocessing import Normalizer,normalize,MinMaxScaler,StandardScaler,scale
 from sklearn.datasets import load_svmlight_file
 from sklearn import datasets
+
+"""
+    OneClassSVM：
+        OneClassSVM两个功能：异常值检测、解决极度不平衡数据
+        
+"""
 
 
 def load_data():
