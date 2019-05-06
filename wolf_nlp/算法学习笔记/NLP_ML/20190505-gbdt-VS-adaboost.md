@@ -45,8 +45,8 @@
 >
 
 - **待续：**
->       参考：https://www.zhihu.com/question/54626685      机器学习算法中GBDT与Adaboost的区别与联系
->
+>       参考：<<机器学习>> 周志华
+>           https://www.zhihu.com/question/54626685      机器学习算法中GBDT与Adaboost的区别与联系
 >
 >
 >
