@@ -59,19 +59,20 @@ def list_reverse22(node):
     return pre
 
 """
-    !!!
+    逐个翻转，参考：
+        https://blog.csdn.net/feliciafay/article/details/6841115
 """
 def list_reverse2222(node):
     if not node or not node.next_:
         return node
     p1 = node
     p2 = node.next_
+    node.next_ = None
     while p2:
         tmp = p2.next_
         p2.next_ = p1
         p1 = p2
         p2 = tmp
-    node.next_ = None
     return p1
 
 def list_reverse222(node):
