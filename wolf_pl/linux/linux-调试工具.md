@@ -6,6 +6,7 @@
 >           跟踪（strace/ltrace）
 >           valgrind（memwatch）
 >           GDB
+>           SystemTap
 >
 
 - **printf：**
@@ -44,6 +45,24 @@
 
 - **GDB**
 >       调试程序
+>
+>
+>
+
+- **SystemTap**
+>       1、Linux systemtap定位系统IO资源使用情况（ok）
+>       2、SystemTap是一个强大的调试工具，是监控和跟踪运行中的Linux 内核的操作的动态方法，确切的说应该是一门调试语言，
+>           因为它有自己的语法，也有解析、编译、运行等过程（准确的说有五个阶段）。
+>       3、但它主要解决的问题是收集Linux内核或者用户进程的信息，主要目的是调试
+>       4、gdb、kgdb同是linux最强大的调试器，gdb和SystemTap不是竞争关系，而是互补关系，gdb能做的事情SystemTap做不到，比如断点/watch变量等等这些SystemTap都做不到
+>           而SystemTap能做的事情gdb做不到或者非常麻烦才做到，比如很方便查看内核调试栈/嵌入C语言等等gdb就很难
+>       5、systemtap 是利用Kprobe 提供的API来实现动态地监控和跟踪运行中的Linux内核的工具，相比Kprobe，systemtap更加简单，
+>           提供给用户简单的命令行接口，以及编写内核指令的脚本语言。对于开发人员，systemtap是一款难得的工具
+>
+>
+>
+>
+>
 >
 >
 >

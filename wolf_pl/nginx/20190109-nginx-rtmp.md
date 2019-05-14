@@ -202,6 +202,17 @@
 >       ngx_rtmp_limit_module 主要监听connect以及disconnect事件，通过计算连接数量来限制连接个数
 >       ngx_rtmp_log_module 主要是rtmp日志相关，连接断开disconncet事件的时候，输出访问日志相关
 >
+
+- **关闭连接：**
+>       ngx_rtmp_close_session_handler (e=0x23efb28) at ../nginx-rtmp-module/ngx_rtmp_init.c:284
+>       in ngx_event_process_posted (cycle=cycle@entry=0x2314bd0, posted=0xe76a00 <ngx_posted_events>) at src/event/ngx_event_posted.c:34
+>       in ngx_process_events_and_timers (cycle=cycle@entry=0x2314bd0) at src/event/ngx_event.c:269
+>       in ngx_worker_process_cycle (cycle=0x2314bd0, data=<optimized out>) at src/os/unix/ngx_process_cycle.c:815
+>       in ngx_spawn_process (cycle=cycle@entry=0x2314bd0, proc=proc@entry=0x43ea77 <ngx_worker_process_cycle>, data=data@entry=0x0,
+>           name=name@entry=0x501573 "worker process", respawn=respawn@entry=-3) at src/os/unix/ngx_process.c:198
+>       in ngx_start_worker_processes (cycle=cycle@entry=0x2314bd0, n=1, type=type@entry=-3) at src/os/unix/ngx_process_cycle.c:396
+>       in ngx_master_process_cycle (cycle=cycle@entry=0x2314bd0) at src/os/unix/ngx_process_cycle.c:135
+>       in main (argc=<optimized out>, argv=<optimized out>) at src/core/nginx.c:381
 >
 >
 >
