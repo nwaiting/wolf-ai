@@ -62,8 +62,11 @@
 >           begin
 >           end
 >           kernel.function("sys_sync")
+>               在函数的入口处放置探测点，可以获取函数参数$PARM
 >           kernel.function("sys_sync").call
+>               取补集，取不符合条件的函数
 >           kernel.function("sys_sync").return
+>               在函数的返回处放置探测点，可以获取函数的返回值$return，以及可能被修改的函数参数$PARM
 >           kernel.syscall.*
 >           kernel.function(“*@kernel/fork.c:934”)
 >           kernel.trace("tracepoint")
@@ -71,7 +74,7 @@
 >           timer.jiffies(1000)
 >           timer.ms(200).randomize(50)
 >           process.(“PATH”).syscall
->           process.(PID).function.return
+>           process.(PID).function().return
 >
 >
 
@@ -86,13 +89,15 @@
 >           tid() The id of the current thread.
 >           pid() The process (task group) id of the current thread.
 >           uid() The id of the current user.
->           execname() The name of the current process.
+>           execname() The name of the current process. (gettimeofday_ms,gettimeofday_us)
 >           cpu() The current cpu number.
 >           gettimeofday_s() Number of seconds since epoch.
 >           get_cycles() Snapshot of hardware cycle counter.
 >           pp() A string describing the probe point being currently handled.（pp()：描述当前被处理的探针点的字符串；）
->           probefunc() If known, the name of the function in which this probe was placed.
+>           probefunc() If known, the name of the function in which this probe was placed.(探测器到达的函数名)
 >           $$vars If available, a pretty-printed listing of all local variables in scope.
+>           $$parms：表示函数参数
+>           $$return：表示函数返回值
 >           print_backtrace() If possible, print a kernel backtrace.
 >           print_ubacktrace() If possible, print a user-space backtrace.
 >
@@ -136,9 +141,48 @@
 >           2、Relayfs
 >
 >
+
+- **变量的应用风格：**
+>      Refers to all kernel functions with "init" or "exit" in the name
+>           kernel.function("init"), kernel.function("exit")
+>       Refers to any functions within the "kernel/time.c" file that span line 240
+>           kernel.function("*@kernel/time.c:240")
+>       Refers to all functions in the ext3 module
+>           module("ext3").function("*")
+>       Refers to the statement at line 296 within the kernel/time.c file
+>           kernel.statement("*@kernel/time.c:296")
+>       Refers to the statement at line bio_init+3 within the fs/bio.c file
+>           kernel.statement("bio_init@fs/bio.c+3")
 >
+>       部分在编译单元内可见的源码变量，比如函数参数、局部变量或全局变量，在探测点处理函数中同样是可见的。
+>       在脚本中使用$加上变量的名字就可以引用了。
 >
+>       变量的引用有两种风格：
+>           $varname // 引用变量varname
+>           $var->field // 引用结构的成员变量
+>           $var[N] // 引用数组的元素
+>           &$var // 变量的地址
+>           @var("varname") // 引用变量varname
+>           @var("var@src/file.c") // 引用src/file.c在被编译时的全局变量varname
+>           @var("varname@file.c")->field // 引用结构的成员变量
+>           @var("var@file.c")[N] // 引用数组的元素
+>           &@var("var@file.c") // 变量的地址
+>           $var$ // provide a string that includes the values of basic type values
+>           $var$$ // provide a string that includes all values of nested data types
+>           $$vars // 一个包含所有函数参数、局部变量的字符串
+>           $$locals // 一个包含所有局部变量的字符串
+>           $$params // 一个包含所有函数参数的字符串
 >
+
+- **统计变量：**
+>       aggregates 用于读取统计变量（statistics）的一系列统计函数
+>           @min 返回statistics中的元素的最小值
+>           @max 返回statistics中的元素的最大值
+>           @count 返回statistics中的元素的个数
+>           @avg 返回statistics中的元素的平均值
+>           @sum 返回statistics中的元素的总和
+>           @hist_log 用@来图形化打印statistics
+>           如：sum_bytes_to_read = @sum(total_bytes_to_read)
 >
 >
 >
@@ -154,11 +198,18 @@
 >       参考：
 >       http://abcdxyzk.github.io/blog/2015/06/01/debug-systemtap-beginner/     SystemTap Beginner
 >       https://www.ibm.com/developerworks/community/blogs/5144904d-5d75-45ed-9d2b-cf1754ee936a/entry/stap-intro?lang=en    Systemtap introduction
->
->
->
->
->
+>       https://www.kancloud.cn/digest/tcpdive/120064   内核调试神器SystemTap — 探测点与语法（二）
+>       https://tcler.github.io/2017/09/11/systemtap-modify-syscall-parameters/     systemtap 修改系统调用参数（详细介绍）
+>       http://blog.yufeng.info/archives/2033   systemtap如何跟踪libc.so
+>       https://blog.csdn.net/wangzuxi/article/details/44901285   SystemTap使用技巧【四】
+>       https://vcpu.me/systemtap-skills/   systemtap能做什么？第一篇
+>       http://baotiao.github.io/2017/06/14/systemtap-pika/     使用systemtap 找内存泄露问题
+>       http://bean-li.github.io/systemtap-check-memory-leak/   SystemTap 定位 Memory Leak
+>       http://www.lenky.info/archives/tag/systemtap
+>           Linux Kprobes介绍 && 使用systemtap调试Linux内核 && 如何追踪函数的完整调用过程 && systemtap初试用
+>       http://blog.yufeng.info/archives/tag/systemtap
+>           巧用Systemtap注入延迟模拟IO设备抖动 && Linux下如何知道文件被那个进程写
+>           GLIBC 2.16 支持systemtap静态检查点 && MYSQL数据库网卡软中断不平衡问题及解决方案
 >
 >
 >
