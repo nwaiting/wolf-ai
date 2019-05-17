@@ -1,0 +1,81 @@
+#!/usr/bin/env stap
+
+/*
+做压力测试的时候希望可以在服务器上采样，能获得当前服务器的TCP连接数、连接耗费时间的最大值、最小值、均值。
+传统解决思路
+    TCP连接采样最直接的方式是通过netstat统计ESTABLISHED状态的TCP连接数。一般压力测试工具会提供一份报告说明发送请求的最大值、最小值、均值。
+        netstat原理是读取/proc/net/tcp给出当前服务器的TCP状态，当“列表”很长的时候它就要花费更多时间完成解析。采样到的数据不及时，而且nestat会消耗非常大的CPU，影响测试结果；
+        压力测试工具报告的请求耗费时间的最大值、最小值、均值包含了网络延时。压力测试工具会同时开启N个并发访问服务器，对于网络来说是有大量的数据包同时产生，
+            很可能受限于测试机或者服务器的带宽，根本没有送到服务器或者是测试机来不及处理产生了延时；
+    另辟蹊径
+        最好的办法是通过内核Hook拦截某些关键的TCP函数，比如能找到类似tcp_connect、tcp_close的函数。遗憾的是TCP建立连接比较容易找到（无非是accept、tcp_v4_connect之类的），
+            但是关闭部分却没有相应的函数。这个问题折腾了我不少时间，最后我借鉴了nestat的思路——通过TCP的状态判断。
+        至于Hook内核基本上没什么难度，祭出大杀器Systemtap就行了。
+        Systemtap是世界上最牛B的Linux内核调试工具（没有之一），如果你之前听说过DTrace那么可以把它理解为DTrace for Linux。使用它通过简单的几行代码我们就可以Hook到内核中的任何函数，
+            不但可以“截获”参数甚至可以修改参数。
+        我定义了一个全局数组connection，当TCP状态是ESTABLISHED时我会把时间戳放到以客户端IP地址+端口为Key的关联数组中，当TCP状态是CLOSE、CLOSE_WAIT时根据IP地址和端口取出时间戳，
+            计算出耗费的毫秒数放入累加变量spend_time中。为了统计当前并发数，程序中每隔1秒钟，修改report关联数组。
+        最后在程序结束的时候输出所有请求耗费时间的最大值、最小值和均值
+*/
+
+global connections
+global filter_port = 80
+
+//
+global report
+global spend_time
+global active_count
+global have_spend_time = 0
+global histidx = 0
+
+function on_close(saddr, sport, family){
+
+    conn_times = connections[saddr, sport]
+    if (conn_times!=0) {
+        ms = gettimeofday_ms() - conn_times
+        spend_time <<< ms
+        have_spend_time = 1
+        //printf("close %15s %5d ms=%d active_count=%d\n", format_ipaddr(ntohl(saddr), family), sport, ms, active_count)
+        delete connections[saddr, sport]
+        active_count--
+    }
+}
+
+function on_open(saddr, sport, family){
+    connections[saddr, sport] = gettimeofday_ms()
+    //printf("accept %15s %5d\n", format_ipaddr(ntohl(saddr), family), sport)
+    active_count++
+}
+
+
+probe kernel.function("tcp_set_state"){
+	sk = $sk
+	new_state = $state
+	TCP_ESTABLISHED = 1
+	TCP_CLOSE = 7
+	TCP_CLOSE_WAIT = 8
+	if (tcpmib_local_port(sk)==filter_port){
+	    if (new_state==TCP_CLOSE || new_state==TCP_CLOSE_WAIT){
+	        on_close(tcpmib_remote_addr(sk), tcpmib_remote_port(sk), __ip_sock_family(sk))
+	    }
+	    if (new_state==TCP_ESTABLISHED){
+	        on_open(tcpmib_remote_addr(sk), tcpmib_remote_port(sk), __ip_sock_family(sk))
+	    }
+	}
+}
+
+probe timer.s(1){
+    histidx = histidx + 1
+    report[histidx, "active_count"] = active_count
+}
+
+probe begin {
+    printf("start\n")
+}
+
+probe end{
+    printf("count=%d max=%d min=%d \n", @count(spend_time), @max(spend_time), @min(spend_time))
+    for(i=0; i!=histidx; i++){
+        printf("%d\t%d\n", i, report[i, "active_count"])
+    }
+}

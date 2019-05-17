@@ -20,6 +20,12 @@
         https://segmentfault.com/a/1190000018265301?utm_source=tag-newest
 """
 
+"""
+    BST(binary search tree)
+    (is order?)
+"""
+#################################################### bst begin ###########
+
 class Node(object):
     def __init__(self, data=None):
         self.left_ = None
@@ -31,7 +37,7 @@ root = Node()
 
 def list_pre(node):
     if node:
-        print node.data
+        print(node.data)
         list_pre(node.left_)
         list_pre(node.right)
 
@@ -39,7 +45,7 @@ def list_pre(node):
 def list_middle(node):
     if node:
         list_middle(node.left_)
-        print node.data
+        print(node.data)
         list_middle(node.right)
 
 
@@ -47,7 +53,7 @@ def list_last(node):
     if node:
         list_last(node.left_)
         list_last(node.right)
-        print node.data
+        print(node.data)
 
 
 def add(root=None, data=None):
@@ -58,10 +64,6 @@ def add(root=None, data=None):
     else:
         add(root.right, data)
 
-"""
-    BST(binary search tree)
-    (is order?)
-"""
 def isBST(root):
     tree_list = inOrder(root)
     for i in range(len(tree_list)-1):
@@ -75,8 +77,52 @@ def inOrder(node):
         return
     inOrder(node.left_)
     order_list.append(node.data)
-    inOrder(node.right_)
+    inOrder(node.right)
     return order_list
+
+
+def find_min(root):
+    if not root:
+        return None
+    while root.left_:
+        root = root.left_
+    return root.data
+
+def find_max_deepth(root):
+    if not root:
+        return 0
+    left = find_max_deepth(root.left_)
+    right = find_max_deepth(root.right)
+    return left+1 if left > right else right+1
+
+
+#################################################### bst end ###########
+
+"""
+    binary tree
+"""
+#################################################### bt begin ###########
+def bt_add(root, v):
+    if not root:
+        root = Node(v)
+    node_list = [root]
+    while True:
+        tmp = node_list.pop()
+        if tmp.left_:
+            node_list.append(tmp.left_)
+        else:
+            tmp.left_ = Node(v)
+            return
+
+        if tmp.right:
+            node_list.append(tmp.right)
+        else:
+            tmp.right = Node(v)
+            return
+
+
+#################################################### bt end ###########
+
 
 if __name__ == "__main__":
     add(root, 10)

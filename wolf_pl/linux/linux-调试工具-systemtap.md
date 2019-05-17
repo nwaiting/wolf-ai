@@ -3,6 +3,36 @@
 >       对管理员，SystemTap可用于监控系统性能，找出系统瓶颈，而对于开发者，可以查看他们的程序运行时在linux系统内核内部的运行情况。
 >           主要用于查看内核空间事件信息，对用户空间事件的探测，目前正加紧改进
 >
+>       开源工具：
+>           https://github.com/nwaiting/stapxx
+>           https://github.com/openresty/openresty-systemtap-toolkit
+>           https://github.com/brendangregg/FlameGraph
+>
+>
+
+- **原理：**
+>       解析stap文件，生成对应的c代码，然后将其编译为一个内核模块，并加载到内核中，模块加载之后，将所有探测的事件以钩子的方式挂到内核上，当任何处理器上的某个事件发生时，相应钩子上句柄就会被执行。最后，当systemtap会话结束之后，钩子从内核上取下，移除模块。整个过程用一个命令 stap 就可以完成
+>
+>
+>
+
+- **安装Systemtap**
+>       Systemtap*
+>       Kernel-debug-info
+>       Kernel-source or kernel development environment (/usr/src/linux).
+>       Elfutils
+>
+>       开发调试时需要安装的包：
+>       nss-softokn-debuginfo-3.15.4-2.el7.x86_64
+>       kernel-debuginfo-3.10.0-123.el7.x86_64
+>       glibc-debuginfo-common-2.17-55.el7.x86_64
+>       glibc-debuginfo-2.17-55.el7.x86_64
+>       kernel-debuginfo-common-x86_64-3.10.0-123.el7.x86_64
+>       systemtap-devel-3.3-3.el7.x86_64
+>       systemtap-runtime-3.3-3.el7.x86_64
+>       systemtap-sdt-devel-2.4-14.el7.x86_64
+>       systemtap-3.3-3.el7.x86_64
+>       systemtap-client-3.3-3.el7.x86_64
 >
 >
 
@@ -100,15 +130,6 @@
 >           $$return：表示函数返回值
 >           print_backtrace() If possible, print a kernel backtrace.
 >           print_ubacktrace() If possible, print a user-space backtrace.
->
->
-
-- **安装Systemtap**
->       Systemtap*
->       Kernel-debug-info
->       Kernel-source or kernel development environment (/usr/src/linux).
->       Elfutils
->
 >
 >
 
@@ -210,8 +231,9 @@
 >       http://blog.yufeng.info/archives/tag/systemtap
 >           巧用Systemtap注入延迟模拟IO设备抖动 && Linux下如何知道文件被那个进程写
 >           GLIBC 2.16 支持systemtap静态检查点 && MYSQL数据库网卡软中断不平衡问题及解决方案
->
->
+>       https://www.v2ex.com/t/387987   SystemTap 使用技巧之三 (跟踪进程执行流程)
+>       https://blog.csdn.net/wangzuxi/article/category/2647873
+>           SystemTap使用技巧【一】 && SystemTap使用技巧【二】 && SystemTap使用技巧【三】 && SystemTap使用技巧【四】 && systemtap双指针（多级指针）解引用
 >
 >
 >

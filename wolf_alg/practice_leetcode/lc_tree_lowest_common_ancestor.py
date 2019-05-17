@@ -33,12 +33,9 @@ def lowestCommonAncestor_binaryTree(root, p, q):
         return root
     left = lowestCommonAncestor_binaryTree(root.left_, p, q)
     right = lowestCommonAncestor_binaryTree(root.right_, p, q)
-    if not left:
-        return right
-    elif not right:
-        return left
-    else:
+    if left and right:
         return root
+    return left ? left:right
 
 
 if __name__ == '__main__':
