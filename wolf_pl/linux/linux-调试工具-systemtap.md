@@ -106,6 +106,21 @@
 >           process.(“PATH”).syscall
 >           process.(PID).function().return
 >
+
+- **设置探测点：**
+>       begin The startup of the systemtap session.
+>       end The end of the systemtap session.
+>       kernel.function("sys_open") The entry to the function named sys_open in the kernel.
+>       syscall.close.return The return from the close system call.
+>       module("ext3").statement(0xdeadbeef) The addressed instruction in the ext3 filesystem driver.
+>       timer.ms(200) A timer that fires every 200 milliseconds.
+>       timer.profile A timer that fires periodically on every CPU.
+>       perf.hw.cache_misses A particular number of CPU cache misses have occurred.
+>       procfs("status").read A process trying to read a synthetic file.
+>       process("a.out").statement("*@main.c:200") Line 200 of the a.out program.
+>       kernel.function("*@net/socket.c") 表示net文件夹socket.c文件的所有函数
+>
+>
 >
 
 - **Handlers：**
