@@ -84,6 +84,24 @@
 >               • timer.hz(hertz)
 >               • timer.jiffies(jiffies)
 >
+
+- **常用参数**
+>       -e SCRIPT               Run given script.
+>       -l PROBE                List matching probes.
+>       -L PROBE                List matching probes and local variables.
+>       -g                      guru mode
+>       -D NM=VAL               emit macro definition into generated C code
+>       -o FILE                 send script output to file, instead of stdout.
+>       -x PID                  sets target() to PID
+>
+>
+>
+>
+>
+>
+>
+>
+>
 >
 >
 
