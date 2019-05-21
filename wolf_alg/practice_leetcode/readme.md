@@ -2,7 +2,10 @@
 - **概述：**
 >
 >
->
+
+- **list:**
+>       https://www.weiweiblog.cn/linkedlist_summary/
+>       http://wuchong.me/blog/2014/03/25/interview-link-questions/
 >
 >
 >
