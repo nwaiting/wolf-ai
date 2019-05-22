@@ -1,0 +1,125 @@
+#!/usr/bin/env stap
+
+global table_values
+global quit
+global g_counter
+
+probe begin {
+	printf("================ start probe begin\n");
+}
+/*
+probe process("/home/pplive/work/test_stap/test_cpp/main").function("Solution::show_this").return {
+    if (quit==1) {
+        printf("================== start time\n")
+    	foreach (bt in table_values) {
+    		print_ustack(bt)
+    	}
+        printf("================== end time\n")
+	    exit()
+    }
+    printf("%s returned \n", probefunc());
+    bt = ubacktrace()
+    //bt = sprint_ubacktrace()
+    ptr = returnval()
+    table_values[bt] <<< ptr
+    print_ustack(bt);
+    //printf("%s\n",$$locals$$);
+}
+*/
+
+probe process("/lib64/libc-2.17.so").function("__libc_malloc").return
+{
+	if(quit%3==0){
+		printf("malloc ================= begin\n")
+		foreach(bt in table_values) {
+			print_ustack(bt)
+            //打印详细堆栈，但是需要加载相应的模块
+		}
+		printf("malloc ================= end\n")
+	}
+
+	ptr = returnval()
+    //返回地址，同$$return
+	/*
+    这个获取内存大小的不行，根据agentzh反映，可能是版本原因
+	$*sizeof_size_t := &@cast(0, "size_t")[1]
+	p = ptr - $*sizeof_size_t
+	size = @cast(p, "size_t")[0] & ~($*sizeof_size_t - 1)
+	*/
+	size = pointer_arg(1)
+	printf("returnval=%p,size=%d\n",ptr,size)
+	printf("params=%s\n", $$parms$)
+	printf("size=%d\n",$bytes)
+	printf("%s returned \n", probefunc())
+    // 输出 _ZN8Solution9show_thisEv returned
+	printf("%s returned \n", pp())
+    //输出 process("/usr/lib64/libc-2.17.so").function("__libc_malloc@/usr/src/debug/glibc-2.17-c758a686/malloc/malloc.c:2854").return returned
+	//printf("%s\n",$$locals$$)
+	bt = ubacktrace()
+	table_values[bt] <<< 1
+}
+
+probe process("/lib64/libc-2.17.so").function("__libc_free").return {
+	printf("free ========== %p\n", pointer_arg(1))
+       	print_ustack(ubacktrace());
+       	printf("free ========== %s returned \n", probefunc());
+	foreach(i in table_values) {
+		printf("table_values=%d\n",@sum(table_values[i]));
+	}
+}
+
+probe process("/home/pplive/work/test_stap/test_cpp/main").function("Solution::helper") {
+	if($root){
+		printf("helper value=%d\n", @cast($root,"Node")->value_)
+        //打印函数变量的值
+	}
+}
+
+//以 /arch/x86/kernel/cpu/perf_event.c 文件为例，看看821、824和828到底执行到了哪个分支
+probe kernel.statement("*@arch/x86/kernel/cpu/perf_event.c:821") {
+    printf("aaa\n")
+}
+
+probe kernel.statement("*@arch/x86/kernel/cpu/perf_event.c:824") {
+    printf("bbb\n")
+}
+
+probe kernel.statement("*@arch/x86/kernel/cpu/perf_event.c:828") {
+    printf("ccc\n")
+}
+
+probe process("/home/pplive/work/test_stap/test_cpp/main").function("Solution::helper") {
+        if($root){
+                printf("helper value=%d\n", @cast($root,"Node")->value_)
+                printf("root=%p\n",$root)
+        }
+}
+
+probe process("/home/pplive/work/test_stap/test_cpp/main").statement("*@main_i.cpp:44") {
+        printf("statement show_value=%d\n",@cast($this, "Solution")->show_value)
+}
+
+// 判断某个函数x86_assign_hw_event在某个逻辑中是否被跑到，以前的做法也是在函数的入口处加上打印语句，然后跑一遍功能逻辑，看是否有信息打印出来，现在利用systemtap可以这样
+probe kernel.function("x86_assign_hw_event") {
+    printf("test\n")
+}
+
+probe kernel.statement("x86_assign_hw_event@arch/x86/kernel/cpu/perf_event.c:824") {
+    printf("%d\n", $hwc->idx)
+}
+
+// 查看可用变量，statement定位到具体的line或者函数，将这些定位点作为跟踪点
+// stap -L 'kernel.statement("*@arch/x86/kernel/cpu/perf_event.c:824")'
+
+//每一秒执行一次
+probe timer.s(1) {
+	quit++
+}
+
+probe timer.ms(100) {
+    g_counter++
+}
+
+probe end {
+	printf("================ end probe\n");
+}

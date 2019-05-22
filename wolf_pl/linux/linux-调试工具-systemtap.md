@@ -96,9 +96,49 @@
 >
 >
 >
+
+- **想要获取参数的问题：**
+>       首先可通过stap -L 查看函数中的哪些变量可以被看到,后面写脚本时可以直接引用这些变量
+>           如：stap -L 'process("/lib64/libc.so.6").function("malloc")'
+>
+>
+>       stap -l 可以查看某个函数在哪个文件的哪一行定义的，可以是内核代码也可以是用户态代码
+>           如：stap -l 'process("/lib64/libc.so.6").function("malloc")'
+>
+
+- **使用宏功能：**
+>       @define part1 %(  "/path/part/1" %)
+>       @define part2 %(  "/part/2" %)
+>       probe process(@part1 @part2).function("...") { ... }
 >
 >
 >
+>
+>
+
+- **不打印调试信息问题：**
+>       参考：http://blog.yufeng.info/archives/1229
+>       使用SystemTap打印user-space程序的调用栈信息时，需要产生足够的调试信息。这时需要-d和--ldd两个选项
+>           有时候我们并没能得到全部的符号信息， 比如# 0xffffffff8803826a 这行是谁没打印出来吧。 原因是我们的模块可能被未知的模块所调用，这些模块的符号信息没有自动加载，所以systemtap当然就不知道谁是谁了
+>           -d选项负责加载模块/可执行程序的符号表信息
+>           --ldd则加载-d module中module或是probe需要的共享库符号表信息
+>           --all-modules 加载所有模块
+>
+>       如：stap func_call.stp -d /opt/nginx/sbin/nginx --ldd -x 12345
+>          或者  stap func_call.stp -d /opt/nginx/sbin/nginx --all-modules -x 12345
+>
+>
+>           -D MAXMAPENTRIES=20480
+>               Maximum number of rows in any single global array, default 2048
+>           -D MAXACTION=20000
+>               Maximum number of statements to execute during any single probe hit (with interrupts disabled), default 1000
+>           -D MAXTRACE=40
+>           -D MAXSTRINGLEN=4096
+>               Maximum length of strings, default 128
+>           -D MAXBACKTRACE=40
+>
+>           -D 宏作用：
+>               看到gcc编译的时候使用了-D "MAXMAPENTRIES=10240" 来替换模块源码里面的macro MAXMAPENTRIES,最大项改成了10240
 >
 >
 >
@@ -226,6 +266,20 @@
 >           $$vars // 一个包含所有函数参数、局部变量的字符串
 >           $$locals // 一个包含所有局部变量的字符串
 >           $$params // 一个包含所有函数参数的字符串
+>
+
+- **运算符：**
+>       使用@cast()操作符支持类型转换
+>       当指针是一个void *类型，或是保存为整数后，可以使用cast运算符指定指针的数据类型：
+>       下面的语句将P翻译成一个指向名为type_name的结构体或联合体的指针，并对指针解引用获取其成员的值，可选模块参数告诉翻译器在哪个寻找该类型的信息
+>           如：
+>               @cast(p,"type_name"[, "module"])->member
+>               @cast(pointer, "task_struct","kernel")->parent->tgid
+>               @cast(tv,"timeval", "<sys/time.h>")->tv_sec
+>
+>
+>
+>
 >
 
 - **统计变量：**
