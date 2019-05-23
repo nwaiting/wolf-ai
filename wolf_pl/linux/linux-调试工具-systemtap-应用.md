@@ -28,7 +28,7 @@
 >            pid(),
 >            ppfunc(),
 >            kernel_string($filp->f_path->dentry->d_iname),
->            $filp->f_path->dentry->d_inode->i_ino);    
+>            $filp->f_path->dentry->d_inode->i_ino);
 >       }
 >       在探测点处理函数所在的上下文种获取，可以直接使用被跟踪函数的参数变量等
 >
@@ -40,13 +40,13 @@
 >           1、pidstat 命令，它就是利用了/proc/<pid>/io 中的原始数据计算单位时间内的增量
 >           2、 iotop 也可以观察进程的动态I/O
 >       pidstat 和 iotop 也有不足之处，它们无法具体到某个硬盘设备，如果系统中有很多硬盘设备，都在忙，而我们只想看某一个特定的硬盘的I/O来自哪些进程，这两个命令就帮不上忙了。怎么办呢？
->   
+>
 >     probe kernel.function("submit_bio") {
 >  　　　　dev = $bio->bi_bdev->bd_dev
 >  　　　　if (dev == device_of_interest)
 >    　　　　　　printf ("[%s](%d) dev:0x%x rw:%d size:%d\n",
 >           　　　　　　 execname(), pid(), dev, $rw, $bio->bi_size)
->　　　}           
+>　　　}
 >
 >
 >
@@ -123,8 +123,8 @@
 
 - **待续：**
 >       参考：https://www.v2ex.com/t/387987
->
->
+>       https://tcler.github.io/2017/09/11/systemtap-modify-syscall-parameters/     systemtap 修改系统调用参数
+>       https://zhengheng.me/2015/02/11/systemtap-analy/    分析一个进程的读写效率
 >
 >
 >

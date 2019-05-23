@@ -18,6 +18,26 @@
 >           如：stap -l 'process("/lib64/libc.so.6").function("malloc")'
 >               或者 stap -l 'process("/usr/local/ppngx/sbin/nginx").statement("*@ngx_netcall.c:99")'
 >
+
+- **耗时统计直方图：**
+>       @hist_linear(v, start, stop, interval) # 打印start-stop区间interval间隔的直方图
+>       @hist_log(v)       # 打印以2为底指数分布的直方图
+>
+>       例如：
+>           global sends # 声明全局的统计存储容器
+>
+>           # function中为函数名，同时支持通配符*等，在该函数return时计算耗时
+>           probe process("/home/pplive/work/test_stap/test_cpp/main").function("*").return {
+>               # 以微秒精度来统计，entry方法将一个表达式放置于函数入口处
+>               sends <<< gettimeofday_us() - @entry(gettimeofday_us())
+>           }
+>
+>           probe timer.s(10) {
+>               print(@hist_log(sends))
+>               # 清空数据
+>               delete sends
+>           }
+>
 >
 >
 >

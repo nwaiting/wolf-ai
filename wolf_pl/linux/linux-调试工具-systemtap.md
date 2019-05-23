@@ -63,7 +63,7 @@
 >
 
 - **输出变量：**
->       $$vars：类似sprintf("parm1=%x ... parmN=%x var1=%x ... varN=%x", parm1, ..., parmN, var1, ..., varN)，目的是打印probe点处的每个变量；
+>       $$vars：作用域内所有变量的 $$vars
 >       $$locals：$$vars子集，仅打印local变量；
 >       $$parms：$$vars子集，仅包含函数参数；
 >       $$return：仅在return probes存在，类似sprintf("return=%x", $return)，如果没有返回值，则是空串
@@ -277,8 +277,40 @@
 >               @cast(pointer, "task_struct","kernel")->parent->tgid
 >               @cast(tv,"timeval", "<sys/time.h>")->tv_sec
 >
+
+- **常用函数：**
+>       @entry(gettimeofday_us())   entry方法将一个表达式放置于函数入口处
+>       @defined($flags)    随着代码运行，变量可能失效，因此需要用@defined()来判断该变量是否可用
+>           如：write_access = (@defined($flags)? $flags & FAULT_FLAG_WRITE : $write_access)
+>       @hist_log(sends) 打印以2为底指数分布的直方图
+>           分为两行：value代表原始的值，count代表有多少次
+>           例如：sends = [1,2,4,8,12,12,12,16,16,16,16,16,16,16,16,16,16,16,32,32,32,32,64]
+>               print(@hist_log(sends))
+>               # 2^0到2^9之间，统计个数
+>               value |-------------------------------------------------- count
+>                   0 |                                                    0
+>                   1 |@                                                   1
+>                   2 |@                                                   1
+>                   4 |@                                                   1
+>                   8 |@@@@                                                4
+>                  16 |@@@@@@@@@@@                                        11
+>                  32 |@@@@                                                4
+>                  64 |@                                                   1
+>                 128 |                                                    0
+>                 256 |                                                    0
 >
->
+>       @hist_linear(v, start, stop, interval) # 打印start-stop区间interval间隔的直方图
+>           例如：sends = [1,2,4,8,12,12,12,16,16,16,16,16,16,16,16,16,16,16,32,32,32,32,64]
+>               print(@hist_linear(sends, 10, 30, 5))
+>               # 在10到30间，以5为间隔，统计个数
+>           value |-------------------------------------------------- count
+>             <10 |@@@@                                                4
+>              10 |@@@                                                 3
+>              15 |@@@@@@@@@@@                                        11    (表示大于15小于20的个数)
+>              20 |                                                    0
+>              25 |                                                    0
+>              30 |@@@@                                                4
+>             >30 |@                                                   1
 >
 >
 
@@ -292,7 +324,10 @@
 >           @hist_log 用@来图形化打印statistics
 >           如：sum_bytes_to_read = @sum(total_bytes_to_read)
 >
->
+
+- **tapset库：**
+>       SystemTap提供了tapset库（通常情况下，安装在/usr/share/systemtap/tapset文件夹），类似于C语言的函数库libc，
+>           tapset提供了函数，全局变量等供SystemTap脚本使用
 >
 >
 >
@@ -321,7 +356,7 @@
 >       https://www.v2ex.com/t/387987   SystemTap 使用技巧之三 (跟踪进程执行流程)
 >       https://blog.csdn.net/wangzuxi/article/category/2647873
 >           SystemTap使用技巧【一】 && SystemTap使用技巧【二】 && SystemTap使用技巧【三】 && SystemTap使用技巧【四】 && systemtap双指针（多级指针）解引用
->
+>       https://github.com/vincentbernat/systemtap-cookbook/blob/master/tcp     用python写stap程序
 >
 >
 >
