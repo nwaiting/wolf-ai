@@ -3,6 +3,13 @@
 >       对管理员，SystemTap可用于监控系统性能，找出系统瓶颈，而对于开发者，可以查看他们的程序运行时在linux系统内核内部的运行情况。
 >           主要用于查看内核空间事件信息，对用户空间事件的探测，目前正加紧改进
 >
+>       由于systemtap运行需要内核的调试信息支撑，默认发行版的内核在配置时这些调试开关没有打开，所以安装完systemtap也是无法去探测内核信息的，
+>           由于发行版的内核默认无内核调试信息，所以我们还需要一个调试内核镜像，在http://ddebs.ubuntu.com/pool/main/l/linux/ 找到你的内核版本相对应的内核调试镜像（版本号包括后面的发布次数、硬件体系等都必须一致）
+>           如：wget http://ddebs.ubuntu.com/pool/main/l/linux/linux-image-debug-3.8.0-30-generic_dbgsym_3.8.0-30.43_i386.ddeb
+>               dpkg -i linux-image-debug-3.8.0-30-generic_dbgsym_3.8.0-30.43_i386.ddeb
+>               注：方法仅限于Ubuntu发行版，至于其他的发行版并不能照搬
+>
+>
 >       开源工具：
 >           https://github.com/nwaiting/stapxx
 >           https://github.com/openresty/openresty-systemtap-toolkit
