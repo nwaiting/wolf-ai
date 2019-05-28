@@ -78,7 +78,9 @@
 
 
 - **待续：**
->       参考：http://www.cnblogs.com/LeftNotEasy/archive/2011/01/19/svd-and-applications.html 机器学习中的数学(5)-强大的矩阵奇异值分解(SVD)及其应用（以及svd在nlp中的应用）
+>       参考：https://www.zhihu.com/question/30094611  要理解到Hinton对PCA的认知，需要跨过4个境界  ！！！！
+>           http://www.cnblogs.com/LeftNotEasy/archive/2011/01/19/svd-and-applications.html
+>               机器学习中的数学(5)-强大的矩阵奇异值分解(SVD)及其应用（以及svd在nlp中的应用）
 >           https://mp.weixin.qq.com/s/Dv51K8JETakIKe5dPBAPVg   机器学习中SVD总结（矩阵分解的常用方法）
 >           https://zhuanlan.zhihu.com/p/37777074   主成分分析（PCA）原理详解
 >           https://zhuanlan.zhihu.com/p/30482640   关于奇异值分解SVD的总结（PCA、LDI）

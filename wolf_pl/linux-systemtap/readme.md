@@ -19,14 +19,26 @@
 >               或者 stap -l 'process("/usr/local/ppngx/sbin/nginx").statement("*@ngx_netcall.c:99")'
 >
 >       stap统计c++程序：
->       function("operator new")：$sz 表示new申请的字节数
->       function("operator delete")：$ptr：应该就是地址
->       probe process("main").library("libstdc++.so.6").{function("operator new"), function("operator delete")} {
->           print_ustack(ubacktrace())
->           printf("========== %s\n",ppfunc())
->       }
+>           function("operator new")：$sz 表示new申请的字节数
+>           function("operator delete")：$ptr：应该就是地址
+>           probe process("main").library("libstdc++.so.6").{function("operator new"), function("operator delete")} {
+>               print_ustack(ubacktrace())
+>               printf("========== %s\n",ppfunc())
+>           }
 >       参考：http://sourceware-org.1504.n7.nabble.com/Systemtap-Probe-C-new-and-delete-Operator-td407597.html
->
+>       解释：
+>           operator new/operator delete,operator new[]/operator delete[]是标准库函数，用法和malloc/free的用法一样，只负责分配/释放空间，
+>               但实际上operator new/operator delete只是malloc/free的一层封装
+>               函数申明：
+>                   void* operator new(size_t size);
+>                   void operator delete(size_t size);
+>                   void* operator new[](size_t size);
+>                   void operator delete[](size_t size);
+>           new和delete：
+>               new：先调用operator new分配空间，再调用构造函数初始化空间。
+>               new[n]：调用operator new分配空间，再调用n次构造函数初始化对象。
+>               delete：先调用析构函数清理对象，再调用operator delete释放空间
+>               delete[n]：调用n次析构函数清理对象，再调用operator delete释放空间。
 >
 >
 
