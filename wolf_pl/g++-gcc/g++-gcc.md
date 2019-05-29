@@ -60,9 +60,10 @@
 >
 
 - **待续：**
->       参考：http://www.cnblogs.com/samewang/p/4774180.html   Linux公社的一篇文章
->
->
+>       参考：
+>           http://www.cnblogs.com/samewang/p/4774180.html   Linux公社的一篇文章
+>           https://www.cnblogs.com/qoakzmxncb/archive/2013/04/18/3029105.html      GCC，LLVM，Clang编译器对比
+>           https://www.kancloud.cn/wizardforcel/gcc-tips-100/146931    100个gcc的小技巧
 >
 >
 >
