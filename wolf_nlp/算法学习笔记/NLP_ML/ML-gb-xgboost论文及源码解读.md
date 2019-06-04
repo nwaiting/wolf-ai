@@ -46,7 +46,7 @@
 >                   (3) YARN
 >                       这里有很多实现细节，包括YARN ApplicationMaster/Client的开发、Tracker脚本的开发、RABIT容错通信原语的开发以及基于RABIT原语的XGBoost算法分布式实现
 >           2、Spark：
->
+>               略
 >       多线程并行优化：
 >           使用OpenMP
 >
@@ -79,8 +79,8 @@
 >           https://zxth93.github.io/2017/09/29/XGBoost%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86/index.html      XGBoost算法原理
 >           https://wepon.me/2016/05/07/XGBoost%E6%B5%85%E5%85%A5%E6%B5%85%E5%87%BA/    XGBoost浅入浅出
 >           https://www.zhihu.com/question/41354392/answer/98658997     机器学习算法中 GBDT 和 XGBOOST 的区别有哪些？
->
->
+>           https://blog.csdn.net/yinyu19950811/article/details/81079192
+>               XGBoost原理介绍（介绍分布式加权直方图、稀疏感知分裂发现、System design(缓存感知访问(Cache-aware Access)、用于核外计算的块)）
 >
 >
 >

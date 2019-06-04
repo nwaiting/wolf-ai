@@ -39,6 +39,37 @@
 >
 >
 
+- **GBDT在rank的原理：**
+>       GBDT用在rank中，主要是如何进行pair-wise的训练？
+>       比如应用在搜索中：
+>           learning to rank需要解决的问题是给定一个query，如何选择最相关的document。**gbrank核心为将排序问题转化为一组回归问题。**
+>           例如，
+>           对于所有的query-document pair，从pair抽取出一系列特征对其进行表示。如query1-document1记为x,query1-document2记为y。x>y表示用户发起查询query1时，x比y更合适，更加满足query1的需求，
+>           给定排序函数空间H，希望得到一个排序函数h(h∈H)，当x>y时，有h(x)>h(y)，损失函数为：
+>           R(h) = 1/2 * ∑(max(0, h(y)-h(x)+τ))^2 - λ*τ^2
+>           可以理解为：
+>               如果h学到了这种排序关系，则h(x)>h(y)，h对于损失函数贡献为0，否则为(h(y)-h(x))^2。直接优化loss比较困难，可以通过改变h(y)或者h(x)来达到减少lass的目的
+>               为了避免优化函数h是一个常量，在loss fuction上增加一个平滑项τ，0<τ≤1。在实际应用中τ为固定常数。
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+
 - **Adaboost：**
 >       https://blog.csdn.net/v_JULY_v/article/details/40718799   Adaboost 算法的原理与推导
 >
