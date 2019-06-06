@@ -37,6 +37,13 @@
 >               https://github.com/cameron314/concurrentqueue
 >
 >
+>       google的btree：
+>            C++ B-Tree, a C++ template library that implements B-tree containers with an analogous interface to the standard STL map, set, multimap, and multiset containers.
+>           https://isocpp.org/blog/2013/02/b-tree-containers-from-google
+>           https://github.com/algorithm-ninja/cpp-btree
+>           https://github.com/diegocaro/cpp-btree
+>           go语言版：
+>               https://github.com/google/btree
 >
 >
 >
