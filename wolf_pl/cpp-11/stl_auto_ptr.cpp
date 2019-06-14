@@ -4,6 +4,7 @@
 /*
 参考：
     https://heleifz.github.io/14696398760857.html   shared_ptr 原理及事故
+    https://blog.csdn.net/qq_29108585/article/details/78027867  shared_ptr的引用计数原理
     https://www.cnblogs.com/diysoul/p/5930372.html   C++智能指针 weak_ptr
     https://blog.csdn.net/albertsh/article/details/82286999 智能指针（三）：weak_ptr浅析
 
