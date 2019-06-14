@@ -34,9 +34,10 @@
 >           http://www.aiuxian.com/article/p-1212986.html   WebRtc VoiceEngine代码解析
 >           https://www.twblogs.net/a/5b8bf2012b717718832f4625/zh-cn    WebRtc语音整体框架（代码详解）
 >           http://zhangpengyf.github.io/2017/02/17/webrtc%E5%B0%81%E8%A3%85sdk-%E4%B8%89-VoiceEngine%E7%9A%84%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95.html     webrtc封装sdk（三）VoiceEngine的使用方法
->
->
->
+>           https://www.cnblogs.com/wangbin/p/4462895.html      WebRTC源码分析：音频模块结构分析
+>           https://www.cnblogs.com/wangbin/p/4462899.html      WebRtc VoiceEngine代码解析
+>           https://www.cnblogs.com/lingyunhu/p/rtc25.html      WebRTC 音视频开发总结（二五）-- webrtc优秀资源汇总
+>           https://www.cnblogs.com/lingyunhu   WebRTC 音视频开发总结
 >
 >
 >

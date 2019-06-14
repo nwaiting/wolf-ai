@@ -6,8 +6,8 @@
 >           3、gprof
 >           4、火焰图
 >
->
->
+>       linux 调试利器gdb, strace, pstack, pstree, lsof
+>           https://www.cnblogs.com/lidabo/p/5628107.html
 >
 >
 

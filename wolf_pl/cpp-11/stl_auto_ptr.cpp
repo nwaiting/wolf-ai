@@ -2,9 +2,12 @@
 #include <memory>
 
 /*
-//在rocketdb中用到的
-https://heleifz.github.io/14696398760857.html
+参考：
+    https://heleifz.github.io/14696398760857.html   shared_ptr 原理及事故
+    https://www.cnblogs.com/diysoul/p/5930372.html   C++智能指针 weak_ptr
+    https://blog.csdn.net/albertsh/article/details/82286999 智能指针（三）：weak_ptr浅析
 
+//在rocketdb中用到的
 std::shared_ptr<>
     允许多个对象管理同一个指针，但仅当管理这个指针的最后一个对象析构时才调用delete
     注：1、引用计数容易出现循环引用问题
@@ -24,8 +27,22 @@ std::unique_ptr<>
 std::make_shared<>
 
 std::auto_ptr<>
+    auto_ptr的出现，主要是为了解决“有异常抛出时发生内存泄漏”的问题
+
 std::auto_ptr_ref<>
+
 std::weak_ptr<>
+    weak_ptr 是一种不控制对象生命周期的智能指针, 它指向一个 shared_ptr 管理的对象.
+        进行该对象的内存管理的是那个强引用的 shared_ptr. weak_ptr只是提供了对管理对象的一个访问手段
+    weak_ptr 设计的目的是为配合 shared_ptr 而引入的一种智能指针来协助 shared_ptr 工作, 它只可以从一个 shared_ptr或另一个weak_ptr对象构造, 它的构造和析构不会引起引用记数的增加或减少
+    应用：
+        使用 weak_ptr解决shared_ptr因循环引有不能释放资源的问题
+        使用 shared_ptr 时, shared_ptr 为强引用, 如果存在循环引用, 将导致内存泄露. 而 weak_ptr 为弱引用, 可以避免此问题, 其原理:
+            对于弱引用来说, 当引用的对象活着的时候弱引用不一定存在. 仅仅是当它存在的时候的一个引用, 弱引用并不修改该对象的引用计数, 这意味这弱引用它并不对对象的内存进行管理.
+            weak_ptr 在功能上类似于普通指针, 然而一个比较大的区别是, 弱引用能检测到所管理的对象是否已经被释放, 从而避免访问非法内存。
+        注意: 虽然通过弱引用指针可以有效的解除循环引用, 但这种方式必须在程序员能预见会出现循环引用的情况下才能使用, 也可以是说这个仅仅是一种编译期的解决方案, 如果程序在运行过程中出现了循环引用, 还是会造成内存泄漏.
+
+
 */
 
 class Build
