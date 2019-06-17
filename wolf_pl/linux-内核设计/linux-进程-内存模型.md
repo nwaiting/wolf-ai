@@ -93,7 +93,7 @@
 - **待续：**
 >       参考：https://blog.csdn.net/gfgdsg/article/details/42709943    Linux内存分配小结--malloc、brk、mmap
 >           https://blog.csdn.net/zhangzhebjut/article/details/39060253     Linux - 进程(一) 进程空间
->
+>           https://www.cnblogs.com/clover-toeic/p/3754433.html     Linux虚拟地址空间布局
 >
 >
 >

@@ -188,7 +188,8 @@
 >
 
 - **待续：**
->
+>       参考：http://linuxperf.com/    利用BLKTRACE分析IO性能
+>           
 >
 >
 >
