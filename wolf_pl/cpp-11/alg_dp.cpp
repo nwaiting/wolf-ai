@@ -2,6 +2,9 @@
 #include <stdint.h>
 #include <vector>
 #include <algorithm>
+#include <set>
+#include <queue>
+#include <string.h>
 
 //dp for LIS O(n^2)
 //求最长单调递增子序列长度
@@ -113,8 +116,76 @@ int32_t LIS3(const std::string &src)
 	return maxlen;
 }
 
+struct Node{    char val;    std::vector<char> con;};void const_graph(std::vector<Node*>& nodes){    Node* ap = new Node{ 'A', { 'C', 'B', 'D' } };    nodes[int('A' - 'A')] = ap;    ap = new Node{ 'B', { 'D', 'E' } };    nodes[int('B' - 'A')] = ap;    ap = new Node{ 'C', {} };    nodes[int('C' - 'A')] = ap;    ap = new Node{ 'D', {} };    nodes[int('D' - 'A')] = ap;    ap = new Node{ 'E', { 'A' } };    nodes[int('E' - 'A')] = ap;}std::vector<Node*> gnodes(100);std::set<char> visited;std::queue<char> q;bool is_visited(char c){    return std::find(visited.begin(), visited.end(), c) != visited.end();}void find_path(char c, std::vector<char>& paths){    if (!is_visited(c)) {        paths.push_back(c);        visited.insert(c);    }    for (auto it : gnodes[int(c - 'A')]->con) {        if (!is_visited(it)) {            find_path(it, paths);        }    }}
+
+/*
+For example, given the map:A �� [C, B, D] (A is connected to C, B, D directly)B �� [D, E]C �� [] (empty list means current place isn't connected to any other place)D �� []E �� [A]
+*/
+
+void find_path_bfs(char c, std::vector<char>& paths){
+    paths.push_back(c);
+    visited.insert(c);
+    for (auto it : gnodes[int(c - 'A')]->con) {
+        q.push(it);
+    }
+
+    while (!q.empty()){
+        char tmpc = q.front();
+        q.pop();
+        if (!is_visited(tmpc)) {
+            for (auto it : gnodes[int(tmpc - 'A')]->con) {
+                q.push(it);
+            }
+            visited.insert(tmpc);
+            paths.push_back(tmpc);
+        }
+    }
+}
+
+
+
+
+/*
+    lcs：long common string
+*/
+#define N 100
+int dp[N][N];
+int flag[N][N];
+//longCommonString("ABCBDAB", "BDCABA");
+
+void longCommonString(const std::string& s1, const std::string& s2)
+{
+    int lena = s1.size();
+    int lenb = s2.size();
+    for (int i = 1; i < lena; i++) {
+        for (int j = 1; j < lenb; j) {
+            if (s1[i-1] == s2[j-1]) {
+                if (dp[i][j] < dp[i - 1][j - 1] + 1) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                }
+            }
+            else{
+                if (dp[i - 1][j]>dp[i][j - 1]) {
+                    dp[i][j] = dp[i - 1][j];
+                }
+                else {
+                    dp[i][j] = dp[i][j - 1];
+                }
+            }
+        }
+    }
+    std::cout << dp[lena - 1][lenb - 1] << std::endl;
+}
+
+
+
+
+
+
+
 int main()
 {
+    /*
 	std::string data("1462897");
 	std::cout << LIS1(data) << std::endl;
 	
@@ -127,6 +198,42 @@ int main()
 
 
 	std::cout << LIS3(data) << std::endl;
+    */
+
+
+    const_graph(gnodes);    std::vector<char> p;    find_path('A', p);
+    for (auto it : p) {
+        std::cout << it << std::endl;
+    }
+    std::cout << "============" << std::endl;
+
+    p.clear();
+    visited.clear();
+    find_path('B', p);
+    for (auto it : p) {
+        std::cout << it << std::endl;
+    }
+
+    std::cout << "bfs===================" << std::endl;
+    p.clear();
+    visited.clear();
+    q = std::queue<char>();
+    find_path_bfs('A', p);
+    for (auto it : p) {
+        std::cout << it << std::endl;
+    }
+    std::cout << "============" << std::endl;
+
+    p.clear();
+    visited.clear();
+    q = std::queue<char>();
+    find_path_bfs('B', p);
+    for (auto it : p) {
+        std::cout << it << std::endl;
+    }
+
+
+    longCommonString("ABCBDAB", "BDCABA");
 
 	std::cin.get();
 	return 0;
