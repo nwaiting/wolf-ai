@@ -102,6 +102,36 @@ def my_heap_sort(data_list):
     return data_list
 
 
+# 4. 堆排序
+def heap_adjust(L, start, end):
+# start为当前需要调整最大堆的位置，end为调整边界
+    root = start
+    # 执行循环操作：两个任务：1 寻找最大值的下标；2.最大值与父节点交换
+    while True:
+        child = root * 2 + 1
+        if child > end:
+            break
+        # 取较大的子节点
+        if child + 1 <= end and L[child+1] > L[child]:
+            child += 1
+        # 较大的子节点成为父节点
+        if L[child] > L[root]:
+            L[child], L[root] = L[root], L[child]
+            root = child
+        else:
+            break
+
+def heap_sort(L):
+    # 先建立大顶堆，保证最大值位于根节点；并且父节点的值大于叶子结点，从最后一个父节点开始逆序向前循环
+    for start in range(len(L)//2-1, -1, -1):
+        heap_adjust(L, start, len(L)-1)
+    # 执行循环：1.每次取出堆顶元素置于序列的最后    2.调整堆，使其继续满足大顶堆的性质
+    for end in range(len(L)-1, 0, -1):
+        L[0], L[end] = L[end], L[0]
+        heap_adjust(L, 0, end-1)
+    return L
+
+
 if __name__ == "__main__":
     data = [8, 1, 5, 2, 400, 32, 128, 64]
     print my_heap_sort(data)
