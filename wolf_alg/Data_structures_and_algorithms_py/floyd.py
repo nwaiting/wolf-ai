@@ -1,6 +1,11 @@
 #coding=utf-8
 
+"""
+    http://wiki.jikexueyuan.com/project/easy-learn-algorithm/floyd.html
+"""
+
 def floyd(double_list, vertexs):
+    # 对于所有的点进过k（即所有的点进行中转）的中转
     for k in xrange(1, vertexs + 1):
         for i in xrange(1, vertexs + 1):
             for j in xrange(1, vertexs + 1):

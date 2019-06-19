@@ -2,6 +2,8 @@
 
 """
     https://blog.csdn.net/huaweidong2011/article/details/82875485
+    https://blog.csdn.net/qq_28327765/article/details/86490717
+    
     A有左右两个孩子（当然孩子可以是空），以每个孩子为起点，向下延伸，可以得到很多条单向的路径，这其中当然有一个最大路径。
         我们将以左孩子为起点的最大路径的值记为left_val，将以右孩子为起点的最大路径的值记为right_val，显然以A为最高点的最大路径只可能有以下四种情况：
         1. 若left_val < 0, 且right_val < 0, 那最大路径为A节点本身：maxPathSum(A) = A.val
