@@ -178,8 +178,40 @@ void longCommonString(const std::string& s1, const std::string& s2)
 }
 
 
-
-
+class Solution {
+public:
+    int minimumTotal(std::vector<std::vector<int>>& triangle) {
+        int m = triangle.size();
+        std::vector<int> dp(triangle[m - 1].begin(), triangle[m - 1].end());
+        for (int i = m - 2; i >= 0; i--){
+            for (int j = 0; j < triangle[i].size() - 1; j++){
+                dp[j] = triangle[i][j] + std::max(dp[j], dp[j + 1]);
+            }
+        }
+        return dp[0];
+    }
+    // [5, 75, 25] 100
+    std::vector<int> twoSum(std::vector<int>& nums, int target) {
+        for (int i = 0; i < nums.size(); i++) {
+            int other_num = target - nums[i];
+            int begin = i + 1;
+            int end = nums.size()-1;
+            while (begin <= end){
+                int mid = (begin + end) / 2;
+                if (other_num > nums[mid]){
+                    begin = mid + 1;
+                }
+                else if (other_num < nums[mid]){
+                    end = mid - 1;
+                }
+                else{
+                    return std::vector<int>{i, mid};
+                }
+            }
+        }
+        return std::vector<int>{};
+    }
+};
 
 
 
@@ -198,9 +230,27 @@ int main()
 
 
 	std::cout << LIS3(data) << std::endl;
+
+    [9, 0, 0, 0, 0],
+    [12, 15, 0, 0, 0],
+    [10, 6, 8, 0, 0],
+    [2, 18, 9, 5, 0],
+    [19, 7, 10, 4, 16]
+
     */
 
+    std::vector<std::vector<int>> datas{ { 9 ,0}, { 12, 15 }, { 10, 6, 8 }, { 2, 18, 9, 5 }, { 19, 7, 10, 4, 16 } };
+    std::cout << "======= " << Solution().minimumTotal(datas) << std::endl;
 
+    //[5,75,25]
+    std::vector<int> datas1{ 0, 4, 3, 0 };
+    std::vector<int> res = Solution().twoSum(datas1, 0);
+    for (auto it : res) {
+        std::cout << it << " ";
+    }
+    std::cout <<"========"<< std::endl;
+
+    /*
     const_graph(gnodes);    std::vector<char> p;    find_path('A', p);
     for (auto it : p) {
         std::cout << it << std::endl;
@@ -234,7 +284,7 @@ int main()
 
 
     longCommonString("ABCBDAB", "BDCABA");
-
+    */
 	std::cin.get();
 	return 0;
 }
