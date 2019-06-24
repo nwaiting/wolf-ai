@@ -30,7 +30,7 @@
 >
 
 - **待续：**
->       参考：
+>       参考：https://www.infoq.cn/article/how-does-echo-cancellation-technology-work-in-av    音视频社交中回声消除技术是如何实现的
 >
 >
 >
