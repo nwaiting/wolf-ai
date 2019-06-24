@@ -40,6 +40,26 @@
 >               delete：先调用析构函数清理对象，再调用operator delete释放空间
 >               delete[n]：调用n次析构函数清理对象，再调用operator delete释放空间。
 >
+
+- **systemtap安装：**
+>       https://www.cnblogs.com/wipan/p/9333623.html    systemtap安装
+>       https://segmentfault.com/a/1190000000671438     SystemTap 学习笔记 - 安装篇
+>       https://www.cnblogs.com/the-tops/p/5715854.html     debuginfo-install安装
+>           http://ftp.riken.jp/Linux/scientific/6.2/archive/debuginfo/
+>
+>       1、安装如下两个RPM包
+>           systemtap
+>           systemtap-runtime
+>       2、在运行SystemTap之间，还需要装必要的内核信息包。在现代系统上，可以运行如下stap-prep来安装这些包
+>           stap-prep
+>           运行stap-prep的时候，它探测出还要安装kernel-devel-3.10.0-693.2.2.el7.x86_64包和kernel-debuginfo-3.10.0-693.2.2.el7.x86_64包
+>               (实际上还有kernel-debuginfo-common包)，但是自动安装失败。需要手动安装。
+>               kernel-debuginfo
+>               kernel-debuginfo-common
+>               kernel-devel
+>           注意：不要直接yum install kernel-debuginfo kernel-debuginfo-common kernel-devel, 即使能找到相应的包，也是安装的最新版本，不会自动匹配当前版本。
+>               所以下载RPM包，再用rpm命令依次安装
+>
 >
 
 - **修改变量的值：**
@@ -48,13 +68,6 @@
 >           $this->show_value = 1
 >       }
 >       stap func_cpp.stp -g -d /home/pplive/work/test_stap/test_cpp/main --ldd -x 54945
->
->
->
->
->
->
->
 >
 
 - **耗时统计直方图：**
@@ -76,14 +89,11 @@
 >               delete sends
 >           }
 >
->
->
->
->
 
 
 - **待续：**
->       参考：
+>       参考：https://jin-yang.github.io/post/linux-systemtap.html     Systemtap
+>           https://consen.github.io/2018/01/04/systemtap/  SystemTap（Cuckoo沙箱Linux检测引擎就使用了SystemTap）
 >
 >
 >
