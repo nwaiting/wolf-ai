@@ -226,7 +226,7 @@
 >           https://www.cnblogs.com/mod109/category/1057295.html
 >           https://zhuanlan.zhihu.com/p/44576758   音频处理与压缩技术
 >           http://blog.sina.com.cn/s/blog_5d054eff0100puzx.html    音频分析中用到的一些基本概念
->
+>           https://zhuanlan.zhihu.com/p/60371062   音频知识（二）—— MFCC详解    
 >
 >
 >
