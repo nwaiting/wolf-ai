@@ -104,7 +104,8 @@
 >           https://zhuanlan.zhihu.com/p/60371062   音频知识（二）—— MFCC详解
 >           https://blog.csdn.net/book_bbyuan/article/details/80725945  WebRTC VAD 中所用滤波器之分析（详解）
 >           https://blog.csdn.net/book_bbyuan/article/details/78944630  WebRTC VAD算法初探（详解-代码级详解）
->
+>           https://blog.csdn.net/Lucas23/article/details/84110584  WEBRTC中VAD算法及思想的数学解析（详解-代码级详解）
+>           https://wenku.baidu.com/view/4065569ff90f76c660371a18.html  语音信号的短时分析（短时能量）
 >
 >
 >
