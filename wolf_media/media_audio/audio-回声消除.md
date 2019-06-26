@@ -64,9 +64,9 @@
 >       参考：https://www.infoq.cn/article/how-does-echo-cancellation-technology-work-in-av    音视频社交中回声消除技术是如何实现的
 >           https://blog.csdn.net/shichaog/article/details/71152743     语音自适应回声消除（AEC）算法
 >           https://blog.csdn.net/qq_14962179/article/details/88051662  WebRTC AEC（算法框架）
->
->
->
+>           https://blog.csdn.net/audio_algorithm/article/details/78684354  Speex 回声消除流程分析
+>           https://blog.csdn.net/Vincentywj/article/details/78269604   speex回音消除
+>           https://blog.csdn.net/audio_algorithm/article/details/78685244  WebRtc/Speex AEC matlab代码分析
 >
 >
 >
