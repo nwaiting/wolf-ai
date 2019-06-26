@@ -295,8 +295,8 @@
 >       参考：https://blog.csdn.net/qq_25867649/article/details/79169811   语音识别-特征提取
 >           https://www.cnblogs.com/xingshansi/p/6815217.html   音频特征提取——常用音频特征
 >           https://www.cnblogs.com/xingshansi/category/979728.html     音频系列文章
->
->
+>           https://blog.csdn.net/w_manhong/article/details/78977833    语音识别之特征参数提取（一）
+>           https://blog.csdn.net/aiyh0202/article/details/52848305     音频频谱图
 >
 >
 >

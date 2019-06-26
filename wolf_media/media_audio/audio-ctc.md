@@ -44,7 +44,7 @@
 - **待续：**
 >       参考：https://www.cnblogs.com/qcloud1001/p/9041218.html    语音识别中的CTC算法的基本原理解释
 >           https://x-algo.cn/index.php/2017/05/31/2345/    CTC原理
->
+>           https://blog.csdn.net/u013193788/article/details/83623444   序列模型之CTC算法       
 >
 >
 >
