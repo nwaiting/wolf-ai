@@ -8,7 +8,8 @@
 >           https://github.com/JustFollowUs/Reinforcement-Learning
 >           https://github.com/JustFollowUs/Deep-Learning
 >
->
+>       刘建平：
+>           https://blog.csdn.net/qq_15262671/article/details/78481922
 >
 >
 

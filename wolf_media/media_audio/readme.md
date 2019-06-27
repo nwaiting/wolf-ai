@@ -23,7 +23,7 @@
 >           https://blog.csdn.net/book_bbyuan/article/category/7354139  音频系列算法研究
 >           https://www.cnblogs.com/welen/category/512291.html  音频系列算法研究以及深度学习的应用
 >           https://www.cnblogs.com/xingshansi/category/979728.html     音频系列文章
->
+>           https://blog.csdn.net/xmdxcsj/article/details/51228791      音频系列（含dl/asr）
 >
 >
 >

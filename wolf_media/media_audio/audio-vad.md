@@ -7,6 +7,35 @@
 >           由于高斯混合模型（Gaussian Mixture Model，GMM）在噪声环境中也能取得较好的性能，经常作为统计模型用于VAD
 >           基于统计模型的VAD算法可以通过设计与数据记录相同条件下的模型，实现对噪声的鲁棒性
 >
+
+- **webRTC的vad处理流程：**
+>       
+>
+>
+>
+>
+>
+
+- **细节详解：**
+>       高斯概率计算，其实采用了两个参数高斯分布，但是假设了两个参数是相互独立的，将这两个高斯看成是不相关的。
+>       做了三个简化：
+>           1、指数前的系数省掉，因为做似然比检验时，可以消掉
+>           2、假设两个高斯分布是不相关的
+>           3、将乘法近似化简成加法
+>
+>       对数似然比，分为全局和局部，全局是六个子带之加权之和，而局部是指每一个子带则是局部，所以语音判决会先判断子带，子带判断没有时会判断全局，只要有一方过了，就算有语音
+>
+
+- **webRTC在滤波器上的设计技巧：**
+>       有两个技巧：
+>           1、定点数计算，指两个方面
+>               (1)、滤波器系数量化
+>               (2)、计算过程的定点化，高斯模型计算也使用了这一技巧
+>           2、舍入技巧，减少运算量
+>
+>       量化是按照2的十四次方进行定点化。
+>
+>
 >
 
 - **webRTC的vad详解：**
@@ -84,22 +113,10 @@
 - **滤波器分析：**
 >       使用高通滤波器滤除80hz以下的内容
 >
->
->
->
->
->
->
->
->
->
->
->
->
 
 - **待续：**
 >       参考：https://blog.csdn.net/ssdzdk/article/details/42876011    WebRtc 的VAD算法解析
->           https://blog.csdn.net/shichaog/article/details/52399354     WebRTC之VAD算法
+>           https://blog.csdn.net/shichaog/article/details/52399354     WebRTC之VAD算法（代码详解）
 >           https://shichaog1.gitbooks.io/hand-book-of-speech-enhancement-and-recognition/content/chapter7.html     第七章 语音检测(VAD)原理和实例
 >           https://zhuanlan.zhihu.com/p/60371062   音频知识（二）—— MFCC详解
 >           https://blog.csdn.net/book_bbyuan/article/details/80725945  WebRTC VAD 中所用滤波器之分析（详解）

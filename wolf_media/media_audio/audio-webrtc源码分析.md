@@ -1,5 +1,30 @@
 ## media-audio webrtc源码分析
 - **概述：**
+>
+>
+>
+>
+
+- **音频处理功能：**
+>       1、回声消除（AEC/AECM Acoustic Echo Canceller for Mobile 声学回声消除）
+>           class EchoCancellation
+>           AEC(Acoustic Echo Canceller)和AECM(Acoustic Echo Canceller Mobile)，AEC是在电脑端使用的回声消除器，而AECM是在移动端使用。
+>       2、回声抑制（AES）
+>           EchoControlMobile
+>       3、增益控制（AGC Auto Gain Control 自动增益控制）
+>           GainControl
+>       4、高通滤波
+>           HighPassFilter
+>       5、信号能量值
+>           LevelEstimator
+>       6、噪声抑制（NS/SE Noise Suppression 噪声抑制）
+>           NoiseSuppression
+>       7、激活检测（VAD Voice Activity Detection 静音检测）
+>           VoiceDetection
+>
+>
+
+- **混音和混屏：**
 >       混音：
 >           将多个音频流混成一路音频，实现有分为终端实现和服务器实现
 >           终端实现：
@@ -13,15 +38,6 @@
 >       混屏：
 >           将多路视频流合成成一路视频流发给待接受的终端，如将四路QCIF大小的H.264编码码流合并成一路CIF大小的码流技术,输出的码流与普通的H.264的CIF格式的码流完全一样。
 >               这个合并的过程放在了MCU上,对于终端来说,与接收单一画面的视频信号相比 ,在带宽占用和信号处理方面不会增加任何额外的负担,且减轻终端的复杂度并提高稳定性
->
->
->
->
->
->
->
->
->
 >
 
 - **待续：**
