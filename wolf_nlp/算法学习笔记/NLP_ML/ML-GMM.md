@@ -10,10 +10,6 @@
 >
 >       GMM，就是假设数据服从Mixture Gaussian Distribution，即数据可以看做是从数个Gaussian Distribution中生成出来的。
 >
->
->
->
->
 
 - **中心极限定理：**
 >       中心极限定理，是指概率论中讨论随机变量序列部分和分布渐近于正态分布的一类定理。
@@ -37,17 +33,17 @@
 >       思想是，找到这样一组参数，它所确定的概率分布生成这些给定的数据点的概率最大，而这个概率实际上就等于∏p(x_i)，我们把这个乘积称作似然函数 (Likelihood Function)。
 >       然后求解对数似然函数的最大值，即得到最优参数
 >
->
->
->
->
+
+- **二维GMM：**
+>       如下图，
+> ![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/math_pic/math_gmm_multi_vari.png)
 >
 >
 
 - **待续：**
 >       参考：http://blog.pluskid.org/?p=39&cpage=1#comments   Clustering (3): Gaussian Mixture Model
->
->
+>       https://blog.csdn.net/u011582757/article/details/70003351   EM算法--二维高斯混合模型(GMM)
+>       http://jermmy.xyz/2017/10/28/2017-10-28-mutil-modal-gaussian/   多维高斯分布
 >
 >
 >
