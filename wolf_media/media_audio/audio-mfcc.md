@@ -14,7 +14,7 @@
 - **倒谱分析：**
 >       目的：
 >           倒谱分析目的就是获得频谱的包络信息。包络部分对应的是频谱的低频信息，而细节部分对应的是频谱的高频信息。
-> 
+>
 >       倒谱的含义是：
 >           对时域信号做傅里叶变换，然后取log，然后再进行反傅里叶变换。
 >       可以分为复倒谱、实倒谱和功率倒谱，用到的是功率倒谱。
@@ -87,7 +87,7 @@
 >           https://blog.csdn.net/bonner1/article/details/86488046      Fbank特征与MFCC特征解析
 >           https://www.jianshu.com/p/b416d5617b0c  语谱图，滤波器组（Filter banks、MFCC）
 >           https://blog.csdn.net/xmdxcsj/article/details/51228791  声学特征（二） MFCC特征原理
->
+>           https://www.cnblogs.com/sxzheng/p/3449991.html  语音特征MFCC的求解过程
 >
 >
 >
