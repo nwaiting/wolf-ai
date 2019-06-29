@@ -6,8 +6,10 @@
 > ![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/media_pic/media_audio_asr_flow.png)
 >
 >
->
->
+
+- **asr知识图谱：**
+>       如下图，
+>![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/media_pic/media_audio_asr_graph.png)
 >
 >
 >
