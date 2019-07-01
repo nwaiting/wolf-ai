@@ -56,7 +56,7 @@
 >           http://www.zfdeqnc.com/content/180731212714053.html
 >           https://mp.weixin.qq.com/s?src=11&timestamp=1558944527&ver=1631&signature=CMnFbsI-4ZaKgmJrKjjWkDbPXrFxcUmQ0J2YOFu1BT4KDu3QsNG2*vkWDU8oiVQqg54J8HVUPMs3ytfWJ4dtjDU7t0*6SNKaPQB-5k5wfVr1PLkaHiJ*RrYDOXoX3QO*&new=1
 >               EM算法的九层境界：​Hinton和Jordan理解的EM算法
->
+>           https://blog.csdn.net/zouxy09/article/details/8537620   从最大似然到EM算法浅解
 >
 >
 >
