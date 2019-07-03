@@ -42,8 +42,8 @@
 >
 
 - **待续：**
->
->
+>       参考：https://zh.d2l.ai/chapter_optimization/optimization-intro.html   动手学深度学习（详细介绍CNN、RNN等基础）
+>           https://nndl.github.io/     神经网络与深度学习 (作者：邱锡鹏 )
 >
 >
 >
