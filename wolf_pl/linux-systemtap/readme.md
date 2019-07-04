@@ -46,6 +46,9 @@
 >       https://segmentfault.com/a/1190000000671438     SystemTap 学习笔记 - 安装篇
 >       https://www.cnblogs.com/the-tops/p/5715854.html     debuginfo-install安装
 >           http://ftp.riken.jp/Linux/scientific/6.2/archive/debuginfo/
+>           http://www.rpm-find.net/linux/rpm2html/search.php?query=kernel-devel
+>           https://oss.oracle.com/el6/debuginfo/
+>           http://vault.centos.org/6.2/os/x86_64/Packages
 >
 >       1、安装如下两个RPM包
 >           systemtap
