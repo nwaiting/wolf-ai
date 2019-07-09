@@ -3,12 +3,30 @@
 >       目前主流的语音识别都大致分为特征提取，声学模型，语音模型
 >       目前结合神经网络的端到端的声学模型训练方法主要CTC和基于Attention两种
 >
->
+>       适合于输入特征和输出标签之间对齐关系不确定的时间序列问题,CTC可以自动端到端地同时优化模型参数和对齐切分的边界。！！！
 >
 >
 
+- **CTC优缺点：**
+>       优点：
+>           1、可迁移性比较好。比如朋友之间的聊天和正式发言之间的差异较大，但它们的声学模型却是类似的。
+>           2、CTC是单调对齐的。这在语音识别上是没啥问题的，但在机器翻译的时候，源语言和目标语言之间的语序不一定一致，也就不满足单调对齐的条件。
+>           3、CTC的输入/输出是many-to-one的，不支持one-to-one或one-to-many。比如，“th”在英文中是一个音节对应两个字母，这就是one-to-many的案例。
+>           4、Y的数量不能超过X，否则CTC还是没法work
+>       缺点：
+>           1、条件独立的假设太强，与实际情况不符，因此需要语言模型来改善条件依赖性，以取得更好的效果
+>
+>       如果在语音识别中，能够结合语言模型的话，将可以极大的改善语音识别的准确率。这种情况下的CTC loss为：略
+>
+
+- **CTC推断：**
+>       CTC的正向推断（Inference），由于对齐有很多种可能的情况，采用穷举法是不现实的。
+>
+
 - **CTC：**
->       CTC是一种损失函数，它用来衡量输入的序列数据经过神经网络之后，和真实的输出相差有多少。
+>       神经网络+CTC的结构除了可以应用到语音识别的声学模型训练上以外，也可以用到任何一个输入序列到一个输出序列的训练上（要求：输入序列的长度大于输出序列）。！！！
+>
+>       CTC是一种损失函数，它用来衡量输入的序列数据经过神经网络之后，和真实的输出相差有多少。！！！
 >
 >       传统的语音识别的声学模型训练，对于每一帧的数据，需要知道对应的label才能进行有效的训练，在训练数据之前需要做语音对齐的预处理。
 >           而语音对齐的过程本身就需要进行反复多次的迭代，来确保对齐更准确，这本身就是一个比较耗时的工作。
@@ -34,23 +52,27 @@
 >       在语音识别中，RNN+CTC模型的训练详细过程，到底RNN+CTC是如何不用事先对齐数据来训练序列数据的。
 >       CTC是一种损失函数，它用来衡量输入的序列数据经过神经网络之后，和真实的输出相差有多少。
 >
+>       比如输入一个200帧的音频数据，真实的输出是长度为5的结果。 经过神经网络处理之后，出来的还是序列长度是200的数据。
+>           比如有两个人都说了一句nihao这句话，他们的真实输出结果都是nihao这5个有序的音素，但是因为每个人的发音特点不一样，有的人说的快有的人说的慢，
+>           原始的音频数据在经过神经网络计算之后，第一个人得到的结果可能是：nnnniiiiii...hhhhhaaaaaooo(长度是200)，第二个人说的话得到的结果可能是：niiiiii...hhhhhaaaaaooo(长度是200)。
+>       这两种结果都是属于正确的计算结果，可以想象，长度为200的数据，最后可以对应上nihao这个发音顺序的结果是非常多的。
 >
->
+>       CTC就是用在这种序列有多种可能性的情况下，计算和最后真实序列值的损失值的方法。
 >
 >
 >
 >
 
 - **待续：**
->       参考：https://www.cnblogs.com/qcloud1001/p/9041218.html    语音识别中的CTC算法的基本原理解释
+>       参考：https://cloud.tencent.com/developer/article/1122128?fromSource=waitui   语音识别中的CTC算法的基本原理解释
 >           https://x-algo.cn/index.php/2017/05/31/2345/    CTC原理
->           https://blog.csdn.net/u013193788/article/details/83623444   序列模型之CTC算法       
->
->
->
->
->
->
+>           https://blog.csdn.net/u013193788/article/details/83623444   序列模型之CTC算法
+>           https://zhuanlan.zhihu.com/p/21344595   端到端的OCR：验证码识别（理解CTC）
+>           https://xiaodu.io/ctc-explained/    CTC Algorithm Explained Part 1：Training the Network（CTC算法详解之训练篇）（5部分详解ctc）
+>           https://sunnycat2013.gitbooks.io/blogs/content/posts/ctc/learning-ctc.html  Connectionist Temporal Classification
+>           https://blog.csdn.net/luodongri/article/details/77005948    白话CTC(connectionist temporal classification)算法讲解
+>           https://www.zhihu.com/question/47642307     谁给讲讲语音识别中的CTC方法的基本原理？
+>           https://zhuanlan.zhihu.com/p/27593978   end-to-end语音识别--ctc
 >
 >
 >
