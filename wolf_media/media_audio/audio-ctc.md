@@ -3,6 +3,8 @@
 >       目前主流的语音识别都大致分为特征提取，声学模型，语音模型
 >       目前结合神经网络的端到端的声学模型训练方法主要CTC和基于Attention两种
 >
+>       CTC是计算一种损失值，主要的优点是可以对没有对齐的数据进行自动对齐，主要用在没有事先对齐的序列化数据训练上。
+>
 >       适合于输入特征和输出标签之间对齐关系不确定的时间序列问题,CTC可以自动端到端地同时优化模型参数和对齐切分的边界。！！！
 >
 >
@@ -73,8 +75,7 @@
 >           https://blog.csdn.net/luodongri/article/details/77005948    白话CTC(connectionist temporal classification)算法讲解
 >           https://www.zhihu.com/question/47642307     谁给讲讲语音识别中的CTC方法的基本原理？
 >           https://zhuanlan.zhihu.com/p/27593978   end-to-end语音识别--ctc
->
->
+>           https://blog.csdn.net/Left_Think/article/details/76370453   语音识别：深入理解CTC Loss原理
 >
 >
 >
