@@ -9,19 +9,27 @@
 >       1、回声消除（AEC/AECM Acoustic Echo Canceller for Mobile 声学回声消除）
 >           class EchoCancellation
 >           AEC(Acoustic Echo Canceller)和AECM(Acoustic Echo Canceller Mobile)，AEC是在电脑端使用的回声消除器，而AECM是在移动端使用。
+>           回声消除的基本原理是使用一个自适应滤波器对未知的回声信道:ω进行参数辨识，根据扬声器信号与产生的多路回声的相关性为基础，建立远端信号模型，
+>               模拟回声路径，通过自适应算法调整，使其冲击响应和真实回声路径相逼近。然后将麦克风接收到的信号减去估计值，即可实现回声消除功能。
 >       2、回声抑制（AES）
 >           EchoControlMobile
+>
 >       3、增益控制（AGC Auto Gain Control 自动增益控制）
 >           GainControl
+>
 >       4、高通滤波
 >           HighPassFilter
+>
 >       5、信号能量值
 >           LevelEstimator
+>
 >       6、噪声抑制（NS/SE Noise Suppression 噪声抑制）
 >           NoiseSuppression
+>           算法的核心思想是采用维纳滤波器抑制估计出来的噪声。
+>
 >       7、激活检测（VAD Voice Activity Detection 静音检测）
 >           VoiceDetection
->
+>           gmm
 >
 
 - **混音和混屏：**
