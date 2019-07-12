@@ -44,7 +44,7 @@
 >       参考：http://blog.pluskid.org/?p=39&cpage=1#comments   Clustering (3): Gaussian Mixture Model
 >       https://blog.csdn.net/u011582757/article/details/70003351   EM算法--二维高斯混合模型(GMM)
 >       http://jermmy.xyz/2017/10/28/2017-10-28-mutil-modal-gaussian/   多维高斯分布
->
+>       https://blog.csdn.net/jinping_shi/article/details/59613054  高斯混合模型（GMM）及其EM算法的理解
 >
 >
 >
