@@ -17,11 +17,12 @@
 >                   被传递的信息在尽可能远的分叉路口才开始复制和分发。
 >
 >
->
->
->
->
->
+
+- **获取本机的外网ip：**
+>       curl icanhazip.com
+>       curl ident.me
+>       curl whatismyip.akamai.com
+>       curl ip.sb
 >
 >
 >

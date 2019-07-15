@@ -7,6 +7,9 @@
 >
 >       适合于输入特征和输出标签之间对齐关系不确定的时间序列问题,CTC可以自动端到端地同时优化模型参数和对齐切分的边界。！！！
 >
+>       在序列学习问题中，模型的预测过程本质是一个空间搜索过程，也称为解码，如何在限定的时间条件下搜索到最优解是一个非常有挑战的问题。！！！
+>
+>
 
 - **ctc的特点：**
 >       传统的Framewise训练需要进行语音和音素发音的对齐，比如“s”对应的一整段语音的标注都是s；而CTC引入了blank（该帧没有预测值），“s”对应的一整段语音中只有一个spike（尖峰）被认为是s，
@@ -21,6 +24,7 @@
 >           4、Y的数量不能超过X，否则CTC还是没法work
 >       缺点：
 >           1、条件独立的假设太强，与实际情况不符，因此需要语言模型来改善条件依赖性，以取得更好的效果
+>           假设在给定输入序列和模型参数，RNN每一时刻的输出之间是条件独立的。 ！！！
 >
 >       如果在语音识别中，能够结合语言模型的话，将可以极大的改善语音识别的准确率。这种情况下的CTC loss为：略
 >
@@ -71,6 +75,32 @@
 >       2、借鉴了HMM（Hidden Markov Model）的Forward-Backward算法思路，利用动态规划算法有效地计算CTC Loss函数及其导数，从而解决了RNN端到端训练的问题
 >       3、结合CTC Decoding算法RNN可以有效地对序列数据进行端到端的预测
 >
+
+- **CTC解码：**
+>       在序列学习问题中，模型的预测过程本质是一个空间搜索过程，也称为解码，如何在限定的时间条件下搜索到最优解是一个非常有挑战的问题。！！！
+>
+>       对CTC网络进行Decoding解码本质过程是选取条件概率最大的输出序列
+>       CTC网络的输出序列只对应了搜索空间的一条路径，一个最终标签可对应搜索空间的N条路径，所以概率最大的路径并不等于最终标签的概率最大，即不是最优解。
+>
+>       常见的CTC解码算法：
+>           1、CTC Prefix Search Decoding
+>               Prefix Search Decoding是基于前缀概率的搜索算法，它能确保找到最优解，但最坏情况下耗时可能会随着序列长度呈指数增长；
+>               Prefix Search Decoding本质是贪心算法，每一次搜索都会选取“前缀概率”最大的节点扩展，直到找到最大概率的目标label，
+>                   它的核心是利用动态规划算法计算“前缀概率”。
+>           2、CTC Beam Search Decoding
+>               CTC Beam Search Decoding是一种Beam Search算法，它能在限定时间下找到近似解，但不保证一定能找到最优解。
+>
+
+- **原理详解：**
+>       将yts计算了两次，所以除以yts表示的就是t时刻生成ls的约束下，整条label生成的概率：(α*β)/yts
+>
+>
+>
+>
+>
+>
+>
+>
 >
 
 - **待续：**
@@ -84,8 +114,8 @@
 >           https://www.zhihu.com/question/47642307     谁给讲讲语音识别中的CTC方法的基本原理？
 >           https://zhuanlan.zhihu.com/p/27593978   end-to-end语音识别--ctc
 >           https://blog.csdn.net/Left_Think/article/details/76370453   语音识别：深入理解CTC Loss原理
->
->
+>           https://zhuanlan.zhihu.com/p/33464788?edition=yidianzixun&utm_source=yidianzixun&yidian_docid=0IHnKxdI  基于CTC的语音识别基础与实现
+>           https://www.jianshu.com/p/e458975a8f14  （CTC解码）Modeified prefix-search decoding algorithm
 >
 >
 >
