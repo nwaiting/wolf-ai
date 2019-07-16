@@ -11,6 +11,9 @@
 >       刘建平：
 >           https://blog.csdn.net/qq_15262671/article/details/78481922
 >
+>       AI算法：
+>           https://easyai.tech/ai-definition/q-learning/
+>
 >
 
 - **强化学习：**

@@ -122,7 +122,7 @@ tPort: 64815, priority: 2122194687, componentId: 1, ufrag: KDyD, pass: smTIKg0Cr
 >           https://www.meiwen.com.cn/subject/ruyckftx.html     通过janus认识libnice
 >           https://segmentfault.com/a/1190000015075880     聊聊 WebRTC 网关服务器1：如何选择服务端端口方案？
 >           https://blog.csdn.net/chenFteng/article/details/77429453    WebRtc音视频实时通信--libnice库介绍
->
+>           https://blog.csdn.net/w05980598/article/details/79959704    webrtc调试工具chrome://webrtc-internals介绍
 >
 >
 >
