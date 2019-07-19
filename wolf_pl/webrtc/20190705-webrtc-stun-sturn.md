@@ -4,9 +4,13 @@
 >           查出自己位于哪种类型的NAT之后以及NAT为某一个本地端口所绑定的Internet端端口。这些信息被用来在两个同时处于NAT 路由器之后的主机之间建立UDP通信。该协议由RFC 3489定义。
 >
 >
->
->
->
+
+- **NAT技术：**
+>       可以同时让多个计算机同时联网，同时也隐藏了内部地址，NAT对来自外部的数据查看其NAT映射记录，对没有相应记录的数据包进行拒绝，提高了网络的安全性。
+>       NAT三种实现方式：
+>           1、静态地址转换：一个公网IP对应一个内部IP,一对一转换；
+>           2、动态地址转换：N个公网IP对应M个内部Ip,不固定的一对一IP转换关系．同一时间，有M-N个主机无法联网；
+>           3、端口多路复用：对外只有一个公网IP,通过端口来区别不同内部IP主机的数据；
 >
 >
 
@@ -176,7 +180,7 @@
 >           https://segmentfault.com/a/1190000015075880     聊聊 WebRTC 网关服务器1：如何选择服务端端口方案？
 >           https://blog.csdn.net/chenFteng/article/details/77429453    WebRtc音视频实时通信--libnice库介绍
 >           https://blog.csdn.net/w05980598/article/details/79959704    webrtc调试工具chrome://webrtc-internals介绍
->
+>           http://diseng.github.io/2015/04/30/nat  NAT穿透的几种方式
 >
 >
 >
