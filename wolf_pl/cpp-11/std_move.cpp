@@ -16,6 +16,15 @@ using namespace std;
         A& operator=(A&& src) noexcept{}
             总之尽量给类添加移动构造和移动赋值函数，而减少拷贝构造和拷贝赋值的消耗。 移动构造，移动赋值要加上noexcept，用于通知标准库不抛出异常
             原value值被moved之后值被转移,所以为空字符串
+
+    std::forward：
+        函数 forward_value 是一个泛型函数，它将一个参数传递给另一个函数 process_value
+        template <typename T> void forward_value(T && val) //参数为右值引用
+        {
+            process_value( std::forward<T>(val) ); // C++11中，std::forward可以保存参数的左值或右值特性
+        }
+
+
 */
 
 int main(int argc, char const *argv[]) {

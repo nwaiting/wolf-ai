@@ -10,6 +10,8 @@
     https://blog.csdn.net/solstice/article/details/6395098  Muduo 网络编程示例之八：用 Timing wheel 踢掉空闲连接
 
 //在rocketdb中用到的
+当你需要一个共享资源所有权（访问权+生命控制权）的指针，请使用std::shared_ptr，当你需要一个能访问资源，但不控制其生命周期的指针，请使用std::weak_ptr
+
 std::shared_ptr<>
     允许多个对象管理同一个指针，但仅当管理这个指针的最后一个对象析构时才调用delete
     注：1、引用计数容易出现循环引用问题
@@ -21,17 +23,28 @@ std::shared_ptr<>
         2、不delete get函数返回的指针
         3、如果你使用了get返回的指针，记住当最后一个对应的智能指针销毁后，你的指针就变为无效了
         4、如果你使用智能指针管理的资源不是new分配的内存，记得传递给他一个删除器
+    https://blog.csdn.net/chenkaixin_1024/article/details/69390586      浅谈shared_ptr与循环引用问题
+
 
 std::unique_ptr<>
-    1、unique_ptr类型指针不能赋值给其他的对象，但是可以通过返回值返回给其他指针
+    1、unique_ptr类型指针不能赋值给其他的对象，但是可以通过返回值返回给其他指针。（通过禁止拷贝语义、只有移动语义来实现）
     2、不允许多个对象管理一个指针
+    unique_ptr指针本身的生命周期：
+        从unique_ptr指针创建时开始，直到离开作用域
+        离开作用域时，若其指向对象，则将其所指对象销毁(默认使用delete操作符，用户可指定其他操作)
+    https://www.jianshu.com/p/26967eb6d8f9      std::unique_ptr作为函数返回值导致的野指针
+    https://blog.csdn.net/yongqingjiao/article/details/78764963     为什么函数可以返回unique_ptr
+
 
 std::make_shared<>
+
 
 std::auto_ptr<>
     auto_ptr的出现，主要是为了解决“有异常抛出时发生内存泄漏”的问题
 
+
 std::auto_ptr_ref<>
+
 
 std::weak_ptr<>
     weak_ptr 是一种不控制对象生命周期的智能指针, 它指向一个 shared_ptr 管理的对象.
