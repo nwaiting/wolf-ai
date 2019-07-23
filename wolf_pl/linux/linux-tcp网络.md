@@ -4,8 +4,17 @@
 >       监听端口和用来发送数据的端口是同一个端口
 >
 >
->
->
+
+- **epoll_wait Interrupted system call：**
+>       利用 gdb 调试带有 epoll_wait select sem_wat 的多线程代码的时候可能会出现非正常返回 -1 的情况，错误原因是：Interrupted system call。
+>           这是由于gdb调试的时候会在断点处插入一条中断指令,当程序执行到该断点处的时候会发送一个SIGTRAP信号,程序转去执行中断响应，进而gdb让程序停下来进行调试。
+>           对于sem_wait\wait\read等会阻塞的函数在调试时,如果阻塞,都可能会收到调试器发送的信号,而返回非0值。
+>       为了解决这个问题需要在代码中忽略由于接收调试信号而产生的"错误"返回：
+>           if(  -1 == epoll_wait() ) {
+>               if(errno!=EINTR) {
+>                   return -1;
+>               }
+>           }
 >
 >
 
