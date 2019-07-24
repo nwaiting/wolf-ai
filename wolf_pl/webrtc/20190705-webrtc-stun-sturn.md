@@ -5,6 +5,35 @@
 >
 >
 
+- **NAT类型：**
+>       NAT（Network Address Translation）是将IP 数据包头中的IP 地址转换为另一个IP 地址的过程，通俗来讲，就是局域网，公用一个public IP。
+>       NAT作用：
+>           1、NAT的本质就是让一群机器公用同一个IP。这样就暂时解决了IP短缺的问题。
+>           2、其实NAT还有一个重要的用途，就是保护NAT内的主机不受外界攻击。
+>       一个终端一般都在一个NAT内，NAT会有一个网关路由，对外暴露一个public IP
+>
+>       NAT类型：
+>           1、Full Cone     全锥形NAT
+>               IP、端口都不受限。只要客户端由内到外打通一个洞之后（NatIP:NatPort –> A:P1），其他IP的主机(B)或端口(A:P2)都可以使用这个洞发送数据到客户端。
+>           2、Restricted Cone   受限锥形NAT
+>               IP受限，端口不受限。当客户端由内到外打通一个洞之后(NatIP:NatPort –> A:P1)，A机器可以使用他的其他端口（P2）主动连接客户端，但B机器则不被允许。
+>               Restricted Cone限制了外部进入内部的IP，使得只有被打洞IP发出的数据包才允许进入NAT
+>           3、Restricted Port Cone  端口受限锥型
+>               IP、端口都受限。返回的数据只接受曾经打洞成功的对象（A:P1），由A:P2、B:P1发起的数据将不被NatIP:NatPort接收。
+>               Restricted Port Cone不但限制了IP，还限制了端口，使得只有被打洞的IP:PORT才能往这个洞里发送数据，其他任何来自不同于被打洞地址（IP:PORT）的数据包都不能使用这个洞将数据发送到NAT之后
+>           Cone NAT指的是只要源IP端口不变，无论发往的目的IP是否相同，在NAT上都映射为同一个端口，形象的看来就像锥子一样
+>
+>           4、Symmetric NAT     对称型NAT
+>               对称型NAT具有端口受限锥型的受限特性。但更重要的是，他对每个外部主机或端口的会话都会映射为不同的端口（洞）。只有来自相同的内部地址（IP:PORT）并且发送到相同外部地址（X:x）的请求，在NAT上才映射为相同的外网端口，即相同的映射。
+>               因为每一次连接端口都不一样，所以对方无法知道在对称NAT的client下次用什么端口。 无法完全实现p2p传输（预测端口除外），需要turn server做一个relay，即所有消息通过turn server转发
+>               Symmetric NAT对于发往不同目的IP的会话在NAT上将映射为不同的端口，也就是不同的会话。
+>               对称型NAT具有端口受限锥型的受限特性。但更重要的是，他对每个外部主机或端口的会话都会映射为不同的端口（洞）。只有来自相同的内部地址（IP:PORT）并且发送到相同外部地址（X:x）的请求，
+>                   在NAT上才映射为相同的外网端口，即相同的映射。一个外部地址（X:x）对应一个NAT上的映射，如上图红色三角，每个映射仅接收来自他绑定的外部地址的数据。注：X在这里意为任意一台外部主机，x为这台主机上的任意一个端口。
+>               映射关系：
+>                   Client->NatIP:Pa1->A:P1，当Client访问B:P1时，映射关系变为：Client->NatIP:Pb->B:P1，同理，NatIP:Pa2也就是Client访问A:P2时的映射
+>
+>
+
 - **NAT技术：**
 >       可以同时让多个计算机同时联网，同时也隐藏了内部地址，NAT对来自外部的数据查看其NAT映射记录，对没有相应记录的数据包进行拒绝，提高了网络的安全性。
 >       NAT三种实现方式：
@@ -12,6 +41,18 @@
 >           2、动态地址转换：N个公网IP对应M个内部Ip,不固定的一对一IP转换关系．同一时间，有M-N个主机无法联网；
 >           3、端口多路复用：对外只有一个公网IP,通过端口来区别不同内部IP主机的数据；
 >
+
+- **webRTC的网络协议栈：**
+>       如下图，
+> ![avatar](https://github.com/nwaiting/wolf-ai/blob/master/wolf_others/media_pic/media_webrtc_network_stack.jpg)
+>
+>
+
+- **NAT后的A和B如何建立连接：**
+>       由于IP地址资源有限的原因，目前我们使用的各种终端设备都位于局域网后面也就是多台设备共享同一个公网IP；例如：如果位于局域网里面的一个终端Agent A要与互联网上的另一个终端Agent B通信，
+>           当A发送的data packet经过局域网出口处的NAT设备时，NAT会将data packet里面的source address字段替换成相应的公网IP和Port，然后再发送data packet到Agent B。
+>           Agent B看到的source address就是经过转换后的IP和Port并不知道Agent A的局域网地址；当Agent B的响应到达Agent A的NAT设备后，NAT设备查找内存中保存的和这个外网地址相对应的内网地址，
+>           如果找到后就将这个data packet转发到这个地址，这样就实现了通信
 >
 
 - **webrtc的P2P穿透：**
@@ -83,6 +124,7 @@
 >           6、服务器要求用户B发送一个消息到用户A的外网IP与端口号
 >           7、用户B发送一条消息，这时用户A就可以接收到B的消息，而且网关B也增加了允许规则
 >           8、由于网关A与网关B都增加了允许规则，所以A与B都可以向对方的外网IP和端口号发送消息
+>
 >
 >
 >
@@ -183,8 +225,8 @@
 >           http://diseng.github.io/2015/04/30/nat  NAT穿透的几种方式
 >           http://www.pianshen.com/article/2376142785/     webrtc服务器搭建
 >           http://prog3.com/sbdm/blog/liwf616/article/details/45507457     Test UDP hole penetration NAT
->
->
+>           https://www.jianshu.com/p/4a15556c6318      turn协议的工作原理
+>           https://cloud.tencent.com/developer/article/1005490     浅析 P2P 穿越 NAT 的原理、技术、方法 ( 下 ）
 >
 >
 >
