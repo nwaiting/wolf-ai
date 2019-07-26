@@ -5,6 +5,19 @@
 >
 >
 >
+
+- **XGBoost：**
+>       XGBoost的基学习器是CART回归树，，但与李航的《统计学习方法》等教材里介绍的CART回归树不同，XGBoost使用的是模型树。
+>       简要的说，模型树的叶节点的输出值，不是分到该叶节点的所有样本点的均值（回归树），而是由一个函数生成的值。
+>
+>       该如何确定树的结构呢？我们该用什么特征分割节点、分割节点的特征值又是多少呢？
+>           XGBoost用贪心算法遍历特征，用损失函数增益值判断该在哪个特征的何处分裂。
+>           损失增益函数是分裂后树的损失函数值和分裂前树的损失函数值之差
+>
+>       注意：
+>           在XGBoost中如果使用分类算法并且分为多类，最终形成的树的数目是类个数 * estimator个数
+>           如果输入的n_estimators参数是100，目标变量分了3类，最后会有300棵树。
+>
 >
 >
 >
@@ -62,12 +75,10 @@
 >           https://www.jianshu.com/p/9228767f13a3  分布式资源管理系统：YARN
 >
 >
->
->
->
->
->
->
+
+- **注意：**
+>        Classification with more than 2 classes requires the induction of n_classes regression trees at each at each iteration,thus, the total number of induced trees equals n_classes * n_estimators.
+>           For datasets with a large number of classes we strongly recommend to use RandomForestClassifier as an alternative to GradientBoostingClassifier .
 >
 >
 
@@ -81,7 +92,7 @@
 >           https://www.zhihu.com/question/41354392/answer/98658997     机器学习算法中 GBDT 和 XGBOOST 的区别有哪些？
 >           https://blog.csdn.net/yinyu19950811/article/details/81079192
 >               XGBoost原理介绍（介绍分布式加权直方图、稀疏感知分裂发现、System design(缓存感知访问(Cache-aware Access)、用于核外计算的块)）
->
+>           https://zhuanlan.zhihu.com/p/41207969   说说XGBoost 算法中的CART模型树
 >
 >
 >

@@ -52,10 +52,13 @@
 >               为了避免优化函数h是一个常量，在loss fuction上增加一个平滑项τ，0<τ≤1。在实际应用中τ为固定常数。
 >
 >
+
+- **注意：**
+>       1、对于二元分类，y只能是1或者0，残差通过y-pred计算，其中pred实际上是logistic function计算出来的一个概率！！！
+>       2、对于N元分类，只能转换成N个二元分类（其中y为0或1）
 >
->
->
->
+>        Classification with more than 2 classes requires the induction of n_classes regression trees at each at each iteration,thus, the total number of induced trees equals n_classes * n_estimators.
+>           For datasets with a large number of classes we strongly recommend to use RandomForestClassifier as an alternative to GradientBoostingClassifier .
 >
 >
 >

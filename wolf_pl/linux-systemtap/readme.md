@@ -50,6 +50,12 @@
 >           https://oss.oracle.com/el6/debuginfo/
 >           http://vault.centos.org/6.2/os/x86_64/Packages
 >
+>       Systemtap looks for the debug info in these locations
+>           /boot/vmlinux-`uname -r`
+>           /usr/lib/debug/lib/modules/`uname -r`/vmlinux
+>           /lib/modules/`uname -r`/vmlinux
+>
+>
 >       1、安装如下两个RPM包
 >           systemtap
 >           systemtap-runtime
@@ -97,7 +103,7 @@
 - **待续：**
 >       参考：https://jin-yang.github.io/post/linux-systemtap.html     Systemtap
 >           https://consen.github.io/2018/01/04/systemtap/  SystemTap（Cuckoo沙箱Linux检测引擎就使用了SystemTap）
->
+>           https://spacewander.gitbooks.io/systemtapbeginnersguide_zh/content/6_1_ParseAndSemanticErrors.html  systemtap详解
 >
 >
 >

@@ -227,7 +227,7 @@
 >           http://prog3.com/sbdm/blog/liwf616/article/details/45507457     Test UDP hole penetration NAT
 >           https://www.jianshu.com/p/4a15556c6318      turn协议的工作原理
 >           https://cloud.tencent.com/developer/article/1005490     浅析 P2P 穿越 NAT 的原理、技术、方法 ( 下 ）
->
+>           https://www.cnblogs.com/ishangs/p/3816689.html  STUN/TURN/ICE协议在P2P SIP中的应用（二）
 >
 >
 >
