@@ -78,7 +78,9 @@
 >       高维空间有一个华丽的名字--"再生核希尔伯特空间"
 >       详情参考：http://blog.pluskid.org/?p=723
 >
->
+
+- **KKT条件：**
+>       KKT条件是一个线性规划问题能有最优解的充分和必要条件
 >
 >
 >
@@ -91,8 +93,8 @@
 >           https://xijunlee.github.io/2017/03/29/sklearn%E4%B8%ADSVM%E8%B0%83%E5%8F%82%E8%AF%B4%E6%98%8E%E5%8F%8A%E7%BB%8F%E9%AA%8C%E6%80%BB%E7%BB%93/      sklearn中SVM调参说明及经验总结
 >           http://svmlight.joachims.org/
 >           https://www.ibm.com/support/knowledgecenter/zh/SSLVMB_sub/statistics_mainhelp_ddita/spss/base/advanced_statistics_container.html    线性模型、广义线性模型通用特性
->
->
+>           http://www.blogjava.net/zhenandaci/archive/2009/03/06/258288.html   SVM入门（七）为何需要核函数
+>           https://blog.csdn.net/b285795298/article/details/81977271   支持向量机（SVM）从入门到放弃再到掌握
 >
 >
 >
