@@ -200,9 +200,9 @@
 
 - **待续：**
 >       参：https://cloud.tencent.com/developer/article/1153079   “变形金刚”为何强大：从模型到代码全面解析Google Tensor2Tensor系统
->           https://www.zhihu.com/question/68482809/answer/264632289
+>           https://www.zhihu.com/question/68482809/answer/264632289    目前主流的attention方法都有哪些？
 >           https://nndl.github.io/     神经网络与深度学习 (作者：邱锡鹏 )
->           https://zhuanlan.zhihu.com/p/31547842   模型汇总24 - 深度学习中Attention Mechanism详细介绍：原理、分类及应用  
+>           https://zhuanlan.zhihu.com/p/31547842   模型汇总24 - 深度学习中Attention Mechanism详细介绍：原理、分类及应用
 >
 >
 >

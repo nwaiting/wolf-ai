@@ -41,7 +41,8 @@
 >
 
 - **待续：**
->       参考：https://zhuanlan.zhihu.com/p/28749444
+>       参考：https://lonepatient.top/2018/03/11/understand%20LSTM.html    理解LSTM ！！！
+>           https://zhuanlan.zhihu.com/p/28749444
 >           https://www.zhihu.com/question/34878706     LSTM如何来避免梯度弥散和梯度爆炸？（从不同角度分析为什么LSTM能避免弥散）
 >           https://www.zhihu.com/question/34878706/answer/665429718    LSTM如何来避免梯度弥散和梯度爆炸？
 >           https://www.cnblogs.com/zhangchaoyang/articles/6684906.html     RNN和LSTM

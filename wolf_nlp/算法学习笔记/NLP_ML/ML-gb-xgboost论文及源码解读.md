@@ -93,7 +93,7 @@
 >           https://blog.csdn.net/yinyu19950811/article/details/81079192
 >               XGBoost原理介绍（介绍分布式加权直方图、稀疏感知分裂发现、System design(缓存感知访问(Cache-aware Access)、用于核外计算的块)）
 >           https://zhuanlan.zhihu.com/p/41207969   说说XGBoost 算法中的CART模型树
->
+>           https://lonepatient.top/2017/03/18/boosting.html    XGBoost、LightGBM和CatBoost的同与不同
 >
 >
 >
