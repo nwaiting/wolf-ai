@@ -116,7 +116,7 @@
 >           https://blog.csdn.net/Left_Think/article/details/76370453   语音识别：深入理解CTC Loss原理
 >           https://zhuanlan.zhihu.com/p/33464788?edition=yidianzixun&utm_source=yidianzixun&yidian_docid=0IHnKxdI  基于CTC的语音识别基础与实现
 >           https://www.jianshu.com/p/e458975a8f14  （CTC解码）Modeified prefix-search decoding algorithm
->
+>           https://blog.csdn.net/JackyTintin/article/details/81251591      Sequence Transducer
 >
 >
 >
