@@ -3,6 +3,113 @@
 >       STUN（Simple Traversal of UDP over NATs，NAT 的UDP简单穿越）是一种网络协议，它允许位于NAT（或多重NAT）后的客户端找出自己的公网地址，
 >           查出自己位于哪种类型的NAT之后以及NAT为某一个本地端口所绑定的Internet端端口。这些信息被用来在两个同时处于NAT 路由器之后的主机之间建立UDP通信。该协议由RFC 3489定义。
 >
+>       candidate的ip排序：
+>           优先级排序依次是：主机候选地址>反射地址>中继后选项
+>           host > srvflx > prflx > relay
+>
+
+- **ICE：**
+>       ICE跟STUN和TURN不一样，ICE不是一种协议，而是一个框架（Framework），它整合了STUN和TURN
+>
+>       ICE全称Interactive Connectivity Establishment：
+>           交互式连通建立方式
+>       ICE参照RFC5245建议实现，是一组基于offer/answer模式解决NAT穿越的协议集合
+>           它综合利用现有的STUN，TURN等协议，以更有效的方式来建立会话
+>       客户端侧无需关心所处网络的位置以及NAT类型，并且能够动态的发现最优的传输路径
+>
+>       ICE试着找最好的路径来让客户端建立连接,他会尝试所有可能的选项,然后选择最合适的方案,ICE首先尝试P2P连接,如果失败就会通过Turn服务器进行转接
+>
+>       stun和turn服务的作用主要处理打洞与转发，配合完成ICE协议
+>           1、首先尝试使用P2P
+>           2、如果失败将求助于TCP，使用turn转发两个端点的音视频数据，turn转发的是两个端点之间的音视频数据不是信令数据
+>           因为turn服务器是在公网上，所以他能被各个客户端找到，另外turn服务器转发的是数据流，很占用带宽和资源
+>
+
+- **Binding Request/Response：**
+>       https://www.cnblogs.com/pannengzhi/p/5061674.html   P2P通信标准协议(三)之ICE
+>       https://www.jzgwind.com/?p=973  P2P网络节点间如何互访——详解STUN方式NAT穿透
+>       response的源IP和端口等于Binding Request的目的IP和端口
+>       response的目的IP和端口等于Binding Request的源IP和端口
+>
+>       由于STUN Binding request用来进行连接性测试,因此STUN Binding response中会包含终端的实际地址
+>       如果这个地址和之前学习的所有地址都不匹配,发送方就会生成一个新的candidate,称为PEER REFLEXIVE CANDIDATE,和其他candidate一样,也要通过ICE的检查测试
+>
+>       STUN request的发送和接收地址都是接下来进多媒体传输(如RTP和RTCP)的地址和端口,所以,客户端实际上是将STUN协议与RTP/RTCP协议在数据包中进行复用(而不是在端口上复用).
+>
+>       终端收到成功响应之后,先检查其mapped address是否与本地记录的地址对有匹配,如果没有则生成一个新的候选地址.即对等端的反射地址.如果有匹配,则终端会构造一个可用候选地址对(valid pair)。
+>           通常很可能地址对不存在于任何检查列表中,检索检查列表中没有被服务器反射的本地地址,这些地址把它们的本地候选转换成服务器反射地址的基地址,并把冗余的地址去除掉。
+>
+>       Candidate pair：
+>           由本端和远端candidate组成的pair，有自己的优先级
+>           由连通性检查成功的candidate pair按优先级排序的链表,用于ICE提名和选择最终路径
+>           在本端收到远端candidates后，将Component ID和transport protocol相同的candidates组成pair
+>           修整candidate pair，如果是srvflx地址，则需要用其base地址替换
+>           STUN 检查请求中需要检查地址的对称性，请求的源地址是响应的目的地址，请求的目的地址是响应的源地址，否则都设置状态为 Failed   ！！！
+>
+
+- **STUN消息属性：**
+>       属性类型定义：
+>           MAPPED-ADDRESS：
+>               MAPPED-ADDRESS属性表示映射过的IP地址和端口。它包括8位的地址族，16位的端口号及长度固定的IP地址。
+>           RESPONSE-ADDRESS：
+>               RESPONSE-ADDRESS属性表示响应的目的地址
+>           CHASNGE-REQUEST：
+>               客户使用32位的CHANGE-REQUEST属性来请求服务器使用不同的地址或端口号来发送响应
+>           SOURCE-ADDRESS：
+>               SOURCE-ADDRESS属性出现在捆绑响应中，它表示服务器发送响应的源IP地址和端口
+>           CHANGED-ADDRESS：
+>               如果捆绑请求的CHANGE-REQUEST属性中的“改变IP”和“改变端口”标志设置了，则CHANGED-ADDRESS属性表示响应发出的IP地址和端口号
+>           XOR-RELAYED-ADDRESS：
+>               值为该allocation的中继传输地址
+>           XOR-MAPPED-ADDRESS：
+>               值为客户端的server-reflexive地址
+>
+
+- **STUN响应：**
+>       在主叫端处于对称型NAT，被叫端处于端口限制型NAT情况下：
+>           被叫端的主机地址向主叫端的中继地址发送STUN BINDING 包的时候，在被叫端产生了 Prflx地址,
+>               此地址主叫端从请求包的SOURCE_ADDRESS（此处说的SOURCE_ADDRESS是指到来的请求rcheck的src_addr字段）取出
+>           据此，主叫端可以判定被叫端处于对称NAT，主叫端给被叫端响应，注入MAPPPED_ADDRESS字段值，被叫端收到响应据此可以判断自身处在对称NAT之下。
+>
+>       主叫A,被叫B：
+>           发包路径：B主机----A中继地址----STUN3478----A主机（SOURCE_ADDRESS）
+>           接收到服务器来的包之后，主叫端给被叫端响应,把Prflx地址放入MAPPPED_ADDRESS字段值
+>           响应路径：A主机----STUN3478----B中继地址----B主机（MAPPPED_ADDRESS）
+>
+
+- **STUN协议：**
+>       STUN协议在RFC5389中被重新命名为Session Traversal Utilities for NAT，即NAT会话穿透效用
+>       在这里，NAT会话穿透效用被定位为一个用于其他解决NAT穿透问题协议的协议。它可以用于终端设备检查由NAT分配给终端的IP地址和端口号。
+>           同时，它也被用来检查两个终端之间的连接性，好比是一种维持NAT绑定表项的保活协议。
+>       STUN可以用于多种NAT类型，并不需要它们提供特殊的行为
+>
+>       STUN本身不再是一种完整的NAT穿透解决方案，它相当于是一种NAT穿透解决方案中的工具。
+>
+
+- **STUN用途：**
+>       目前定义了三种STUN用途：
+>           1、Interactive Connectivity Establishment（ICE）[MMUSIC-ICE]，交互式连接建立
+>           2、Client-initiated connections for SIP [SIP-OUTBOUND]，用于SIP的客户端初始化连接
+>           3、NAT Behavior Discovery [BEHAVE-NAT]，NAT行为发现
+>
+>       Classic STUN（RFC3489）：
+>           Classic STUN 有着诸多局限性，比如：
+>               1、不能确定获得的公网映射地址能否用于P2P通信
+>               2、没有加密方法
+>               3、不支持TCP穿越
+>               4、不支持对称型NAT的穿越
+>               5、不支持IPV6
+>
+>       STUN（RFC5389）：
+>           RFC5389是RFC3489的升级版，比如：
+>               1、支持UDP/TCP/TLS协议
+>               2、支持安全认证
+>
+>       ICE利用STUN（RFC5389） Binding Request和Response，来获取公网映射地址和进行连通性检查，同时扩展了STUN的相关属性：
+>           1、PRIORITY：在计算candidate pair优先级中使用
+>           2、USE-CANDIDATE：ICE提名时使用
+>           3、tie-breaker：在角色冲突时使用
+>
 >
 
 - **NAT类型：**
@@ -130,73 +237,6 @@
 >
 
 - **交互流程：**
->       10:24:32,549  - INFO [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: constructor, stunserver: 216.93.246.18, stunPort: 3478, minPort: 40000, maxPort: 50000
-        10:24:32,549  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding mediaStream, id: b7b6816fcd966369bda389a25711f756
-        10:24:32,615  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote SDP
-        10:24:32,616  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: processing remote SDP
-        10:24:32,617  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Creating videoTransport, ufrag: KDyD, pass: smTIKg0CrCALj6qGKfGvXZS9
-        10:24:32,617  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: constructor, transportName: video, isBundle: 1
-        10:24:32,618  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: creating active-client
-        10:24:32,618  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: created
-        10:24:32,618  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: starting ice
-        10:24:32,618  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: creating Nice Agent
-        10:24:32,618  - DEBUG [0x7f67d75fe700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: starting g_main_loop, this: 0x7f67dc3d0f40
-        10:24:32,618  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting stun, stun_server: 216.93.246.18, stun_port: 3478
-        10:24:32,618  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: adding stream, iceComponents: 1
-        10:24:32,618  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote credentials in constructor, ufrag:KDyD, pass:smTIKg0CrCALj6qGKfGvXZS9
-        10:24:32,619  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote credentials, ufrag: KDyD, pass: smTIKg0CrCALj6qGKfGvXZS9
-        10:24:32,619  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting port range, min_port: 40000, max_port: 50000
-        10:24:32,619  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: gathering, this: 0x7f67dc3d0f40
-        10:24:32,619  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Discovered New Candidate, candidate: a=candidate:7 1 udp 2013266431 10.200.20.84 40006 typ host generation 0
-        10:24:32,620  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote SDP, stream: b7b6816fcd966369bda389a25711f756
-        10:24:32,620  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote SDP, stream: b7b6816fcd966369bda389a25711f756, stream_id: b7b6816fcd966369bda389a25711f756
-        10:24:32,621  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote SDP to stream, stream: b7b6816fcd966369bda389a25711f756
-        10:24:32,621  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: SDP processed
-        10:24:32,621  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Getting Local Sdp
-        10:24:32,621  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: processing local sdp, transportName: video
-        10:24:32,621  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: processed local sdp, transportName: video, ufrag: H8o8, pass: 67avgI5/OfkIKXqB+8AwE/
-        10:24:32,905  - DEBUG [0x7f67d75fe700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Discovered New Candidate, candidate: a=candidate:8 1 udp 1677721855 36.152.49.161 16175 typ srflx raddr 10.200.20.84 rport 40006 generation 0
-        10:24:32,922  - DEBUG [0x7f67d75fe700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: gathering done, stream_id: 1
-        10:24:32,923  - INFO [0x7f67d75fe700] IceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: iceState transition, ice_config_.transport_name: video, iceState: initial, newIceState: cand_received, this: 0x7f67dc3d0f40
-        10:24:32,923  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message:IceState, transportName: video, state: 1, isBundle: 1
-        10:24:32,923  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  transportName: video, new_state: 2
-        10:24:32,923  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Getting Local Sdp
-        10:24:32,923  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: processing local sdp, transportName: video
-        10:24:32,923  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: processed local sdp, transportName: video, ufrag: H8o8, pass: 67avgI5/OfkIKXqB+8AwE/
-        10:24:32,923  - INFO [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  newGlobalState: 103
-        10:24:32,951  - DEBUG [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding remote Candidate, candidate: a=candidate:1198673846 1 udp 2122260223 169.254.18.32 64814 typ host generation 0 ufrag KDyD network-id 1, mid: video, sdpMLine: 0
-        10:24:32,952  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote candidates, candidateSize: 1, mediaType: 0
-        10:24:32,952  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: adding remote candidate, hostType: 0, hostAddress: 169.254.18.32, hostPort: 64814, priority: 2122260223, componentId: 1, ufrag: KDyD, pass: smTIKg0CrCALj6qGKfGvXZS9
-        10:24:32,959  - DEBUG [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding remote Candidate, candidate: a=candidate:1896747724 1 udp 2122194687 169.254.4.50 64815 typ host generation 0 ufrag KDyD network-id 2, mid: video, sdpMLine: 0
-        10:24:32,959  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote candidates, candidateSize: 1, mediaType: 0
-        10:24:32,959  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: adding remote candidate, hostType: 0, hostAddress: 169.254.4.50, hostPort: 64815, priority: 2122194687, componentId: 1, ufrag: KDyD, pass: smTIKg0CrCALj6qGKfGvXZS9
-        24:32,965  - DEBUG [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding remote Candidate, candidate: a=candidate:1527417831 1 udp 2122129151 10.200.111.59 64816 typ host generation 0 ufrag KDyD network-id 3, mid: video, sdpMLine: 0
-        10:24:32,966  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote candidates, candidateSize: 1, mediaType: 0
-        10:24:32,966  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: adding remote candidate, hostType: 0, hostAddress: 10.200.111.59, hostPort: 64816, priority: 2122129151, componentId: 1, ufrag: KDyD, pass: smTIKg0CrCALj6qGKfGvXZS9
-        10:24:32,974  - DEBUG [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding remote Candidate, candidate: a=candidate:166835014 1 tcp 1518280447 169.254.18.32 9 typ host tcptype active generation 0 ufrag KDyD network-id 1, mid: video, sdpMLine: 0
-        10:24:32,974  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote candidates, candidateSize: 0, mediaType: 0
-        10:24:32,979  - DEBUG [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding remote Candidate, candidate: a=candidate:1066266172 1 tcp 1518214911 169.254.4.50 9 typ host tcptype active generation 0 ufrag KDyD network-id 2, mid: video, sdpMLine: 0
-        10:24:32,979  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote candidates, candidateSize: 0, mediaType: 0
-        10:24:32,985  - DEBUG [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding remote Candidate, candidate: a=candidate:361330455 1 tcp 1518149375 10.200.111.59 9 typ host tcptype active generation 0 ufrag KDyD network-id 3, mid: video, sdpMLine: 0
-        10:24:32,985  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote candidates, candidateSize: 0, mediaType: 0
-        10:24:32,992  - DEBUG [0x7f67fd981800] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: Adding remote Candidate, candidate: a=candidate:3661794643 1 udp 1685921535 114.86.193.199 43544 typ srflx raddr 10.200.111.59 rport 64816 generation 0 ufrag KDyD network-id 3, mid: video, sdpMLine: 0
-        10:24:32,992  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: setting remote candidates, candidateSize: 1, mediaType: 0
-        10:24:32,992  - DEBUG [0x7f67fd981800] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: adding relay or srflx remote candidate, hostType: 1, hostAddress: 114.86.193.199, hostPort: 43544, rAddress: 10.200.111.59, rPort: 64816
-        10:24:33,680  - DEBUG [0x7f67d75fe700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: new ice component state, newState: 2, transportName: video, componentId 1, iceComponents: 1
-        10:24:33,680  - INFO [0x7f67d75fe700] IceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: iceState transition, ice_config_.transport_name: video, iceState: cand_received, newIceState: ready, this: 0x7f67dc3d0f40
-        10:24:33,680  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message:IceState, transportName: video, state: 2, isBundle: 1
-        10:24:33,680  - INFO [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: DTLSRTP Start, transportName: video
-        10:24:33,681  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: Sending DTLS message, transportName: video, componentId: 1
-        10:24:33,698  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: Received DTLS message, transportName: video, componentId: 1
-        10:24:33,701  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: Sending DTLS message, transportName: video, componentId: 1
-        10:24:33,719  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message: Received DTLS message, transportName: video, componentId: 1
-        10:24:33,720  - DEBUG [0x7f67ef9b1700] DtlsTransport - id: 582a4db011a1f3d566af950d12b73c96,  message:HandShakeCompleted, transportName:video, readyRtp:1, readyRtcp:1
-        10:24:33,720  - DEBUG [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  transportName: video, new_state: 3
-        10:24:33,720  - DEBUG [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: selected pair, local_addr: 10.200.20.84, local_port: 40006, local_type: host
-        10:24:33,720  - INFO [0x7f67ef9b1700] LibNiceConnection - id: 582a4db011a1f3d566af950d12b73c96,  message: selected pair, remote_addr: 10.200.111.59, remote_port: 64816, remote_type: host
-        10:24:33,720  - INFO [0x7f67ef9b1700] WebRtcConnection - id: 582a4db011a1f3d566af950d12b73c96,  newGlobalState: 104
->
->
 >       if (msg.offer) { // 监听并处理通过发信通道交付的远程提议
 >           pc = new RTCPeerConnection(ice);
 >           pc.setRemoteDescription(msg.offer);
@@ -228,8 +268,8 @@
 >           https://www.jianshu.com/p/4a15556c6318      turn协议的工作原理
 >           https://cloud.tencent.com/developer/article/1005490     浅析 P2P 穿越 NAT 的原理、技术、方法 ( 下 ）
 >           https://www.cnblogs.com/ishangs/p/3816689.html  STUN/TURN/ICE协议在P2P SIP中的应用（二）
->
->
+>           https://blog.csdn.net/netease_im/article/details/88876286   WebRTC 之ICE浅谈 ！！！
+>           https://www.cnblogs.com/mlgjb/p/8243690.html    P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解
 >
 >
 >
