@@ -79,6 +79,15 @@
 >       stap func_cpp.stp -g -d /home/pplive/work/test_stap/test_cpp/main --ldd -x 54945
 >
 
+- **打印变量的值：**
+>       1、先转换类型，在输出类型
+>           printf("type=%d\n", @cast($cand, "CandidateInfo")->hostType)
+>
+>
+>
+>
+>
+
 - **耗时统计直方图：**
 >       @hist_linear(v, start, stop, interval) # 打印start-stop区间interval间隔的直方图
 >       @hist_log(v)       # 打印以2为底指数分布的直方图
