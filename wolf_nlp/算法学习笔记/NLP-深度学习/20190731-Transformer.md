@@ -5,6 +5,9 @@
 >       Transformer应用领域：
 >           这个模型广泛应用于NLP领域，例如机器翻译，问答系统，文本摘要和语音识别等等方向
 >
+>       transform是目前效果最好的特征抽取器，本质是self attention叠加结构。！！！
+>
+>
 
 - **Transformer架构：**
 >       和Attention模型一样，Transformer模型中也采用了 encoer-decoder 架构。但其结构相比于Attention更加复杂，论文中encoder层由6个encoder堆叠在一起，decoder层也一样
