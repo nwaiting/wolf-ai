@@ -7,6 +7,7 @@
 >           valgrind（memwatch）
 >           GDB
 >           SystemTap
+>           perf
 >
 
 - **printf：**

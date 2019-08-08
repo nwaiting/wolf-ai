@@ -6,7 +6,7 @@
 >           如：stap -L 'process("/lib64/libc.so.6").function("malloc")'
 >               或者 stap -L 'kernel.statement("*@arch/x86/kernel/cpu/perf_event.c:824")'
 >
->       stap func_call.stp -d /home/pplive/work/test_stap/test_cpp/main --ldd -x 12345
+>       stap func_call.stp -d /home/pplive/work/test_stap/test_cpp/main --ldd -x 12345（如果是nginx有父子进程，则为子进程的进程pid）
 >
 >       statement定位到具体的line或者函数，将这些定位点作为跟踪点
 >           func@file:linenumber

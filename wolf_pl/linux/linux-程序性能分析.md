@@ -16,7 +16,9 @@
 >           但是给不出定量的数据，比如这个函数的耗时情况，它耗时1ms还是5ms
 >
 >
->
+
+- **perf：**
+>       可以查看进程中的性能消耗点，性能消耗排行
 >
 >
 >
@@ -43,6 +45,7 @@
 >       http://linux.51yip.com/search/perf  perf使用教程
 >       https://dupengair.github.io/2016/10/12/%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E6%B5%8B%E8%AF%95-%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E5%B7%A5%E5%85%B7%E7%AF%87-perf/     系统性能工具篇(perf)
 >       https://www.ibm.com/developerworks/cn/linux/l-cn-perf2/     Perf -- Linux下的系统性能调优工具
+>       http://rdc.hundsun.com/portal/article/637.html  如何用Perf解开服务器消耗的困境
 >
 >       Flame Graph：
 >       https://github.com/brendangregg/FlameGraph  Stack trace visualizer

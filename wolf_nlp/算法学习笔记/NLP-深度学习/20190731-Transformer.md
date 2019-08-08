@@ -58,9 +58,8 @@
 >           https://cupdish.com/2018/03/28/attention-is-all-you-need/#Decoder-%E9%83%A8%E5%88%86    Attention is all you need 论文阅读报告及代码详解
 >           https://blog.csdn.net/malefactor/article/details/78767781   深度学习中的注意力机制(2017版)
 >           http://shukebeta.me/NLP-attention-03-self-attention/    Transformer - 多头自注意力编码机制
->           https://lonepatient.top/2019/01/17/BERT-Transformer.html    Transformer原理和实现 ！！！
->
->
+>           https://lonepatient.top/2019/01/18/BERT-Transformer.html    Transformer原理和实现 ！！！
+>           http://fancyerii.github.io/2019/03/09/transformer-illustrated/  Transformer图解
 >
 >
 >

@@ -110,6 +110,22 @@
 >           2、USE-CANDIDATE：ICE提名时使用
 >           3、tie-breaker：在角色冲突时使用
 >
+
+- **stun流程：**
+>       STEP1：
+>           B向C的IPC1的port1端口发送一个UDP包
+>           把此UDP中的IP和自己的IP做比较
+>       STEP2：
+>           B向C的IPC1发送一个UDP包，请求C通过另外一个IPC2和PORT（不同与SETP1的IP1）向B返回一个UDP数据包
+>           如果B收到了这个数据包，说明NA就是STUN标准中的full cone NAT
+>       STEP3：
+>           B向C的IPC2的port2发送一个数据包，C收到数据包后，把它收到包的源IP和port写到UDP包中，然后通过自己的IPC2和port2把此包发还给B
+>           如果这个port和step1中的port一样，那么可以肯定这个NAT是个CONE NAT，否则是对称NAT
+>       STEP4：
+>           B向C的IP2的一个端口PD发送一个数据请求包，要求C用IP2和不同于PD的port返回一个数据包给B
+>           如果B收到了，那也就意味着只要IP相同，即使port不同，NAT也允许UDP包通过。显然这是restrict cone NAT
+>           如果没收到，没别的好说，port restrict NAT
+>
 >
 
 - **NAT类型：**
@@ -232,8 +248,15 @@
 >           7、用户B发送一条消息，这时用户A就可以接收到B的消息，而且网关B也增加了允许规则
 >           8、由于网关A与网关B都增加了允许规则，所以A与B都可以向对方的外网IP和端口号发送消息
 >
->
->
+
+- **Symmetric NAT和Cone NAT：**
+>       如果Client A中的某个进程（这个进程创建了一个UDP Socket,这个Socket绑定1234端口）想访问外网主机18.181.0.31的1235端口，
+>           Client A的原来那个Socket(绑定了1234端口的那个UDP Socket)又接着向另外一个Server S2发送了一个UDP包，那么这个UDP包在通过NAT时会怎么样呢？
+>       解析：
+>           1、Symmetric NAT：
+>               NAT再次创建一个Session，并且再次为这个Session分配一个端口号（比如：62001）
+>           2、Cone NAT：
+>               NAT再次创建一个Session，但是不会新分配一个端口号，而是用原来分配的端口号62000
 >
 
 - **交互流程：**
