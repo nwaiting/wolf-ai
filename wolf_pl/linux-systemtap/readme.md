@@ -113,7 +113,7 @@
 >       参考：https://jin-yang.github.io/post/linux-systemtap.html     Systemtap
 >           https://consen.github.io/2018/01/04/systemtap/  SystemTap（Cuckoo沙箱Linux检测引擎就使用了SystemTap）
 >           https://spacewander.gitbooks.io/systemtapbeginnersguide_zh/content/6_1_ParseAndSemanticErrors.html  systemtap详解
->
+>           http://epic-alfa.kavli.tudelft.nl/share/doc/systemtap-client-2.7/SystemTap_Beginners_Guide/errors.html      systemtap常见错误提示详解       
 >
 >
 >
