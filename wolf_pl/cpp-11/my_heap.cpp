@@ -7,6 +7,21 @@
 #include <vector>
 using namespace std;
 
+/*
+    STL heap包括：
+        缺省情况下priority_queue优先级队列是利用一个max-heap最大堆完成，后者是一个以vector表现的完全二叉树。“依权值高低自动递减排序”
+        priority_queue允许用户以任何次序将任何元素推入容器内，但取出时一定是从优先权最高(也即数值最高，最大堆)的元素开始取
+
+        push_heap算法：
+            新元素插入在底层的vector的end()处。向上回溯
+        pop_heap算法：
+            把堆顶元素和数值末尾元素调换，向下回溯
+        sort_heap算法：
+            持续对整个heap做pop_heap操作，每次将操作范围从后向前缩减一个元素。执行过后，原来的heap不再是个合法的heap了
+        meak_heap算法：
+            找出第一个需要重排的子树头部(n-2)/2，从当前位置向根节点回溯
+*/
+
 //std::priority_queue
 struct Node {
     int32_t a;
@@ -38,7 +53,7 @@ void func1()
     for (int i = 0; i < 10; i++) {
         heap1.push(make_pair(uni_int(dre), i));
     }
-    
+
     while (!heap1.empty()) {
         pair<int32_t,int32_t> tvalue = heap1.top();
         cout << tvalue.first << "-" << tvalue.second << endl;

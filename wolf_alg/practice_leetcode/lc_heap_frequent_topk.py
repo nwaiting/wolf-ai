@@ -7,6 +7,18 @@ def frequenttopk(d,k):
     new_list = sorted(total_list,key=lambda x:x[1],reverse=True)
     return new_list[:k]
 
+def topkfrequent(d,k):
+    counts = collections.Counter(d)
+    heap = []
+    for k,v in counts.items():
+        if len(heap) < k:
+            heappush(heap,(v,k))
+        else:
+            if heap[0][0] < v:
+                heappop(heap)
+                heappush(heap, (v,k))
+    return [x[1] for x in heap]
+
 
 if __name__ == '__main__':
     print(frequenttopk(1,3))
