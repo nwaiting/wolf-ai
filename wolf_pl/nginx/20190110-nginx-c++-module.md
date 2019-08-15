@@ -46,7 +46,9 @@
 >                        void                (*exit_master)(ngx_cycle_t *cycle);
 >
 >                   函数定义过程：
+>                       //实际完成处理的回调函数
 >                       static ngx_int_t ngx_http_newmodule_handler()
+>                       //配置项对应的回调函数
 >                       static char* ngx_http_newmodule()
 >                       static ngx_command_t ngx_http_newmodule_commands[] = {
 >                                   ngx_string("mymodule"),
@@ -160,15 +162,16 @@
 >               }
 >           }
 >       则在nginx中定义步骤：
->       1、
+>       1、定义rtmp_stat模块的指令和参数转化函数
 >           static ngx_command_t  ngx_rtmp_stat_commands[] = {
 >           ngx_string("rtmp_stat"),
 >           NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_1MORE,
 >           ngx_rtmp_stat, (执行的handler)
 >           ...
 >           }
+>           参数转化函数：ngx_rtmp_stat，内部定义具体的逻辑函数
 >
->       2、
+>       2、定义ngx_http_module_t类型的结构体变量，ngx_rtmp_stat_create_loc_conf和ngx_rtmp_stat_merge_loc_conf被nginx根据命名规则自动调用
 >           static ngx_http_module_t  ngx_rtmp_stat_module_ctx = {
 >               NULL,                               /* preconfiguration */
 >               ngx_rtmp_stat_postconfiguration,    /* postconfiguration */
@@ -177,7 +180,7 @@
 >               ngx_rtmp_stat_merge_loc_conf,       /* merge location configuration */
 >           }
 >
->       3、
+>       3、组合Nginx Module，完成了各种组件的开发然后就是将这些组合起来，一个模块被定义为一个ngx_module_t结构体
 >           ngx_module_t  ngx_rtmp_stat_module = {
 >                   NGX_MODULE_V1,
 >                   &ngx_rtmp_stat_module_ctx,          /* module context */

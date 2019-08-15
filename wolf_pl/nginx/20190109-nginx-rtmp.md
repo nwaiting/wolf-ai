@@ -214,7 +214,9 @@
 >       in ngx_master_process_cycle (cycle=cycle@entry=0x2314bd0) at src/os/unix/ngx_process_cycle.c:135
 >       in main (argc=<optimized out>, argv=<optimized out>) at src/core/nginx.c:381
 >
->
+
+- **接收数据异常分析：**
+>       用wireshark抓包可以看出有'TCP Window Full'的问题，经查造成此问题的原因就是播放器来不及接收数据
 >
 >
 
