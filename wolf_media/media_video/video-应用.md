@@ -20,8 +20,9 @@
 >       SpecialFFLV.exe
 >
 >
->
->
+>       分析在线视频：
+>           ./ffprobe -i http://10.200.20.54:8088/webm/f8c68397b41e0279187b11eba64b7782 -show_entries frame=media_type,pkt_pts,pkt_size,width,height,pict_type -of xml > st_audiopts.xml
+>           
 >
 >
 >
