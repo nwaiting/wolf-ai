@@ -293,6 +293,6 @@
 >           https://www.cnblogs.com/ishangs/p/3816689.html  STUN/TURN/ICE协议在P2P SIP中的应用（二）
 >           https://blog.csdn.net/netease_im/article/details/88876286   WebRTC 之ICE浅谈 ！！！
 >           https://www.cnblogs.com/mlgjb/p/8243690.html    P2P技术详解(三)：P2P技术之STUN、TURN、ICE详解
->
+>           https://www.cnblogs.com/limedia/p/licode_erizo_mediastream.html     licode学习之erizo篇--MediaStream
 >
 >
