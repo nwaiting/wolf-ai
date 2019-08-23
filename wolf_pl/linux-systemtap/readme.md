@@ -7,6 +7,14 @@
 >               或者 stap -L 'kernel.statement("*@arch/x86/kernel/cpu/perf_event.c:824")'
 >
 >       stap func_call.stp -d /home/pplive/work/test_stap/test_cpp/main --ldd -x 12345（如果是nginx有父子进程，则为子进程的进程pid）
+>       stap++ -x `ps -ef | grep nginx | grep worker | awk '{print $2}'` ./samples/sample-bt-leaks.sxx  -d /usr/local/nginx/nginx -D MAXSKIPPED=10000 -D STP_NO_OVERLOAD -D MAXMAPENTRIES=10240> sample-bt-leaks.sxx.log
+>       -DSTP_NO_OVERLOAD
+>           ERROR: probe overhead exceeded threshold
+>       -DMAXSKIPPED=102400
+>           ERROR: Skipped too many probes, check MAXSKIPPED or try again with stap -t for more details.
+>       -DMAXMAPENTRIES=1024000
+>           ERROR: Array overflow, check MAXMAPENTRIES near identifier....
+>
 >
 >       statement定位到具体的line或者函数，将这些定位点作为跟踪点
 >           func@file:linenumber
@@ -113,7 +121,7 @@
 >       参考：https://jin-yang.github.io/post/linux-systemtap.html     Systemtap
 >           https://consen.github.io/2018/01/04/systemtap/  SystemTap（Cuckoo沙箱Linux检测引擎就使用了SystemTap）
 >           https://spacewander.gitbooks.io/systemtapbeginnersguide_zh/content/6_1_ParseAndSemanticErrors.html  systemtap详解
->           http://epic-alfa.kavli.tudelft.nl/share/doc/systemtap-client-2.7/SystemTap_Beginners_Guide/errors.html      systemtap常见错误提示详解       
+>           http://epic-alfa.kavli.tudelft.nl/share/doc/systemtap-client-2.7/SystemTap_Beginners_Guide/errors.html      systemtap常见错误提示详解
 >
 >
 >
