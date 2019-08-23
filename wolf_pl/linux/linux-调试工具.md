@@ -8,6 +8,15 @@
 >           GDB
 >           SystemTap
 >           perf
+>           pstack
+>
+
+- **pstack：**
+>       pstack显示每个进程的栈跟踪：
+>           pstack 4551
+>
+>
+>
 >
 
 - **printf：**

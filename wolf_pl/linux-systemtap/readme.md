@@ -7,7 +7,10 @@
 >               或者 stap -L 'kernel.statement("*@arch/x86/kernel/cpu/perf_event.c:824")'
 >
 >       stap func_call.stp -d /home/pplive/work/test_stap/test_cpp/main --ldd -x 12345（如果是nginx有父子进程，则为子进程的进程pid）
->       stap++ -x `ps -ef | grep nginx | grep worker | awk '{print $2}'` ./samples/sample-bt-leaks.sxx  -d /usr/local/nginx/nginx -D MAXSKIPPED=10000 -D STP_NO_OVERLOAD -D MAXMAPENTRIES=10240> sample-bt-leaks.sxx.log
+>       stap++ -x `ps -ef | grep nginx | grep worker | awk '{print $2}'` ./samples/sample-bt-leaks.sxx  -d /usr/local/nginx/nginx -D MAXSKIPPED=10000 -D STP_NO_OVERLOAD -D DEBUG_UNWINDD MAXMAPENTRIES=10240> sample-bt-leaks.sxx.log
+> 
+>       stap -x `ps -ef | grep nginx | grep worker | awk '{print $2}'` sample-func-ngx_http_rtp_av.sxx  -d /usr/local/nginx/nginx -D MAXSKIPPED=10000 -D STP_NO_OVERLOAD -D DEBUG_UNWINDD MAXMAPENTRIES=10240 > sample-func-ngx_http_rtp_av.sxx.log
+>
 >       -DSTP_NO_OVERLOAD
 >           ERROR: probe overhead exceeded threshold
 >       -DMAXSKIPPED=102400
