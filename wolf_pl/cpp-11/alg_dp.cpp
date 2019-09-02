@@ -213,6 +213,11 @@ public:
     }
 };
 
+char charp[32] = "abc";
+const char* testp()
+{
+    return charp;
+}
 
 
 int main()
@@ -239,6 +244,7 @@ int main()
 
     */
 
+    /*
     std::vector<std::vector<int>> datas{ { 9 ,0}, { 12, 15 }, { 10, 6, 8 }, { 2, 18, 9, 5 }, { 19, 7, 10, 4, 16 } };
     std::cout << "======= " << Solution().minimumTotal(datas) << std::endl;
 
@@ -249,6 +255,7 @@ int main()
         std::cout << it << " ";
     }
     std::cout <<"========"<< std::endl;
+    */
 
     /*
     const_graph(gnodes);    std::vector<char> p;    find_path('A', p);
@@ -285,6 +292,7 @@ int main()
 
     longCommonString("ABCBDAB", "BDCABA");
     */
+
 	std::cin.get();
 	return 0;
 }
