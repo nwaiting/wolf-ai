@@ -11,7 +11,7 @@ class Node(object):
 
 def show(node):
     while node:
-        print(node.data_, end=' ')
+        print(node.data_,)
         node = node.next_
     print()
 
