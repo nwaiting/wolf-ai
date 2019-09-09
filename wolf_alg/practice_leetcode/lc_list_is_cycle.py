@@ -26,23 +26,42 @@ def detectCycle(head):
             return 1
     return 0
 
+def detect_cycle(node):
+    if not node:
+        return False
+    p1 = p2 = node
+    while p2 and p2.next_:
+        p1 = p1.next_
+        p2 = p2.next_.next_
+        if p1 == p2:
+            return True
+    return False
 
 def findCycleHead(head):
-    pass
-
-
-
-
-
-
-
-
-
-
+    if not head:
+        return None
+    p1 = p2 = head
+    flag = False
+    while p2 and p2.next_:
+        p1 = p1.next_
+        p2 = p2.next_.next_
+        if p1 == p2:
+            flag = True
+            break
+    if flag:
+        p3 = head
+        p4 = p1
+        while p3 and p4:
+            if p3== p4:
+                return p3
+            p3 = p3.next_
+            p4 = p4.next_
+    return None
 
 
 if __name__ == '__main__':
-    node = Node(1,Node(2,Node(3,Node(4))))
-    node2 = node.next_
-    node.next_.next_.next_.next_ = node2
+    node = Node(1,Node(2,Node(3,Node(4,Node(5,Node(6,Node(7)))))))
+    node2 = node.next_.next_.next_
+    node.next_.next_.next_.next_.next_.next_.next_ = node2
     print(detectCycle(node))
+    print(findCycleHead(node).data_)
