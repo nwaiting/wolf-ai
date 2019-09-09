@@ -77,6 +77,8 @@
 >               kernel-debuginfo
 >               kernel-debuginfo-common
 >               kernel-devel
+>               glibc-debuginfo-
+>               glibc-debuginfo-common-
 >           注意：不要直接yum install kernel-debuginfo kernel-debuginfo-common kernel-devel, 即使能找到相应的包，也是安装的最新版本，不会自动匹配当前版本。
 >               所以下载RPM包，再用rpm命令依次安装
 >
@@ -117,6 +119,26 @@
 >               # 清空数据
 >               delete sends
 >           }
+>
+>
+
+- **常见问题：**
+>       1、semantic error: type definition 'size_t' not found in '/lib64/libc-2.12.so': operator '@cast' at
+>       解决方法：
+>           debuginfo-install glibc-2.12 安装glibc
+>           此步骤会安装：
+>               1、glibc-debuginfo-
+>               2、glibc-debuginfo-common-
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
 >
 
 
