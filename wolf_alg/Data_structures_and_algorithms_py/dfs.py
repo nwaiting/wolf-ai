@@ -8,6 +8,16 @@ def dfs(row):
             dfs(clon)
             stack_list.pop()
 
+visited_set = set()
+def dfs(node):
+    if not node:
+        return
+    visited_set.add(node)
+    for i in node:
+        if i not in visited_set:
+            dfs(i)
+
+
 void DFS(int root,Node* nodes){// 深度优先遍历
     stack<int> s;
     s.push(root);
