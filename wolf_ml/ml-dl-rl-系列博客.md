@@ -42,7 +42,11 @@
 - **强化学习应用：**
 >       https://tech.meituan.com/2018/11/15/reinforcement-learning-in-mt-recommend-system.html      强化学习在美团“猜你喜欢”的实践
 >
->
+
+- **视频课程：**
+>       https://www.bilibili.com/video/av12802062/?p=1      徐亦达机器学习课程（比较深入讲解）
+>       https://www.bilibili.com/video/av41541089?from=search&seid=1079160256759770193      (上海交通大学张志华)【机器学习导论】全套教程（比较基础）
+>       https://www.bilibili.com/video/av48285039/?p=1      【李宏毅 深度学习19（完整版）国语】机器学习 深度学习（深度学习）
 >
 >
 >
