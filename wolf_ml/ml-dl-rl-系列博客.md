@@ -49,6 +49,16 @@
 >       https://www.bilibili.com/video/av48285039/?p=1      【李宏毅 深度学习19（完整版）国语】机器学习 深度学习（深度学习）
 >
 >
+
+- **汇总资料：**
+>       https://mp.weixin.qq.com/s/tkVWxcoD4MNbfe4PE8-wOw   人工智能干货推荐[第122期][02MLDL][机器学习总结笔记：基本概念、算法、常见模型]
+>
+>
+>
+>
+>
+>
+>
 >
 >
 
