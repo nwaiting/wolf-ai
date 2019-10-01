@@ -1,6 +1,6 @@
 
 Thank you for giving me this opportunity for this (phone) interview.
-Thank you for taking your time. It’s really my honor to have this opportunity to take part in this interview.
+
 
 Good afternoon. Thank you for taking your time and giving me this opportunity for this (phone) interview. Now, I would like to introduce myself briefly.|
 I graduated from Hubei University of Economic in 2012. My major is Electronic information。
@@ -10,15 +10,26 @@ My main task is to develop and manage services.
 
 and my second job is at Shanghai 2345 Network Technology,joining in 2015.
 
-In the past 3 years I have been studying，Now I have acquired basic knowledge of machine learning and gained some experience with my previous work and my side project.
+#########################################
+Thank you for taking your time. It’s really my honor to have this opportunity to take part in this interview.
 
+I graduated from Hubei University Of Economics in 2012, majoring in Electronic and Information Engineering.
 
+I worked in 51.com as background development for my first job. The main business of company was the web page space. We used some distribution for the background to deal with the problem of huge number of users. My main duty was to develop and maintain the background services,later i did a game background project by using c++, python, Linux platform
 
+My second job was in Shanghai 2345 Network Holding Group Co., Ltd..I was mainly responsible for two projects:
+1. The first project was Cloud Input. It was mainly to develop and maintain the language model, and construct the cloud input background framework, which used Scrapy and Gearman open source framework
+2. The second project was to classify the dynamic malicious samples of Security, which mainly used the kmeans clustering algorithm of machine learning. By analyzing the dynamic behavior of samples in the sandbox, behavioral data of samples was obtained, and then it was processed in advance into date that can be trained, and parameters was obtained through training, and finally classified.
 
+My third job was in Suning Shanghai Data Cloud Co.,LTD
+1. When I just joined the company, I was responsible for the data processing and data mining. At that time, Xgboost was used to analyze the decreasing factors of p2p bandwidth saving ratio. The main purpose was to obtain the weight of feature parameters through training, and to obtain the main decreasing factors of p2p finally
+2. Then I was responsible for some other projects, such as building a distributed CDN system in a bid to provide services for live show, using SRS and Python built a system with the deployment of multi-machine and multi-center , and maintaining some web background services
 
+In the past 3 years I have learned a lot about machine learning，Now I have acquired comprehensive knowledge of machine learning and gained some experience with my previous work and my own training program.
 
-
-
+It is a brief introduction to my work experience
+Thanks
+###########################################
 
 
 Good morning , ladies and gentlemen</p><p>　　It is my great honor to have this opportunity to introduce myself. and I hope I could make a good performance today, eventually become a member of your school. Now let me introduce myself please. I'm a graduate student from **** UNIVERSITY . My name is *** ,**years old. , born in **. GuangDong province . My major is English, and I will graduate this June.</p><p>　　In the past 3 years,I spent most of my time on English studying and practise. I have a good command of both spoken and written English and past CET-4 with a ease. Skilled in use of Office 2007, excel. My graduate school training combined with my cadet teacher should qualify me for this particular job.</p><p>　　Although perhaps I'm not the best among the candidates, but with my strong knowledge background and full enthusiasm for education, I am sure I will satisfy you well.</p><p>　　As a college student, I concentrated on studying modern teaching technology. I have acquired enough essential and fundamental knowledge of English teaching in the past three years. Since September 2009, with great interest, I have been doing student cadre for almost each semester and formed good team-work spirits. It also kindly provided me crucial guidance to analyze interpersonal relationship. My teachers and classmates describe me as a reliable and considerate person. Other than my major study, I have master a great skills in computer operation.</p><p>　　One month as cadet teacher in the March of 2011, not only did i obtain enough first hand experience in my field but also gradually realized that the career I have chosen is sacred and significant. Therefore, I am determined to become a diligent, hardworking, and responsible educator.</p><p>　　Last but not least, I will be fully committed and I am confident to work efficiently and meticulously under pressure as a competent team member. I welcome the opportunity to speak with senior management further regarding my qualifications for the position.</p><p>　　Thank you for your attention!
