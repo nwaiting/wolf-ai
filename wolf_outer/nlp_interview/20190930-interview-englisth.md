@@ -1,7 +1,7 @@
 #########################################
 Good afternoon, Thank you for taking your time. It’s really my honor to have this opportunity to take part in this interview. Now, I would like to introduce myself briefly.
 
-I graduated from Hubei University Of Economics in 2012, majored in Electronic and Information Engineering.
+I graduated from Hubei University Of Economics in 2012, majored in Electronic Information Engineering.
 
 my first was at 51.com ,mainly for backstage development. The company's main business is web space. We used some distribution for the background to deal with the problem of huge number of users. My main work  was to develop and maintain the backstage services. After that i also did a game backstage project,mainly using c++, python, Linux platform.
 
