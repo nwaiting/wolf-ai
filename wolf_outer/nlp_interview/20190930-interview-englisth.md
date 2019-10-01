@@ -3,17 +3,17 @@ Good afternoon, Thank you for taking your time. It’s really my honor to have t
 
 I graduated from Hubei University Of Economics in 2012, majored in Electronic Information Engineering.
 
-my first was at 51.com ,mainly for backstage development. The company's main business is web space. We used some distribution for the background to deal with the problem of huge number of users. My main work  was to develop and maintain the backstage services. After that i also did a game backstage project,mainly using c++, python, Linux platform.
+my first job was at 51.com, mainly for backstage development. The company's main business is web space. We used some distribution for the background to deal with the problem of huge number of users. My main work  was to develop and maintain the backstage services. After that i also did a game backstage project,mainly using c++, python, Linux platform.
 
-My second job was at  2345 Technology Co., Ltd., Shanghai.I was mainly responsible for two projects:
-1. The first project was Cloud Input. It was mainly to develop and maintain the language model, and construct the cloud input background framework, which used Scrapy and Gearman open source framework.
-2. The second project was to classify the dynamic malicious samples of Security, which mainly used the kmeans clustering algorithm of machine learning. By analyzing the dynamic behavior of samples in the sandbox, the behavioral data of samples was obtained, and then it was processed in advance into date that can be trained, and parameters was obtained through training, and finally classified.
+My second job was at 2345 Technology Company.I was mainly responsible for two projects:
+1. The first project was Cloud Input. It was mainly to develop and maintain the language model with scrapy, and build the cloud input background framework, which used Gearman open source framework.
+2. The second project was to classify the dynamic malicious samples of Security, which mainly used the kmeans clustering algorithm of machine learning. By analyzing the dynamic behavior of samples in the sandbox, the behavioral data of samples was obtained, and then it was processed in advance into data that can be trained, and parameters was obtained through training, and finally classified.
 
 My third job is at Suning Shanghai Data Cloud Company.
 1. When I just joined the company, I was responsible for the data processing and data mining. At that time, Xgboost was used to analyze the decreasing factors of p2p bandwidth saving ratio. The main purpose was to obtain the weight of feature parameters through training, and to obtain the main decreasing factors of p2p finally
-2. After that, then I was responsible for some other projects, such as building a distributed CDN system, mainly provide services for live show, using SRS and Python built a system with the deployment of multi-machine and multi-center , and maintaining some web back-end services.
+2. After that, then I was responsible for some other projects, such as building a distributed CDN system, mainly provide services for live show. Built the system by using SRS open source and python, used multi-machine, multi-center deployment architecture and maintained some web background services.
 
-In the past 3 years I have learned a lot about machine learning，Now I have acquired comprehensive knowledge of machine learning and gained some experience with my previous work and my own training program.
+In the past 3 years, I have learned a lot about machine learning，Now I have acquired comprehensive knowledge of machine learning and gained some experience with my previous work and my own training program.
 
 It is a brief introduction to my work experience.Thanks.
 ###########################################
