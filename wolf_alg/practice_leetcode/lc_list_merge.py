@@ -8,7 +8,7 @@ class Node(object):
 
 def show(l):
     while l:
-        print l.data_,
+        print(l.data_,end=' ')
         l = l.next_
     print('')
 
@@ -43,10 +43,31 @@ def merge_list(l1,l2):
         head_next.next_ = p2
     return head
 
+def merge_list2(l1,l2):
+    if not l1:
+        return l2
+    if not l2:
+        return l1
+    head = Node()
+    p1 = head
+    while l1 and l2:
+        if l1.data_ < l2.data_:
+            p1.next_ = l1
+            l1 = l1.next_
+        else:
+            p1.next_ = l2
+            l2 = l2.next_
+        p1 = p1.next_
+    if l1:
+        p1.next_ = l1
+    if l2:
+        p1.next_ = l2
+    return head.next_
+
 
 
 if __name__=="__main__":
     ll1 = Node(1,Node(3,Node(5,Node(7))))
     ll2 = Node(2,Node(4,Node(6,Node(8,Node(10)))))
-    res = merge_list(ll1,ll2)
+    res = merge_list2(ll1,ll2)
     show(res)
