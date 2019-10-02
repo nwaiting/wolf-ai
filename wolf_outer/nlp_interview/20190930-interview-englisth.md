@@ -5,7 +5,7 @@ I graduated from Hubei University Of Economics in 2012, majored in Electronic In
 
 my first job was at 51.com, mainly for backstage development. The company's main business is web space. We used some distribution for the background to deal with the problem of huge number of users. My main work  was to develop and maintain the backstage services. After that i also did a game backstage project,mainly using c++, python, Linux platform.
 
-My second job was at 2345 Technology Company.I was mainly responsible for two projects:
+My second job was at 2345 Technology Company, mainly for two projects:
 1. The first project was Cloud Input. It was mainly to develop and maintain the language model with scrapy, and build the cloud input background framework, which used Gearman open source framework.
 2. The second project was to classify the dynamic malicious samples of Security, which mainly used the kmeans clustering algorithm of machine learning. By analyzing the dynamic behavior of samples in the sandbox, the behavioral data of samples was obtained, and then it was processed in advance into data that can be trained, and parameters was obtained through training, and finally classified.
 
