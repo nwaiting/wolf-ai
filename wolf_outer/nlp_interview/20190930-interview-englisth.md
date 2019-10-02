@@ -9,13 +9,17 @@ my first job was at 51.com, mainly for backstage development. The company's main
 My second job was at 2345 Technology Company, mainly for two projects:
 1. The first project was Cloud Input. It was mainly to develop and maintain the language model with scrapy, and build the cloud input background framework, which used Gearman open source framework.
 第一个云输入项目，主要是做语言模型的开发和维护，云输入后台框架的搭建，使用了scrapy、gearman开源的框架搭建
-2. The second project was to classify the dynamic malicious samples of Security, which mainly used the kmeans clustering algorithm of machine learning. By analyzing the dynamic behavior of samples in the sandbox, the behavioral data of samples was obtained, and then it was processed in advance into data that can be trained, and parameters was obtained through training, and finally classified.
+2. The second project was to classify the dynamic malicious samples of Security, which mainly used the kmeans clustering algorithm of machine learning.
+	By analyzing the dynamic behavior of samples in the sandbox, the behavioral data of samples was obtained, and then it was processed in advance into data that can be trained, and parameters was obtained through training, and finally classified.
 第二个是安全卫士的动态恶意样本分类，主要使用了机器学习的kmeans聚类算法，通过对样本在沙箱里面的动态行为分析，得到样本的行为数据，然后预处理为可以训练的数据，通过训练得到参数，最后进行分类
 
 My third job is at Suning Shanghai Data Cloud Company.
-1. When I just joined the company, I was responsible for the data processing and data mining. At that time, Xgboost was used to analyze the decreasing factors of p2p bandwidth saving ratio. The main purpose was to obtain the weight of feature parameters through training, and to obtain the main decreasing factors of p2p finally
+1. When I just joined the company, I was responsible for the data processing and data mining.
+	At that time, Xgboost was used to analyze the decreasing factors of p2p bandwidth saving ratio.
+	The main purpose was to obtain the weight of feature parameters through training, and to obtain the main decreasing factors of p2p finally
 刚进公司做了一些数据处理的工作、数据挖掘的工作，当时使用xgboost分析了p2p带宽节约比下降的因素，主要是通过训练得到特征参数的权重，最后得到p2p下降的主要因素。
-2. After that, then I was responsible for some other projects, such as building a distributed CDN system, mainly provide services for live show. Built the system by using SRS open source and python, used multi-machine, multi-center deployment architecture and maintained some web background services.
+2. After that, then I was responsible for some other projects, such as building a distributed CDN system, mainly provide services for live show.
+	Built the system by using SRS open source and python, used multi-machine, multi-center deployment architecture and maintained some web background services.
 然后做了一些其他的项目，比如搭建了一个分布式cdn的系统，主要是提供直播服务。使用srs和python搭建的一个系统，使用多机器多中心的部署架构，以及维护了一些web的后台服务。
 
 In the past 3 years, I have learned a lot about machine learning，Now I have acquired comprehensive knowledge of machine learning and gained some experience with my previous work and my own training program.
