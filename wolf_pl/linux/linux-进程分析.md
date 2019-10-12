@@ -24,10 +24,21 @@
 >       getrusage：
 >           虽然对于定位问题帮助不大，但是可以用以守护进程监控管理业务进程的内存使用情况。
 >
+
+- **gperftools内存泄漏分析：**
+>       # 用动态载入tcmalloc的方式执行你自己的可执行程序(加-g编译选项)。
+>       # 下面三个参数的意思是检查堆内存，每当累计分配内存(无论是否释放)达到100MB时，将当前堆内存快照输出到memtm.xxxx.heap的文件中
+>       LD_PRELOAD=libtcmalloc.so HEAPCHECK=strict HEAPPROFILE=memtm HEAP_PROFILE_ALLOCATION_INTERVAL=100000000 ./exefile
+>       # 之后持续运行一段时间，如果是服务进程，需要压测一段时间，假设压测到稳定阶段的内存快照文件是memtm.0005.heap
+>       # 继续压测一段时间，直到确认内存已经开始非正常增加，停止，假设最后的内存快照文件是memtm.0010.heap.
+>       # 然后利用gperftools通过对比这两个快照文件，分析diff部分是否有内存增长，增长主要来自于哪些函数调用
+>       # (分析结果中有每个函数对应分配的增长内存总量和占比，顺藤摸瓜可以基本定位是哪部分内存分配后未及时释放)。
+>       # 之所以不使用memtm.0001.heap作为对比base，是因为对于一些程序，初期会显示或者隐式的使用一些缓存，这部分也会导致一定的内存增长。
+>       # 等到进入稳定阶段后，这些缓存基本达到稳定状态，不再增长了。这时再对比可以去掉正常缓存的干扰。
+>       pprof --pdf --base=memtm.0005.heap ./exefile memtm.0010.heap > diff.pdf
 >
->
->
->
+>       比较两个内存镜像增长的内存来自哪里：
+>       ./pprof --pdf --base=/tmp/mem_tcmalloc_nginx.0016.heap /root/download/usr/local/nginx/nginx /tmp/mem_tcmalloc_nginx.0017.heap > mem_tcmalloc_nginx.0017.diff.0016.heap.pdf
 >
 >
 >
@@ -37,7 +48,7 @@
 
 - **待续：**
 >       参考：https://www.jianshu.com/p/6854085d54cd   利用Valgrind和gperftools解决内存问题
->
+>           https://www.jianshu.com/p/3104a74c4389  C++内存泄漏检查
 >
 >
 >

@@ -50,7 +50,7 @@
 >       Flame Graph：
 >       https://github.com/brendangregg/FlameGraph  Stack trace visualizer
 >
->
+>       http://qiaoyong.lofter.com/post/2b36f_1140c82   gperftools使用详解（）
 >
 >
 >
