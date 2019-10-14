@@ -53,7 +53,7 @@
 >               memstat是一个有效识别executable(s), process(es) and shared libraries使用虚拟内存情况的命令。给定一个进程ID，memstat可以列出这个进程相关的可执行文件、数据和共享库
 >           5、nmon
 >               nmon是一个基于ncurses的系统基准测试工具，它可以监控CPU、内存、I/O、文件系统及网络资源等的互动模式。对于内存的使用，它可以实时的显示 总/剩余内存、交换空间等信息
->
+>               /nmon/nmon_x86_rhel6 -f -N -m /nmon -s 60 -c 1440 -y
 >
 >
 >
