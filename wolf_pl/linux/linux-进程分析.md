@@ -40,8 +40,10 @@
 >       比较两个内存镜像增长的内存来自哪里：
 >       ./pprof --pdf --base=/tmp/mem_tcmalloc_nginx.0016.heap /root/download/usr/local/nginx/nginx /tmp/mem_tcmalloc_nginx.0017.heap > mem_tcmalloc_nginx.0017.diff.0016.heap.pdf
 >
->
->
+>       启动进程：
+>           LD_PRELOAD：需要load libtcmalloc.so动态库，
+>           HEAP_PROFILE_ALLOCATION_INTERVAL为申请的内存总量超过100M则dump一次内存
+>           LD_PRELOAD="/root/download/gperftools/libtcmalloc.so" HEAPCHECK=normal HEAPPROFILE=mem_tcmalloc_nginx HEAP_PROFILE_ALLOCATION_INTERVAL=100000000 /root/download/usr/local/nginx/nginx -c /root/download/usr/local/nginx/conf/nginx.conf
 >
 >
 >
