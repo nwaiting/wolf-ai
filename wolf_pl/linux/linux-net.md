@@ -84,8 +84,13 @@
 >           它提供两类套接字，字节流套接字（有点像TCP）和数据报套接字（有点像UDP），分别类似于TCP和UDP
 >           UNIX域数据报服务是可靠的，不会丢失消息，也不会传递出错
 >
->
->
+
+- **tcpdump抓包：**
+>       抓取主机 172.18.82.173 上所有收到（DST_IP）和发出（SRC_IP）的所有数据包：
+>           tcpdump host 172.18.82.173
+>           tcpdump -i any      # any 表示所有的网络接口
+>       指定网卡抓包：
+>           tcpdump udp -i eth0 -s 65535 -w handshake.pcap
 >
 >
 >
@@ -95,7 +100,7 @@
 - **待续：**
 >       参考：https://www.zhihu.com/question/19732473  怎样理解阻塞非阻塞与同步异步的区别？
 >           https://blog.csdn.net/lengxiao1993/article/details/78154467     同步/异步，阻塞/非阻塞概念深度解析
->
+>           https://www.cnblogs.com/bakari/p/10748721.html      Linux 网络命令必知必会之 tcpdump，一份完整的抓包指南请查收！
 >
 >
 >
