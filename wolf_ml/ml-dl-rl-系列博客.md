@@ -14,6 +14,8 @@
 >       AI算法：
 >           https://easyai.tech/ai-definition/q-learning/
 >
+>       机器学习文章（白板推导）
+>           https://www.yuque.com/liwenju/kadtqt/caf1g3
 >
 
 - **强化学习：**
