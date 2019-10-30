@@ -14,6 +14,9 @@
 - **zabbix_sender主动上报：**
 >       zabbix_sender命令支持主动上报数据，web服务端添加对应机器和采集器即可
 >       客户端主动调用上传的命令：
+>           my_ip="10.1.2.100"
+>           zabbix_server="192.168.1.1"
+>           zabbix_sender="/usr/local/service/zabbix/bin/zabbix_sender"
 >           os.system("%s -z %s -s %s -k %s -o %s -vv" % (zabbix_sender,zabbix_server,my_ip,'liuyan',mysql_data))
 >
 >
