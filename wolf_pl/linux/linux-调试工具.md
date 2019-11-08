@@ -19,8 +19,22 @@
 >
 >
 
-- **printf：**
->       打印信息
+- **strace、ltrace、ptrace、dtrace区别：**
+>       ltrace和strace都是使用ptrace系统调用跟踪调试运行中的进程
+>
+>       strace：(Trace system calls and signals)
+>           跟踪统计后台进程的堆栈、系统调用等
+>           strace只能跟踪系统调用，普通函数无法trace
+>           1、对多个进程追踪：
+>               如服务器上同时开启几个子进程的时候，比如 nginx
+>               strace $(pidof nginx | sed 's/\([0-9]*\)/-p \1/g')
+>           2、多个命令联合使用
+>               命令lsof -p 3125查看进程3125打开了哪些文件，用strace跟踪lsof的运行
+>               strace -o lsof.strace lsof -p 3125
+>
+>       ltrace：(A library call tracer)
+>           跟踪进程调用库函数的情况
+>
 >
 >
 
@@ -69,7 +83,9 @@
 >       5、systemtap 是利用Kprobe 提供的API来实现动态地监控和跟踪运行中的Linux内核的工具，相比Kprobe，systemtap更加简单，
 >           提供给用户简单的命令行接口，以及编写内核指令的脚本语言。对于开发人员，systemtap是一款难得的工具
 >
->
+
+- **生成core文件：**
+>        generate-core-file 主动生成core文件
 >
 >
 >
