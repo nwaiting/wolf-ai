@@ -54,7 +54,8 @@
 >           lscpu
 >       10、时间剖析
 >           perf
->           strace
+>           strace      #追踪进程的堆栈
+>               比如：strace -p $(pgrep app)
 >
 >       注：
 >           1、pidstat 中的 %wait 跟 top 中的 iowait% 有什么不同？
