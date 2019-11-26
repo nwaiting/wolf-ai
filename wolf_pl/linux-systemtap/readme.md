@@ -53,6 +53,7 @@
 >
 
 - **systemtap安装：**
+>       https://sourceware.org/     systemtap下载
 >       https://www.cnblogs.com/wipan/p/9333623.html    systemtap安装
 >       https://segmentfault.com/a/1190000000671438     SystemTap 学习笔记 - 安装篇
 >       https://www.cnblogs.com/the-tops/p/5715854.html     debuginfo-install安装
@@ -60,6 +61,7 @@
 >           http://www.rpm-find.net/linux/rpm2html/search.php?query=kernel-devel
 >           https://oss.oracle.com/el6/debuginfo/
 >           http://vault.centos.org/6.2/os/x86_64/Packages
+>
 >
 >       Systemtap looks for the debug info in these locations
 >           /boot/vmlinux-`uname -r`

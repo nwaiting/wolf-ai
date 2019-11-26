@@ -5,6 +5,27 @@
 >
 >
 >
+
+- **推荐内容：**
+>       系统分析和研究比较深入的推荐文章或者博客：
+>       1、阿里核心系统团队博客
+>           http://csrd.ruoguschool.com/tag=systemtap/
+>           http://blog.yufeng.info/archives/2033   
+>       2、个人博客
+>           https://bean-li.github.io/tags/#linux
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
 >
 >
 >
