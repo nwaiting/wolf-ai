@@ -1,7 +1,7 @@
 ### elasticsearch
 - **概述：**
->       
->       
+>
+>
 >
 >
 >
@@ -21,7 +21,7 @@
 >           https://blog.csdn.net/m_z_g_y/article/details/82628972      ElasticSearch入门：常用查询方法（python）
 >           https://www.cnblogs.com/shaosks/p/7592229.html      Python 操作 ElasticSearch
 >           https://www.jb51.net/article/156935.htm     Python-ElasticSearch搜索查询的讲解
->
+>           https://blog.csdn.net/qq_15260769/article/details/87918578      ElasticSearch查询方法（python）
 >
 >
 >
@@ -39,7 +39,7 @@
 >           https://blog.csdn.net/dm_vincent/article/details/41820537
 >           https://blog.csdn.net/m_z_g_y/article/details/82628972      ElasticSearch入门：常用查询方法（python）
 >           https://www.jianshu.com/p/56cfc972d372    Flask 教程 第十六章：全文搜索
->                  
+>
 >
 >
 >
