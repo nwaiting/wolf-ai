@@ -39,7 +39,7 @@
 >           https://blog.csdn.net/dm_vincent/article/details/41820537
 >           https://blog.csdn.net/m_z_g_y/article/details/82628972      ElasticSearch入门：常用查询方法（python）
 >           https://www.jianshu.com/p/56cfc972d372    Flask 教程 第十六章：全文搜索
->
+>           https://blog.csdn.net/weixin_43031412/article/details/100011282     Elasticsearch 搜索API
 >
 >
 >

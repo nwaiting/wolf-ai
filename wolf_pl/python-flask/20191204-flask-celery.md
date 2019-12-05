@@ -1,7 +1,7 @@
 ### flask - celery
 - **概述：**
 >
->
+>       celery是一个独立异步框架，可以单独使用，也可以集成在flask等web框架中使用
 >
 >
 >
@@ -41,7 +41,11 @@
 >       redis://localhost:6379/0
 >       URL 的所有配置都可以自定义配置的，默认使用的是 localhost 的 6379 端口中 0 数据库
 >
->
+
+- **查询所有任务：**
+>       如果使用redis作为任务队列中间人，在redis中存在两个键 celery 和 _kombu.binding.celery ，
+>           1、_kombu.binding.celery 表示有一名为 celery 的任务队列（Celery 默认），
+>           2、celery为默认队列中的任务列表，使用list类型，可以看看添加进去的任务数据
 >
 >
 >
@@ -62,7 +66,7 @@
 >
 >           https://github.com/paicha/gxgk-wechat-server    校园微信公众号，使用 Python、Flask、Redis、MySQL、Celery
 >
->
+>           http://einverne.github.io/post/2018/05/flask-celery-import-error.html   Flask 使用 Celery 避免循环引用
 >
 >
 >
