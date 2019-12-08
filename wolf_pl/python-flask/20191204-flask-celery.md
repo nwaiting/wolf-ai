@@ -4,6 +4,22 @@
 >       celery是一个独立异步框架，可以单独使用，也可以集成在flask等web框架中使用
 >
 >
+
+- **常见问题：**
+>       1、strategy = strategies[type_]
+>           KeyError: None
+>           https://www.cnblogs.com/pyspark/p/8733398.html
+>           要解决这个问题，必须为celery配置文件添加import参数 app.config['imports'] = ['tasks.messageTasks']
+>       2、celery.register_task(statistic_task)
+>           注册Celery基于类的任务
+>
+>
+>
+>
+>
+>
+>
+>
 >
 
 - **celery启动后台流程：**
@@ -31,6 +47,9 @@
 >       celery -A tasks worker --loglevel=info
 >           -A 是指对应的应用程序, 其参数是项目中 Celery实例的位置，也即 celery_app = Celery()的位置
 >           worker 是指这里要启动其中的worker，此时，就启动了一个worker
+>
+>       celery -A your_application worker
+>       your_application 字符串需要指向创建 celery 对象的应用所在包或模块
 >
 >       注意：
 >           启动目录不对的话，会有问题
@@ -68,7 +87,7 @@
 >
 >           http://einverne.github.io/post/2018/05/flask-celery-import-error.html   Flask 使用 Celery 避免循环引用
 >
->
+>           https://www.pyfdtic.com/2018/03/16/python-celery-%E4%BB%BB%E5%8A%A1%E9%98%9F%E5%88%97/  python celery 任务队列
 >
 >
 >
