@@ -1,0 +1,1 @@
+pipreqs #自动查找程序中使用了哪些模块，然后生成requirements.txt文件
