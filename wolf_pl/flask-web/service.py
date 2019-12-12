@@ -64,6 +64,10 @@ def taskstatus(task_id):
     
 
 if __name__ == "__main__":
+    import time
+    import os
+    print(os.path.join("/boost", time.strftime("%Y%m%d", time.localtime()), 'a'))
+
     data = "send mail data"
     print("send_async_email send begin, data = ", data)
     send_async_email.delay(data)

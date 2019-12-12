@@ -23,10 +23,17 @@
 >           https://www.jb51.net/article/156935.htm     Python-ElasticSearch搜索查询的讲解
 >           https://blog.csdn.net/qq_15260769/article/details/87918578      ElasticSearch查询方法（python）
 >
+
+- **bool查询关键词：**
+>       must	查询的结果必须匹配查询条件，并计算score
+>       filter	查询的结果必须匹配查询条件，和must不同不会计算score
+>       should	查询结果必须符合查询条件中的一个或多个
+>       must_not	查询结果必须不符合查询条件
 >
 >
->
->
+
+- **多条件查询案例：**
+>       https://www.jianshu.com/p/1dd593186e19      es同个字段，多个值搜索的案例
 >
 >
 >
@@ -41,16 +48,16 @@
 >           https://www.jianshu.com/p/56cfc972d372    Flask 教程 第十六章：全文搜索
 >           https://blog.csdn.net/weixin_43031412/article/details/100011282     Elasticsearch 搜索API
 >
+>           https://blog.csdn.net/R_P_J/article/details/78376622      第三篇 elasticsearch的group by+avg+sort等聚合分析
 >
+>           https://www.jianshu.com/p/1e970765198c      使用es布尔查询进行多条件查询
 >
+>           https://www.jianshu.com/p/1dd593186e19      es同个字段，多个值搜索的案例
 >
+>           https://n3xtchen.github.io/n3xtchen/elasticsearch/2017/07/05/elasticsearch-23-useful-query-example  19 个很有用的 ElasticSearch 查询语句
 >
->
->
->
->
->
->
+>           https://www.cnblogs.com/leeSmall/p/9215909.html     elasticsearch系列六：聚合分析（聚合分析简介、指标聚合、桶聚合）
+>           https://www.cnblogs.com/Neeo/articles/10615739.html     elasticsearch for Python之操作篇
 >
 >
 >
