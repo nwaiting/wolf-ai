@@ -24,8 +24,9 @@
 >       brendangregg：
 >           https://segmentfault.com/a/1190000006199009     Brendan Gregg 性能分析的方法
 >           <<性能之巅  洞悉系统、企业与云计算>>
-> 
 >
+>       开源项目之调试python应用生成性能cpu火焰图：
+>           http://xiaorui.cc/2015/10/22/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E4%B9%8B%E8%B0%83%E8%AF%95python%E5%BA%94%E7%94%A8%E7%94%9F%E6%88%90%E6%80%A7%E8%83%BDcpu%E7%81%AB%E7%84%B0%E5%9B%BE/
 >
 >
 >
