@@ -21,8 +21,10 @@
 >           http://www.brendangregg.com/offcpuanalysis.html     Brendan(DTrace 布道士) 的个人博客
 >           https://www.ruilog.com/notebook/list?term_tags=Dtrace   动态追踪技术漫谈(全) [章亦春]
 >
->
->
+>       brendangregg：
+>           https://segmentfault.com/a/1190000006199009     Brendan Gregg 性能分析的方法
+>           <<性能之巅  洞悉系统、企业与云计算>>
+> 
 >
 >
 >
