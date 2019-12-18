@@ -18,7 +18,9 @@
 >           [('bb113f50-6e6a-470c', 1575869478), ('9ec5bd99-2fdd-4b9b-9e08', 1575870644)]
 >           可以通过数组或者字典获取
 >
->
+
+- **SQLAlchemy WHERE IN单值(原始SQL):**
+>       参考：http://www.cocoachina.com/articles/62792
 >
 >
 >
