@@ -19,9 +19,9 @@
 >           可以通过数组或者字典获取
 >
 
-- **SQLAlchemy WHERE IN单值(原始SQL):**
->       参考：http://www.cocoachina.com/articles/62792
->
+- **SQLAlchemy tuple to mysql WHERE IN:**
+>       参考：http://www.cocoachina.com/articles/62792     SQLAlchemy WHERE IN单值(原始SQL)
+>           https://blog.xupeng.me/2013/09/25/mysqldb-args-processing/      MySQLdb 参数处理的坑
 >
 >
 >

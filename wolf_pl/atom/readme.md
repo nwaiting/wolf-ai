@@ -10,7 +10,7 @@
 >       markdown-writer
 >       markdown-preview-plus
 >
->
+>       autocomplete-plus-python-jedi
 >
 >
 >

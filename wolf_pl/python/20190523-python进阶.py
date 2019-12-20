@@ -54,6 +54,18 @@
 """
 
 
+class TestObj(object):
+    def __init__(self):
+        pass
+    def __str__(self):
+        pass
+    # 重写__repr__方法，用于实现对象的“自我描述”
+    def __repr__(self):
+        pass
+
+import os
+
+
 
 def main():
     pass
