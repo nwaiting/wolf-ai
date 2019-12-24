@@ -63,8 +63,6 @@ class TestObj(object):
     def __repr__(self):
         pass
 
-import os
-
 
 
 def main():
