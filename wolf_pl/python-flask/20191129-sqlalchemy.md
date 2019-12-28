@@ -23,11 +23,19 @@
 >       参考：http://www.cocoachina.com/articles/62792     SQLAlchemy WHERE IN单值(原始SQL)
 >           https://blog.xupeng.me/2013/09/25/mysqldb-args-processing/      MySQLdb 参数处理的坑
 >
+
+- **如何在models定义两个不同数据库，表名相同（__tablename__）的class？**
+>       class AAA(db.Model):
+>           __bind_key__ = 'db1'
+>           __tablename__ = 'hello'
 >
+>       class BBB(db.Model):
+>           __bind_key__ = 'db2'
+>           __tablename__ = 'hello'
+>           metadata = MetaData()
 >
->
->
->
+>       flask sqlalchemy 如何在models定义两个不同数据库，表名相同（__tablename__）的class
+>       定义不同的 metadata 就可以了
 >
 >
 >
@@ -37,10 +45,10 @@
 >
 
 - **待续：**
->       参考：
->
->
->
+>       参考：https://www.cnblogs.com/huchong/p/8274510.html       Flask-SQLAlchemy常用操作
+>           https://www.cnblogs.com/chen0427/p/8783817.html     Sqlalchemy limit, offset slice操作
+>           https://www.jianshu.com/p/d08a63170714      灵活使用 SQLAlchemy 中的 ORM 查询
+>           https://www.cnblogs.com/shangerzhong/articles/10381793.html     Flask-----sqlalchemy 增删改查操作
 >
 >
 >

@@ -60,6 +60,9 @@ class TestObj(object):
     def __str__(self):
         pass
     # 重写__repr__方法，用于实现对象的“自我描述”
+    # 事实上，当使用该方法输出 Item 对象时，实际上输出的是 Item 对象的 __repr__() 方法的返回值
+    # 如：im=Item()
+    # print(im) 即调用__repr__方法 
     def __repr__(self):
         pass
 
