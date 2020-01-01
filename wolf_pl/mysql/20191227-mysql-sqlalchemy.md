@@ -123,6 +123,9 @@
 >                   本质上来说，SQLAlchemy会将其翻译成LIMIT/OFFSET语句来实现，
 >                   session.query(Article).slice(10, 20).all()
 >                   session.query(Article)[0:10]
+>           j、查询总数
+>               count：
+>                   message_count = self.db.query(func.count(Message.uid)).filter(Message.uid == self.uid).scalar()
 >
 >
 >       4、sqlalchemy添加和删除数据：

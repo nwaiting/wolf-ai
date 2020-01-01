@@ -74,9 +74,16 @@
 >       因为由UNIQUE索引或者主键保证唯一性，不需要WHERE子条件。所以上面的INSERT INTO t_stock_chg(f_market, f_stockID, f_name) VALUES('SH', '600000', '白云机场') ON DUPLICATE KEY UPDATE f_market='SH', f_name='浦发银行';中f_stockID就是唯一主键
 >       这里特别需要注意的是：如果行作为新记录被插入，则受影响行的值为1；如果原有的记录被更新，则受影响行的值为2，如果更新的数据和已有的数据一模一样，则受影响的行数是0，这意味着不会去更新，也就是说即使你有的时间戳是自动记录最后一次的更新时间，这个时间戳也不会变动。
 >
+
+- **msyql统计count：**
+>       使用count()函数实现条件统计的基础是对于值为NULL的记录不计数，常用的有以下三种方式，假设统计num大于200的记录
+>           select count(num > 200 or null) from a;
+>           select count(if(num > 200, 1, null)) from a
+>           select count(case when num > 200 then 1 end) from a
 >
->
->
+>           if()函数：SELECT if(sex=0,'女','男') AS sex FROM student; 这个if()函数就相当于java里面的三目运算符。
+>               if(expr1,expr2,expr3)，如果expr1的值为true，则返回expr2的值，如果expr1的值为false，则返回expr3的值。
+>               但是如果在sum中使用了if()函数，就是对结果值进行累加，例如SUM(IF(`hosts`.state = 0, 1, 0))，当hosts.state的值为0时，和加1，不为0时，和加0。
 >
 >
 >
