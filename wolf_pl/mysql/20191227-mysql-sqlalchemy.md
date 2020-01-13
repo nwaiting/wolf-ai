@@ -149,6 +149,8 @@
 >               page:指定页码，从1开始
 >               per_page:每一页有几个项
 >
+>           Employee.query.paginate(page_index,per_page=10).items  获取数据内容
+>
 >       6、sqlalchemy通配符
 >           db_session.query(User).filter(User.name.like('e%')).all()
 >           db_session.query(User).filter(~User.name.like('e%')).all()
@@ -272,13 +274,32 @@
 >       对应的sqlalchemy查询：
 >           session.query(user.age, func.count(user.id)).group_by(user.age).having(user.age > 20).all()
 >
+
+- **分页获取总数：**
+>       SELECT SQL_CALC_FOUND_ROWS id, teacherId, teacherName FROM studentTask WHERE subjectName = '高中数学' LIMIT 1,20;
+>       SELECT FOUND_ROWS() as total;
+>
+>       加上SQL_CALC_FOUND_ROWS之后，即使你用了limit n,m ，SELECT FOUND_ROWS() 仍会返回满足条件记录的总数。
+>           这样，你执行完 select SQL_CALC_FOUND_ROWS 之后，再取一下记录总数就行了。
+>       虽然看起来是两条SQL语句，但是实际上只执行了一次数据库查询。
+>
+>
+>
+>
+>
+>
+>
+>
+>
+>
 >
 >
 
 - **待续：**
 >       参考：https://github.com/eastossifrage/sql_to_sqlalchemy/blob/master/chapter002/departments.py     sqlalchemy和sql查询
 >           https://segmentfault.com/q/1010000018380836/    sqlalchemy如何拼接多个filter
->
+>           https://www.jianshu.com/p/7f062f3b77f8      flask-sqlalchemy增删改查详解
+>           https://www.imooc.com/article/details/id/22343      flask-sqlalchemy增删改查详解
 >
 >
 >
