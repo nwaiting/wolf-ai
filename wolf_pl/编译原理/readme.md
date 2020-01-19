@@ -33,8 +33,8 @@
 >           https://max.book118.com/html/2018/0327/159003496.shtm   <<编译原理及编译程序构造>> 高仲仪 (符号表管理技术、语义分析和代码生成)
 >
 >
->
->
+>           https://www.cnblogs.com/getianao/category/1373141.html      编译原理
+>           https://liuyehcf.github.io/categories/Compile-Principle/    Compile Principle分类
 >
 >
 >
