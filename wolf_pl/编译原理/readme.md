@@ -36,12 +36,16 @@
 >           https://www.cnblogs.com/getianao/category/1373141.html      编译原理
 >           https://liuyehcf.github.io/categories/Compile-Principle/    Compile Principle分类
 >
+>           https://www.cnblogs.com/kele-dad/category/1258914.html  GCC编译器原理
+>           https://www.ibm.com/developerworks/cn/linux/sdk/lex/    Yacc 与 Lex 快速入门
+>           https://blog.csdn.net/sonicling/category_261126.html    编译器
 >
 >
->
->
->
->
+>           入门项目：
+>           https://www.bilibili.com/video/av70254941?p=3   编译原理——一起手写个JIT编译器
+>           https://github.com/kyjm/compiler-in-js
+>           https://github.com/BerryMathDevelopmentTeam/BerryMath
+>           https://liuyehcf.github.io/categories/Compile-Principle/    自定义Hua语言
 >
 >
 >
