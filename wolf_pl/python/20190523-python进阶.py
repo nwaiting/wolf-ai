@@ -62,16 +62,26 @@ class TestObj(object):
     # 重写__repr__方法，用于实现对象的“自我描述”
     # 事实上，当使用该方法输出 Item 对象时，实际上输出的是 Item 对象的 __repr__() 方法的返回值
     # 如：im=Item()
-    # print(im) 即调用__repr__方法 
+    # print(im) 即调用__repr__方法
     def __repr__(self):
         pass
 
 
 
-def main():
-    pass
-
-
+"""
+    python使用pipenv虚拟环境打包exe文件
+    #建立虚拟环境
+    pipenv install
+    #进入虚拟环境（上一步可省略,因为没有虚拟环境的话会自动建立一个）
+    pipenv shell
+    #安装模块
+    pip install requests pyquery pysimplegui fake_useragent
+    pip install -r requirements
+    #打包的模块也要安装
+    pip install pyinstaller
+    #开始打包
+    pyinstaller -Fw E:\test\url_crawler.py
+"""
 
 
 
