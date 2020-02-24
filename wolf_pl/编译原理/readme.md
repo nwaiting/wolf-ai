@@ -44,7 +44,8 @@
 >           入门项目：
 >           https://www.bilibili.com/video/av70254941?p=3   编译原理——一起手写个JIT编译器
 >           https://github.com/kyjm/compiler-in-js
->           https://github.com/BerryMathDevelopmentTeam/BerryMath
+>           https://github.com/BerryMathDevelopmentTeam/BerryMath       BerryMath项目
+>           https://www.bilibili.com/video/av76408074                   BerryMath项目
 >           https://liuyehcf.github.io/categories/Compile-Principle/    自定义Hua语言
 >
 >
