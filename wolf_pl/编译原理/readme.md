@@ -46,6 +46,7 @@
 >           https://github.com/kyjm/compiler-in-js
 >           https://github.com/BerryMathDevelopmentTeam/BerryMath       BerryMath项目
 >           https://www.bilibili.com/video/av76408074                   BerryMath项目
+>           http://www.imooc.com/article/287971?block_id=tuijian_wz
 >           https://liuyehcf.github.io/categories/Compile-Principle/    自定义Hua语言
 >
 >
