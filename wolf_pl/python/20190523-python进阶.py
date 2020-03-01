@@ -58,14 +58,40 @@ class TestObj(object):
     def __init__(self):
         pass
     def __str__(self):
+        # 外部在print(obj)或者str(obj)  两种情况下会调用
         pass
-    # 重写__repr__方法，用于实现对象的“自我描述”
-    # 事实上，当使用该方法输出 Item 对象时，实际上输出的是 Item 对象的 __repr__() 方法的返回值
-    # 如：im=Item()
-    # print(im) 即调用__repr__方法
     def __repr__(self):
+        # 外部直接obj时候(如在命令行中)或在外部直接调用repr(obj)
         pass
-
+    def __enter__(self):
+        # 外部使用with时会调用
+        pass
+    def __exit__(self):
+        # with退出的时候会调用
+        pass
+    def __getattr__(self):
+        # 对象获取属性值的时候会触发
+        pass
+    def __setattr__(self):
+        # 对象设置属性值的时候会触发
+        # obj.a=1会触发
+        pass
+    def __setitem__(self):
+        # 对象设置属性值的时候会触发
+        # obj['a']=1 会触发
+        pass
+    def __call__(self, *args, **kwargs):
+        # obj(a,b)  会调用
+        pass
+    def __eq__(self):
+        # todo ...
+        pass
+    __slots__ = ('name','age')
+        # 如果我们想要限制class的属性怎么办？比如，只允许对Student实例添加name和age属性
+        # 变量：用tuple定义允许绑定的属性名称
+        # 定义一个特殊的__slots__变量，来限制该class能添加的属性
+        # 注意：使用__slots__要注意，__slots__定义的属性仅对当前类起作用，对继承的子类是不起作用的
+        #       除非在子类中也定义__slots__，这样，子类允许定义的属性就是自身的__slots__加上父类的__slots__
 
 
 """
