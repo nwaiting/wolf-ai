@@ -48,8 +48,6 @@
 >           如果有任务到达时，通过任务的名字来让指定的worker来处理
 >
 >
-
-- ****
 >
 >
 >
@@ -72,7 +70,7 @@
 >           https://blog.csdn.net/qq_24861509/article/details/83863782
 >           https://www.cnblogs.com/cwp-bg/p/8759638.html   python之celery使用详解一
 >
->
+>           https://blog.csdn.net/qq_33339479/article/details/80961182      celery源码分析-Task的初始化与发送任务
 >
 >
 >
