@@ -48,6 +48,8 @@
 >           如果有任务到达时，通过任务的名字来让指定的worker来处理
 >
 >
+
+- ****
 >
 >
 >
@@ -66,9 +68,9 @@
 - **待续：**
 >       参考：http://liyangliang.me/posts/2015/11/using-celery-with-flask/?utm_source=tuicool&utm_medium=referral
 >           https://www.cnblogs.com/daqingzi/p/9641591.html     Celery详解
->
->
->
+>           https://www.jianshu.com/p/4d0bbdbc6ade      CELERY CELERY_QUEUES和CELERY_ROUTS的用法
+>           https://blog.csdn.net/qq_24861509/article/details/83863782
+>           https://www.cnblogs.com/cwp-bg/p/8759638.html   python之celery使用详解一
 >
 >
 >
