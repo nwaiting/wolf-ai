@@ -15,11 +15,11 @@
 - **比较好的相关文章：**
 >       https://www.cnblogs.com/c-x-a/p/11408372.html   第二部分：Python解释器进程
 >       https://www.cnblogs.com/blili/p/11799398.html   Python逆向（一）—— 前言及Python运行原理
+>       https://www.jianshu.com/nb/3703820      Python源码剖析笔记
 >
 >
->
->
->
+>       https://realpython.com/cpython-source-code-guide/   Your Guide to the CPython Source Code
+>       https://blog.csdn.net/muzico425/article/details/100070351   教你阅读 Cpython 的源码（一）
 >
 >
 >
@@ -38,7 +38,7 @@
 >
 >           https://github.com/zpoint/CPython-Internals     CPython 源码阅读笔记, 多图展示底层实现细节
 >           https://github.com/Junnplus/blog/issues     CPython 源码阅读
->           https://manjusaka.itscoder.com/categories/%E7%BC%96%E7%A8%8B/Python/    
+>           https://manjusaka.itscoder.com/categories/%E7%BC%96%E7%A8%8B/Python/
 >
 >
 >
