@@ -38,7 +38,8 @@
 >       CELERYBEAT_SCHEDULE     配置项
 >       CELERY_TIMEZONE = 'Asia/Shanghai'
 >       注意配置文件需要指定时区，一旦使用了scheduler，启动celery需要加上-B参数
->       celery -A proj worker -B -l info
+>       celery -A proj worker -B -l info --autoscale=6,3
+>           autoscale   # 平时保持 3 个进程, 最大时可以达到 6 个
 >
 >
 

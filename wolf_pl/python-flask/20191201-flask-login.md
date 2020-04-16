@@ -39,7 +39,7 @@
 >       参考：https://my.oschina.net/u/1462124/blog/611471     Flask-Login使用教程
 >            https://blog.csdn.net/weixin_41263513/article/details/85013477     【Flask/跟着学习】Flask大型教程项目#04：用户登陆
 >            https://www.jb51.net/article/143893.htm    Flask框架通过Flask_login实现用户登录功能示例
->       
+>           https://www.cnblogs.com/hippieZhou/p/10603405.html  Flask 系列之 LoginManager
 >    
 >       
 >    
