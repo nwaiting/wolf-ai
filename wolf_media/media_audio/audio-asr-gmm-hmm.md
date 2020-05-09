@@ -82,7 +82,7 @@
 >           https://blog.csdn.net/wbgxx333/article/details/10020449     语音信号处理之（四）梅尔频率倒谱系数（MFCC）
 >           https://mp.weixin.qq.com/s/Sn4RPdghzzQhQc-r4z8Iuw   Kaldi单音素GMM学习笔记
 >
->
+>           https://www.jianshu.com/p/a431d994e76b  hmm计算过程
 >
 >
 >
