@@ -3,6 +3,9 @@ import os
 import re
 from itertools import combinations, permutations
 
+# 设置小数有效位
+last_flost_bit = 10
+
 
 def main():
     """
@@ -49,31 +52,31 @@ def main():
         for c in signal_char_str:
             res = re.findall(c, search_str)
             if res:
-                search_str_probs[c] = len(res)/total_len
+                search_str_probs[c] = format(len(res)/total_len, '.{}f'.format(last_flost_bit))
             else:
                 search_str_probs[c] = 0
         save_prob_to_file()
     elif ana_type == 2:
-        # 二联体 todo total_len
-        total_len = len(list(permutations(search_str, 2)))
+        # 二联体
+        total_len = len(search_str)*(len(search_str)+1)*(2*len(search_str)+1)/6
         for cc in permutations(signal_char_str, 2):
             cc = ''.join(cc)
             res = re.findall(cc, search_str)
             if res:
-                search_str_probs[cc] = len(res)/total_len
+                search_str_probs[cc] = format(len(res)/total_len, '.{}f'.format(last_flost_bit))
             else:
                 search_str_probs[cc] = 0
         for cc in signal_char_str:
             cc = cc*2
             res = re.findall(cc, search_str)
             if res:
-                search_str_probs[cc] = len(res)/total_len
+                search_str_probs[cc] = format(len(res)/total_len, '.{}f'.format(last_flost_bit))
             else:
                 search_str_probs[cc] = 0
         save_prob_to_file()
     elif ana_type == 3:
         # 三联体
-        total_len = len(list(permutations(search_str, 3)))
+        total_len = (len(search_str)*(len(search_str)+1)/2)*(len(search_str)*(len(search_str)+1)/2)
         items = ['AGV','ILFP','YMTS','HNQW','RK','DE','C']
         new_items = [''.join(cc) for cc in permutations(items)] + [cc*2 for cc in items]
         last_items = []
@@ -83,7 +86,7 @@ def main():
         for item in last_items:
             res = re.findall(item, search_str)
             if res:
-                search_str_probs[item] = len(res) / total_len
+                search_str_probs[item] = format(len(res)/total_len, '.{}f'.format(last_flost_bit))
             else:
                 search_str_probs[item] = 0
         save_prob_to_file()
@@ -93,5 +96,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-

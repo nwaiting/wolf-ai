@@ -6,8 +6,9 @@ def main():
     """
         python cal_split.py data 1
     """
-    def save_prob_to_file():
-        pass
+    def save_split_data(filename, data):
+        with open(filename, 'wb') as f:
+            f.write(("{}\n".format(data)).encode('utf-8'))
     if len(sys.argv) != 3:
         print("args missing")
         return
@@ -32,21 +33,61 @@ def main():
     search_str = ''.join(protein_info[protein_name])
     search_str_len = len(search_str)
     start1 = int(search_str_len * 0.618)
-    start1_1 = 0
-    start1_1_1 = 0
-    show_str = ''
-    if ana_type >= 1:
-        show_str = search_str[start1:]
-    if ana_type >= 2:
-        start1_1 = start1 + int((search_str_len - start1) * 0.618)
-        show_str = search_str[start1_1:]
-    if ana_type >= 3:
-        start1_1_1 = start1_1 + int((search_str_len - start1_1) * 0.618)
-        show_str = search_str[start1_1_1:]
-    if ana_type >= 4:
-        start1_1_1_1 = start1_1_1 + int((search_str_len - start1_1_1) * 0.618)
-        show_str = search_str[start1_1_1_1:]
-    print(show_str)
+    show_protein_str = ''
+    if ana_type == 1:
+        save_split_data("{}_1.txt".format(ana_type), search_str[:start1])
+        save_split_data("{}_2.txt".format(ana_type), search_str[start1:])
+        show_protein_str = search_str[start1:]
+    if ana_type == 2:
+        new_split_list = []
+        for item in (search_str[:start1], search_str[start1:]):
+            search_str_len = len(item)
+            start1_1 = int(search_str_len * 0.618)
+            new_split_list.append(item[:start1_1])
+            new_split_list.append(item[start1_1:])
+            show_protein_str = item[start1_1:]
+        for i in range(len(new_split_list)):
+            save_split_data("{}_{}.txt".format(ana_type, i+1), new_split_list[i])
+    if ana_type == 3:
+        new_split_list = []
+        new_new_split_list = []
+        for item in (search_str[:start1], search_str[start1:]):
+            search_str_len = len(item)
+            start1_1 = int(search_str_len * 0.618)
+            new_split_list.append(item[:start1_1])
+            new_split_list.append(item[start1_1:])
+        for item in new_split_list:
+            search_str_len = len(item)
+            start1_1 = int(search_str_len * 0.618)
+            new_new_split_list.append(item[:start1_1])
+            new_new_split_list.append(item[start1_1:])
+            show_protein_str = item[start1_1:]
+        for i in range(len(new_new_split_list)):
+            save_split_data("{}_{}.txt".format(ana_type, i+1), new_new_split_list[i])
+    if ana_type == 4:
+        new_split_list = []
+        new_new_split_list = []
+        new_new_new_split_list = []
+        for item in (search_str[:start1], search_str[start1:]):
+            search_str_len = len(item)
+            start1_1 = int(search_str_len * 0.618)
+            new_split_list.append(item[:start1_1])
+            new_split_list.append(item[start1_1:])
+        for item in new_split_list:
+            search_str_len = len(item)
+            start1_1 = int(search_str_len * 0.618)
+            new_new_split_list.append(item[:start1_1])
+            new_new_split_list.append(item[start1_1:])
+        for item in new_new_split_list:
+            search_str_len = len(item)
+            start1_1 = int(search_str_len * 0.618)
+            new_new_new_split_list.append(item[:start1_1])
+            new_new_new_split_list.append(item[start1_1:])
+            show_protein_str = item[start1_1:]
+        for i in range(len(new_new_new_split_list)):
+            save_split_data("{}_{}.txt".format(ana_type, i+1), new_new_new_split_list[i])
+    print("最大分割次数：{}".format(ana_type))
+    print("最短序列：{}".format(show_protein_str))
 
 
 if __name__ == '__main__':
