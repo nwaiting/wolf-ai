@@ -8,8 +8,7 @@ def main():
     """
     def save_split_data(filename, data, protein_name):
         with open(filename, 'wb') as f:
-            f.write((">{}\n".format(protein_name)).encode('utf-8'))
-            f.write(("{}\n".format(data)).encode('utf-8'))
+            f.write(("{}\n".format('\t'.join(data))).encode('utf-8'))
     if len(sys.argv) != 3:
         print("args missing")
         return
@@ -36,8 +35,7 @@ def main():
     start1 = int(search_str_len * 0.618)
     show_protein_str = ''
     if ana_type == 1:
-        save_split_data("{}_1.txt".format(ana_type), search_str[:start1], protein_name)
-        save_split_data("{}_2.txt".format(ana_type), search_str[start1:], protein_name)
+        save_split_data("{}.txt".format(ana_type), (search_str[:start1], search_str[start1:]), protein_name)
         show_protein_str = search_str[start1:]
     if ana_type == 2:
         new_split_list = []
@@ -47,8 +45,7 @@ def main():
             new_split_list.append(item[:start1_1])
             new_split_list.append(item[start1_1:])
             show_protein_str = item[start1_1:]
-        for i in range(len(new_split_list)):
-            save_split_data("{}_{}.txt".format(ana_type, i+1), new_split_list[i], protein_name)
+        save_split_data("{}.txt".format(ana_type), new_split_list, protein_name)
     if ana_type == 3:
         new_split_list = []
         new_new_split_list = []
@@ -63,8 +60,7 @@ def main():
             new_new_split_list.append(item[:start1_1])
             new_new_split_list.append(item[start1_1:])
             show_protein_str = item[start1_1:]
-        for i in range(len(new_new_split_list)):
-            save_split_data("{}_{}.txt".format(ana_type, i+1), new_new_split_list[i], protein_name)
+        save_split_data("{}.txt".format(ana_type), new_new_split_list, protein_name)
     if ana_type == 4:
         new_split_list = []
         new_new_split_list = []
@@ -85,8 +81,7 @@ def main():
             new_new_new_split_list.append(item[:start1_1])
             new_new_new_split_list.append(item[start1_1:])
             show_protein_str = item[start1_1:]
-        for i in range(len(new_new_new_split_list)):
-            save_split_data("{}_{}.txt".format(ana_type, i+1), new_new_new_split_list[i], protein_name)
+        save_split_data("{}.txt".format(ana_type), new_new_new_split_list, protein_name)
     print("最大分割次数：{}".format(ana_type))
     print("序列名字：>{}".format(protein_name))
     print("最短序列：{}".format(show_protein_str))
