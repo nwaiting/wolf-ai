@@ -11,3 +11,9 @@ QQ 空间爬虫，基于 selenium 模拟登录空间，破解滑动验证码，�
     https://github.com/luolongfei/qzone-spider
 
 
+利用python & selenium实现爬虫在 qq 空间 自动 点赞 和 回复
+    https://github.com/WenjayDu/clickLikeInQzone
+
+python实现qq空间自动点赞
+    https://github.com/bufuchangfeng/qzone
+
