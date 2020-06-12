@@ -38,4 +38,7 @@ class BaseConfig(object):
     SQLALCHEMY_COMMIT_ON_TEARDOWN = False
     """是否输出详细sql信息，调试时使用"""
     SQLALCHEMY_ECHO = False
-    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+

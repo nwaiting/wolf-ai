@@ -3,7 +3,14 @@ from app.models import db
 
 
 def creat_app():
-    flask_app = Flask(__name__)
-    db.init_app(flask_app)
+    _app = Flask(__name__)
+    db.init_app(_app)
 
-    return flask_app
+    return _app
+
+
+flask_app = creat_app()
+
+
+
+
