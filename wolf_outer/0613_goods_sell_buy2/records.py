@@ -120,6 +120,8 @@ def check():
         print("类别 收入/支出 发生日期 金额 备注")
         for ssss in a_list:
             ssss_s = ssss.split(',')
+            if ssss_s[1].find(s1) == -1:
+                continue
             sss = ssss_s[0]
             m1 = sss
             if sss == "b1":

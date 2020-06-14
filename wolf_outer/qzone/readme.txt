@@ -17,3 +17,9 @@ QQ 空间爬虫，基于 selenium 模拟登录空间，破解滑动验证码，�
 python实现qq空间自动点赞
     https://github.com/bufuchangfeng/qzone
 
+
+chrome浏览器的options参数
+    https://blog.csdn.net/xc_zhou/article/details/82415870
+    
+python+selenium+Chrome options参数
+    https://www.cnblogs.com/yangjintao/p/10599868.html
