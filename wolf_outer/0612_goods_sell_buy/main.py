@@ -13,6 +13,7 @@ import os
 
 goods_buy_sell_list = []
 goods_buy_sell_dict = {}
+goods_buy_sell_total_dict = {}
 
 type_goods_dict = {
     "01": "电视机",
@@ -48,11 +49,15 @@ def load_data(file_name):
             dict_key = "{}-{}".format(date_items[0], date_items[1])
             if dict_key not in goods_buy_sell_dict:
                 goods_buy_sell_dict[dict_key] = {"进货": {}, "销售": {}}
+                goods_buy_sell_total_dict[dict_key] = {"进货": {}, "销售": {}}
             goods_name = type_goods_dict.get(line_items[0][1:])
             if line_items[0].startswith("A"):
                 goods_buy_sell_dict[dict_key]["进货"][goods_name] = goods_buy_sell_dict[dict_key]["进货"].get(goods_name,0) + int(line_items[2])
+                goods_buy_sell_total_dict[dict_key]["进货"][goods_name] = goods_buy_sell_total_dict[dict_key]["进货"].get(goods_name, 0) + int(line_items[2]) * int(line_items[3])
             elif line_items[0].startswith('B'):
                 goods_buy_sell_dict[dict_key]["销售"][goods_name] = goods_buy_sell_dict[dict_key]["销售"].get(goods_name,0) + int(line_items[2])
+                goods_buy_sell_total_dict[dict_key]["销售"][goods_name] = goods_buy_sell_total_dict[dict_key]["销售"].get(
+                    goods_name, 0) + int(line_items[2]) * int(line_items[3])
 
 
 def main():
@@ -64,11 +69,11 @@ def main():
         input_str = input()
         if input_str.lower() == 'y':
             # 录入数据
-            print("进入录入数据程序，数据格式为(类别编码、发生日期、 数量、单价、 经办人信息)，输入no，录入数据结束")
+            print("进入录入数据程序，数据格式为(类别编码、发生日期、 数量、单价、 经办人信息)，直接enter，录入数据结束")
             while True:
                 s = input("输入进销明细: ")
                 s = s.strip('\r\n ')
-                if s == 'no':
+                if not s:
                     break
                 s_items = s.split(',')
                 if len(s_items) != 5:
@@ -84,7 +89,6 @@ def main():
                 if dict_key not in goods_buy_sell_dict:
                     goods_buy_sell_dict[dict_key] = {"进货": {}, "销售": {}}
                 goods_name = type_goods_dict.get(s_items[0][1:])
-                print("goods_buy_sell_dict={}".format(goods_buy_sell_dict))
                 if s_items[0].startswith("A"):
                     goods_buy_sell_dict[dict_key]["进货"][goods_name] = goods_buy_sell_dict[dict_key]["进货"].get(goods_name, 0) + int(s_items[2])
                 elif s_items[0].startswith('B'):
@@ -96,11 +100,11 @@ def main():
 
         else:
             # 查询信息
-            print("进入数据统计程序，输入no，统计程序结束")
+            print("进入数据统计程序，直接enter，统计程序结束")
             while True:
                 s = input("请输入年和月（格式： yyyy-mm）: ")
                 s = s.strip('\r\n ')
-                if s == 'no':
+                if not s:
                     break
                 s_items = s.split('-')
                 if len(s_items) != 2:
@@ -114,7 +118,12 @@ def main():
                 current_goods = goods_buy_sell_dict.get(s)
                 for k,v in current_goods.items():
                     for kk,vv in v.items():
-                        print("{} {} {}".format(k, kk, v))
+                        print("{} {} {}".format(k, kk, vv))
+                print("{}年{}月商品进销数据金额汇总：".format(s_items[0], s_items[1]))
+                current_goods_total = goods_buy_sell_total_dict.get(s)
+                for k,v in current_goods_total.items():
+                    for kk,vv in v.items():
+                        print("{} {} 共{}元".format(k, kk, vv))
                 ss = input("是否输出该月的各笔明细（y 为输出，其他为不输出）：")
                 ss = ss.strip('\r\n ')
                 if ss.lower() == 'y':

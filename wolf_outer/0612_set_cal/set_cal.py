@@ -112,14 +112,25 @@ class App(object):
         # 笛卡尔积 多行显示
         self.results_list = []
         self.parse_set_str()
-        self.show_tables(list(itertools.product(*self.sets_list)))
+        new_list = []
+        for item in itertools.product(*self.sets_list):
+            new_list.append(item)
+        self.show_tables(new_list)
 
     def cal_power_set(self):
         # 幂集求解 多行显示
         self.results_list = []
         self.parse_set_str()
         s = self.sets_list[0]
-        res_list = itertools.chain.from_iterable(itertools.combinations(set(s), r) for r in range(len(s) + 1))
+        # for r in range(len(s) + 1):
+        #     itertools.combinations(set(s), r)
+        tmp_list = []
+        for r in range(len(s) + 1):
+            tmp_list.append(itertools.combinations(set(s), r))
+        # res = itertools.combinations(set(s), r) for r in range(len(s) + 1)
+        # res_list = itertools.chain.from_iterable(itertools.combinations(set(s), r) for r in range(len(s) + 1))
+        res_list = itertools.chain.from_iterable(tmp_list)
+
         for i in res_list:
             self.results_list.append(i)
         self.show_tables(self.results_list)

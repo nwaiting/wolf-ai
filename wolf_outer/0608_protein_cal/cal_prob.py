@@ -16,13 +16,15 @@ def main():
     def save_prob_to_file(tag_flag, pro_name):
         tags_line = ''
         prob_line = ''
-        for k,v in search_str_probs.items():
+        dict_keys = list(search_str_probs.keys())
+        dict_keys.sort()
+        for k in dict_keys:
             tags_line += "{}\t".format(k)
-            prob_line += "{}\t".format(v)
+            prob_line += "{}\t".format(search_str_probs.get(k))
         save_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), result_file)
         with open(save_file, 'ab') as f:
             if tag_flag <= 0:
-                f.write(("{}\n".format(tags_line)).encode('utf-8'))
+                f.write(("#{}\n".format(tags_line)).encode('utf-8'))
                 tag_flag += 1
             f.write((">{}\t{}\n".format(pro_name, prob_line)).encode('utf-8'))
     if len(sys.argv) != 4:
@@ -64,7 +66,8 @@ def main():
             save_prob_to_file(total_index, pk)
         elif ana_type == 2:
             # 二联体
-            total_len = len(search_str)*(len(search_str)+1)*(2*len(search_str)+1)/6
+            # total_len = len(search_str)*(len(search_str)+1)*(2*len(search_str)+1)/6
+            total_len = len(search_str) - 1
             for cc in permutations(signal_char_str, 2):
                 cc = ''.join(cc)
                 res = re.findall(cc, search_str)
@@ -82,7 +85,8 @@ def main():
             save_prob_to_file(total_index, pk)
         elif ana_type == 3:
             # 三联体
-            total_len = (len(search_str)*(len(search_str)+1)/2)*(len(search_str)*(len(search_str)+1)/2)
+            # total_len = (len(search_str)*(len(search_str)+1)/2)*(len(search_str)*(len(search_str)+1)/2)
+            total_len = len(search_str) - 2
             items = ['AGV','ILFP','YMTS','HNQW','RK','DE','C']
             new_items = [''.join(cc) for cc in permutations(items, 2)] + [cc*2 for cc in items]
             last_items = []
@@ -103,6 +107,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 

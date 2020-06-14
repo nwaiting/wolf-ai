@@ -90,7 +90,7 @@ def main():
                 save_split_data("{}_{}.txt".format(ana_type, i+1), new_new_new_split_list[i], pk)
         print("最大分割次数：{}".format(ana_type))
         print("序列名字：>{}".format(protein_name))
-        print("最短序列：{}".format(show_protein_str))
+        print("最短序列长度：{}".format(len(show_protein_str)))
 
 
 if __name__ == '__main__':
