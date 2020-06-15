@@ -78,7 +78,7 @@ def main():
     else:
         is_record_split_times = False
         for pk,pv in protein_info.items():
-            tmp_split_times = 1
+            tmp_split_times = 0
             search_str = ''.join(pv)
             search_str_len = len(search_str)
             if search_str_len < min_search_str_len:
