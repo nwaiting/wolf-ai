@@ -62,13 +62,14 @@ def main():
                     start1_1 = int(search_str_len * 0.618)
                     new_split_list.append(item[:start1_1])
                     new_split_list.append(item[start1_1:])
-                    if len(item[start1_1:]) <= 1:
+                    start1_1_max = max(int(search_str_len * 0.618), int(math.ceil(search_str_len * 0.382)))
+                    if len(item[start1_1_max:]) <= 1:
                         is_exit = True
                         break
-                    if len(item[:start1_1]) <= 1:
+                    if len(item[:start1_1_max]) <= 1:
                         is_exit = True
                         break
-                    ana_type -= 1
+                ana_type -= 1
                 if not is_exit and ana_type > 0:
                     old_split_list,new_split_list = new_split_list,old_split_list
                     new_split_list = []
