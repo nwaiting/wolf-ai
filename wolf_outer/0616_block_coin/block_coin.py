@@ -2,6 +2,55 @@ import hashlib
 import datetime
 
 
+class Block(object):
+    def __init__(self, data=None):
+        # 编号 对每个区块进行索引
+        self._block_no = None
+        # 存储的数据
+        self._data = data
+        # 指向下一个区块的指针
+        self._next = None
+        # 当前区块的hash值
+        self._self_hash = None
+        # 只使用一次的nonce
+        self._nonce = None
+        # 前一个hash
+        self._previous_hash = None
+
+    def hash(self):
+        return None
+
+
+class BlockChain(object):
+    max_nonce = 2**32
+    # 挖掘系数
+    diff = 10
+    #
+    target = 2 ** (256 - diff)
+
+    def __init__(self):
+        self._block = Block("dd")
+        self._head = self._block
+
+    def add(self, block):
+        block._previous_hash = self._block.hash()
+        block._block_no = self._block._block_no + 1
+
+        self._block._next = block
+        self._block = self._block._next
+
+    def mine(self, block):
+        """
+        判断是否可以被加入到链中
+        :param block:
+        :return:
+        """
+        return True
+
+    def show(self):
+        pass
+    
+
 class EncryBlock:
     def __init__(self, index, timestamp, data, next_hash):
         # 索引
@@ -48,6 +97,11 @@ for i in range(nums):
     # 循环
     head_block = block_item
     print(block_item.index, block_item.timestamp, block_item.self_hash, block_item.next_hash)
+
+
+
+
+
 
 
 
