@@ -56,7 +56,7 @@ def main():
             new_split_list = []
             ana_type = max_split_times
             is_exit = False
-            while not is_exit:
+            while ana_type > 0 and not is_exit:
                 for item in old_split_list:
                     search_str_len = len(item)
                     start1_1 = int(search_str_len * 0.618)
@@ -69,16 +69,16 @@ def main():
                         is_exit = True
                         break
                     ana_type -= 1
-                if not is_exit:
+                if not is_exit and ana_type > 0:
                     old_split_list,new_split_list = new_split_list,old_split_list
                     new_split_list = []
 
             for i in range(len(new_split_list)):
                 save_split_data("{}_{}.txt".format(max_split_times, i+1), new_split_list[i], pk)
     else:
-        is_record_split_times = False
         for pk,pv in protein_info.items():
-            tmp_split_times = 0
+            is_record_split_times = False
+            tmp_split_times = 1
             search_str = ''.join(pv)
             search_str_len = len(search_str)
             if search_str_len < min_search_str_len:
@@ -92,10 +92,11 @@ def main():
                 save_split_data("{}_2.txt".format(ana_type), search_str[start1:], pk)
                 show_protein_str = search_str[start1:]
                 while len(show_protein_str) > 1:
-                    tmp_index = int(len(show_protein_str) * 0.618)
+                    tmp_index = max(int(len(show_protein_str) * 0.618), int(math.ceil(len(show_protein_str) * 0.382)))
                     show_protein_str = show_protein_str[tmp_index:]
                     tmp_split_times += 1
             if ana_type == 2:
+                tmp_split_times = 2
                 new_split_list = []
                 for item in (search_str[:start1], search_str[start1:]):
                     search_str_len = len(item)
@@ -104,12 +105,13 @@ def main():
                     new_split_list.append(item[start1_1:])
                     show_protein_str = item[start1_1:]
                 while len(show_protein_str) > 1:
-                    tmp_index = int(len(show_protein_str) * 0.618)
+                    tmp_index = max(int(len(show_protein_str) * 0.618), int(math.ceil(len(show_protein_str) * 0.382)))
                     show_protein_str = show_protein_str[tmp_index:]
                     tmp_split_times += 1
                 for i in range(len(new_split_list)):
                     save_split_data("{}_{}.txt".format(ana_type, i+1), new_split_list[i], pk)
             if ana_type == 3:
+                tmp_split_times = 3
                 new_split_list = []
                 new_new_split_list = []
                 for item in (search_str[:start1], search_str[start1:]):
@@ -122,14 +124,16 @@ def main():
                     start1_1 = int(search_str_len * 0.618)
                     new_new_split_list.append(item[:start1_1])
                     new_new_split_list.append(item[start1_1:])
-                    show_protein_str = item[start1_1:]
+                    start1_1_max = max(int(search_str_len * 0.618), int(math.ceil(search_str_len * 0.382)))
+                    show_protein_str = item[start1_1_max:]
                 while len(show_protein_str) > 1:
-                    tmp_index = int(len(show_protein_str) * 0.618)
+                    tmp_index = max(int(len(show_protein_str) * 0.618), int(math.ceil(len(show_protein_str) * 0.382)))
                     show_protein_str = show_protein_str[tmp_index:]
                     tmp_split_times += 1
                 for i in range(len(new_new_split_list)):
                     save_split_data("{}_{}.txt".format(ana_type, i+1), new_new_split_list[i], pk)
             if ana_type == 4:
+                tmp_split_times = 4
                 new_split_list = []
                 new_new_split_list = []
                 new_new_new_split_list = []
@@ -148,9 +152,10 @@ def main():
                     start1_1 = int(search_str_len * 0.618)
                     new_new_new_split_list.append(item[:start1_1])
                     new_new_new_split_list.append(item[start1_1:])
-                    show_protein_str = item[start1_1:]
+                    start1_1_max = max(int(search_str_len * 0.618), int(math.ceil(search_str_len * 0.382)))
+                    show_protein_str = item[start1_1_max:]
                 while len(show_protein_str) > 1:
-                    tmp_index = int(len(show_protein_str) * 0.618)
+                    tmp_index = max(int(len(show_protein_str) * 0.618), int(math.ceil(len(show_protein_str) * 0.382)))
                     show_protein_str = show_protein_str[tmp_index:]
                     tmp_split_times += 1
                 for i in range(len(new_new_new_split_list)):
