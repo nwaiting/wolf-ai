@@ -90,7 +90,9 @@ def main():
             if ana_type == 1:
                 save_split_data("{}_1.txt".format(ana_type), search_str[:start1], pk)
                 save_split_data("{}_2.txt".format(ana_type), search_str[start1:], pk)
-                show_protein_str = search_str[start1:]
+                search_str_len = len(search_str)
+                start1_1_max = max(int(search_str_len * 0.618), int(math.ceil(search_str_len * 0.382)))
+                show_protein_str = search_str[start1_1_max:]
                 while len(show_protein_str) > 1:
                     tmp_index = max(int(len(show_protein_str) * 0.618), int(math.ceil(len(show_protein_str) * 0.382)))
                     show_protein_str = show_protein_str[tmp_index:]
@@ -103,7 +105,8 @@ def main():
                     start1_1 = int(search_str_len * 0.618)
                     new_split_list.append(item[:start1_1])
                     new_split_list.append(item[start1_1:])
-                    show_protein_str = item[start1_1:]
+                    start1_1_max = max(int(search_str_len * 0.618), int(math.ceil(search_str_len * 0.382)))
+                    show_protein_str = item[start1_1_max:]
                 while len(show_protein_str) > 1:
                     tmp_index = max(int(len(show_protein_str) * 0.618), int(math.ceil(len(show_protein_str) * 0.382)))
                     show_protein_str = show_protein_str[tmp_index:]
