@@ -4,6 +4,12 @@ from tkinter import ttk, Frame, RAISED, VERTICAL, NS, HORIZONTAL, EW
 import sqlite3
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
+from pylab import mpl
+
+
+# 图中显示乱码
+mpl.rcParams['font.sans-serif'] = ['Microsoft YaHei']
 
 
 class App(object):
@@ -18,7 +24,7 @@ class App(object):
         self.add_student_math = None
         self.add_student_computer = None
         self.db_connect_path = 'students_info.db'
-        self.csv_data_file = 'students_info.csv'
+        self.csv_data_file = 'students.csv'
         self.db_connect = None
         self.db_init()
         self.info_page = None
@@ -34,16 +40,31 @@ class App(object):
         self.before_update_data_index = None
 
     def run(self):
+        """
+        开始运行
+        :return:
+        """
         self.window_main_page.mainloop()
 
     def hide(self):
         self.window_main_page.withdraw()
 
     def load_datas(self):
+        """
+        从csv和sqlite中加载数据
+        :return:
+        """
+        datas_csv = []
         if os.path.exists(self.csv_data_file):
             pd_datas = pd.read_csv(self.csv_data_file)
             for item in pd_datas.values:
-                pass
+                item_list = item.tolist()
+                if len(item_list) != 7:
+                    print("{} 数据格式错误，缺少字段".format(item_list))
+                    continue
+                datas_csv.append(item_list)
+        if datas_csv:
+            self.db_save(datas_csv)
         res = self.db_load_data()
         if res:
             for i in range(1, self.lv.end_row() + 1):
@@ -55,15 +76,28 @@ class App(object):
                 self.insert_data_list.append(item[0])
 
     def db_delete_by_st_no(self, no):
+        """
+        删除数据
+        :param no:
+        :return:
+        """
         sql = f"delete from students_info where st_no={no}"
         self.db_execute(sql, ())
 
     def db_load_data(self):
+        """
+        从数据库加载数据
+        :return:
+        """
         sql = "select st_no,st_name,st_phone,st_en,st_phy,st_math,st_compyter from students_info"
         res = self.db_execute(sql, ())
         return res if res else []
 
     def db_reconnect(self):
+        """
+        数据库重连
+        :return:
+        """
         try:
             self.db_connect.close()
         except:
@@ -74,6 +108,10 @@ class App(object):
             pass
 
     def db_init(self):
+        """
+        数据库初始化
+        :return:
+        """
         self.db_connect = sqlite3.connect(self.db_connect_path)
         sql = '''CREATE TABLE  IF NOT EXISTS students_info
                (id integer PRIMARY KEY     autoincrement,
@@ -85,10 +123,12 @@ class App(object):
                st_math            INT     NOT NULL,
                st_compyter            INT     NOT NULL);
                '''
+        sql2 = "CREATE UNIQUE INDEX index_st_no on students_info (st_no);"
         args = ()
         c = self.db_connect.cursor()
         try:
             c.execute(sql, args)
+            c.execute(sql2, args)
             self.db_connect.commit()
         except Exception as e:
             print("err {}".format(e))
@@ -108,7 +148,7 @@ class App(object):
             self.db_reconnect()
 
     # sql 执行
-    def db_execute(self, sql, args):
+    def db_execute(self, sql, args=()):
         c = self.db_connect.cursor()
         try:
             res = c.execute(sql, args)
@@ -118,11 +158,16 @@ class App(object):
             print('err ======== {}'.format(e))
             self.db_reconnect()
 
-    # 主页面
     def main_page(self):
-        # 确认存储时的相应函数
+        """
+        主页面
+        :return:
+        """
         def add_save_data():
-            # 获取数据
+            """
+            增加数据
+            :return:
+            """
             add_student_no = self.add_student_no.get()
             add_student_name = self.add_student_name.get()
             add_student_phone = self.add_student_phone.get()
@@ -133,9 +178,12 @@ class App(object):
             if not add_student_no or not add_student_name or not add_student_phone:
                 return
 
-            if add_student_no in self.students_info_dict:
-                showinfo("提示", '{} 信息已存在，请确认重新输入'.format(add_student_no))
-                return
+            sql = f"select st_no from students_info where st_no={int(add_student_no)}"
+            res = self.db_execute(sql)
+            for item in res:
+                if int(item[0]) == int(add_student_no):
+                    showinfo("提示", '{} 信息已存在，请确认重新输入'.format(add_student_no))
+                    return
 
             datas = []
             datas.append((add_student_no,add_student_name,add_student_phone,add_student_english,add_student_phy,
@@ -156,6 +204,10 @@ class App(object):
             self.add_data_page.destroy()
 
         def add_cancel():
+            """
+            增加数据界面 取消
+            :return:
+            """
             self.add_data_page.destroy()
 
         def update_data():
@@ -401,10 +453,152 @@ class App(object):
         reset_button = tk.Button(self.window_main_page, text='重置', command=reset_show, width=10)
         reset_button.place(x=10, y=210)
 
+        # 英语分析按钮
+        en_button = tk.Button(self.window_main_page, text='英语成绩分析', command=self.analysis_en, width=12)
+        en_button.place(x=150, y=300)
+
+        # 数学分析按钮
+        math_button = tk.Button(self.window_main_page, text='数学成绩分析', command=self.analysis_math, width=12)
+        math_button.place(x=250, y=300)
+
+        # 物理分析按钮
+        phy_button = tk.Button(self.window_main_page, text='物理成绩分析', command=self.analysis_phy, width=12)
+        phy_button.place(x=350, y=300)
+
+        # 计算机分析按钮
+        computer_button = tk.Button(self.window_main_page, text='计算机成绩分析', command=self.analysis_computer, width=12)
+        computer_button.place(x=450, y=300)
+
+        # 学生成绩中位数分析
+        is_good_button = tk.Button(self.window_main_page, text='学生成绩中位数分析', command=self.analysis_is_good, width=12)
+        is_good_button.place(x=550, y=300)
+
+        # 平均分分析
+        average_score_button = tk.Button(self.window_main_page, text='平均分分析', command=self.analysis_average, width=12)
+        average_score_button.place(x=650, y=300)
+
         self.load_datas()
 
-    # 退出的函数
+    def analysis_en(self):
+        sql = "select st_en from students_info"
+        res = self.db_execute(sql)
+        new_en_dict = {}
+        for item in res:
+            index = int(int(item[0])/10)
+            new_en_dict[index] = new_en_dict.get(index, 0) + 1
+        new_en_dict_items = []
+        for k, v in new_en_dict.items():
+            if k == 10:
+                new_en_dict_items.append(("{}".format(k*10),v))
+            else:
+                new_en_dict_items.append(("{}~{}".format(k*10,(k+1)*10),v))
+        sd = sorted(new_en_dict_items, key=lambda x: x[1], reverse=True)
+        print(sd)
+        plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb', tick_label=[i[0] for i in sd])
+        plt.title('英语成绩分布图')
+        plt.savefig('英语成绩分布图.png')
+        plt.show()
+
+    def analysis_math(self):
+        sql = "select st_math from students_info"
+        res = self.db_execute(sql)
+        new_en_dict = {}
+        for item in res:
+            index = int(int(item[0])/10)
+            new_en_dict[index] = new_en_dict.get(index, 0) + 1
+        new_en_dict_items = []
+        for k, v in new_en_dict.items():
+            if k == 10:
+                new_en_dict_items.append(("{}".format(k*10),v))
+            else:
+                new_en_dict_items.append(("{}~{}".format(k*10,(k+1)*10),v))
+        sd = sorted(new_en_dict_items, key=lambda x: x[1], reverse=True)
+        print(sd)
+        plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb', tick_label=[i[0] for i in sd])
+        plt.title('数学成绩分布图')
+        plt.savefig('数学成绩分布图.png')
+        plt.show()
+
+    def analysis_phy(self):
+        sql = "select st_phy from students_info"
+        res = self.db_execute(sql)
+        new_en_dict = {}
+        for item in res:
+            index = int(int(item[0])/10)
+            new_en_dict[index] = new_en_dict.get(index, 0) + 1
+        new_en_dict_items = []
+        for k, v in new_en_dict.items():
+            if k == 10:
+                new_en_dict_items.append(("{}".format(k*10),v))
+            else:
+                new_en_dict_items.append(("{}~{}".format(k*10,(k+1)*10),v))
+        sd = sorted(new_en_dict_items, key=lambda x: x[1], reverse=True)
+        print(sd)
+        plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb', tick_label=[i[0] for i in sd])
+        plt.title('物理成绩分布图')
+        plt.savefig('物理成绩分布图.png')
+        plt.show()
+
+    def analysis_computer(self):
+        sql = "select st_compyter from students_info"
+        res = self.db_execute(sql)
+        new_en_dict = {}
+        for item in res:
+            index = int(int(item[0])/10)
+            new_en_dict[index] = new_en_dict.get(index, 0) + 1
+        new_en_dict_items = []
+        for k, v in new_en_dict.items():
+            if k == 10:
+                new_en_dict_items.append(("{}".format(k*10),v))
+            else:
+                new_en_dict_items.append(("{}~{}".format(k*10,(k+1)*10),v))
+        sd = sorted(new_en_dict_items, key=lambda x: x[1], reverse=True)
+        print(sd)
+        plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb', tick_label=[i[0] for i in sd])
+        plt.title('计算机二级分布图')
+        plt.savefig('计算机二级分布图.png')
+        plt.show()
+
+    def analysis_is_good(self):
+        def get_median(data):
+            data.sort()
+            half = len(data) // 2
+            return (data[half] + data[~half]) / 2
+        sql = "select st_en,st_math,st_phy,st_compyter from students_info"
+        res = self.db_execute(sql)
+        new_en_list = [[],[],[],[]]
+        for item in res:
+            for i in range(len(item)):
+                new_en_list[i].append(item[i])
+        new_en_list_value = [get_median(item) for item in new_en_list]
+        new_en_list_title = ["英语","数学","物理","计算机"]
+        sd = sorted(zip(new_en_list_title, new_en_list_value), key=lambda x: x[1], reverse=True)
+        print(sd)
+        plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb', tick_label=[i[0] for i in sd])
+        plt.title('成绩中位数分布图')
+        plt.savefig('成绩中位数分布图.png')
+        plt.show()
+
+    def analysis_average(self):
+        sql = "select st_en,st_math,st_phy,st_compyter from students_info"
+        res = self.db_execute(sql)
+        new_en_list = [0,0,0,0]
+        for item in res:
+            for i in range(len(item)):
+                new_en_list[i] += item[i]
+        new_en_list_title = ["英语","数学","物理","计算机"]
+        sd = sorted(zip(new_en_list_title, new_en_list), key=lambda x: x[1], reverse=True)
+        print(sd)
+        plt.bar(range(len(sd)), [i[1] for i in sd], color='rgb', tick_label=[i[0] for i in sd])
+        plt.title('平均成绩分布图')
+        plt.savefig('平均成绩分布图.png')
+        plt.show()
+
     def usr_sign_quit(self):
+        """
+        退出的函数
+        :return:
+        """
         self.window.destroy()
 
 
@@ -1229,4 +1423,11 @@ if __name__ == '__main__':
     app = App()
     app.main_page()
     app.run()
+
+    # import random
+    # with open('students.csv', 'wb') as f:
+    #     for i in range(1,1000):
+    #         line = "{},{},{},{},{},{},{}\n".format(i,i,i,random.randint(30,100),random.randint(30,100),
+    #                                                random.randint(30,100),random.randint(30,100))
+    #         f.write(line.encode('utf-8'))
 
