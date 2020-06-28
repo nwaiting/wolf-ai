@@ -6,6 +6,17 @@ from itertools import combinations, permutations
 # 设置小数有效位
 last_flost_bit = 10
 
+def cal_hit_count(substr, bigstr, split_size):
+    split_list = []
+    for i in range(len(bigstr)-split_size+1):
+        split_list.append(bigstr[i:i+split_size])
+    print(split_list)
+    count = 0
+    for item in split_list:
+        if substr == item:
+            count += 1
+    return count
+
 
 def main():
     """
@@ -107,5 +118,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
