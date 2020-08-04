@@ -5,7 +5,9 @@ from lxml import etree
 import re
 
 
-str_set = {'1', '2'}
+str_set = {'辞职',
+           '离开',
+           '结束'}
 
 
 def main(datas):
@@ -50,7 +52,7 @@ def main(datas):
                 item_str = item.xpath('string(./div[@class="c-abstract"])')
                 for set_item in str_set:
                     if re.findall(set_item, item_str):
-                        print('find')
+                        print(item_str)
         except Exception as e:
             print('err {}'.format(e))
         else:
@@ -60,7 +62,7 @@ def main(datas):
 
 
 if __name__ == '__main__':
-    words = ['万科A 王石']
+    words = ['万科A 王石', '沙河股份 杨建达']
     main(words)
 
 
