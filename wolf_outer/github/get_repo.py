@@ -33,11 +33,54 @@ user_agent_list = [
         "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/535.24 (KHTML, like Gecko) Chrome/19.0.1055.1 Safari/535.24",
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36"
     ]
+base_url = 'https://github.com/'
+
+
+def get_headers():
+    headers = {
+        "Host": "github.com",
+        "If-None-Match": 'W/"e13fd2a7072437a5541964a18151f4d7"',
+        "Referer": "{}",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "{}".format(random.choice(user_agent_list))
+    }
+    return headers
 
 
 class PullRequestHandle(object):
-    def __init__(self, pull_url):
-        self._pull_url = pull_url
+    def __init__(self, pull_url_base):
+        self._pull_url_base = pull_url_base
+
+    def get_pages(self):
+        while True:
+            url = '{}/pulls'.format(self._pull_url_base)
+            headers = get_headers()
+            headers["If-None-Match"] = 'W/"cab2ea7c28cbb6326fa6a335326c1d29"'
+            res = requests.get(url, headers=headers)
+            if res.status_code != 200:
+                logger.error("{} status {}".format(url, res.status_code))
+            html = etree.HTML(res.text)
+            for item in html.xpath('//div[@class="js-navigation-container js-active-navigation-container"]/div'):
+                pull_text = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/a/text()')
+                pull_text = pull_text[0] if pull_text else ''
+                pull_url = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/a/@href')
+                pull_url = pull_url[0] if pull_url else ''
+                pull_id = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/a/@id')
+                pull_id = pull_id[0] if pull_id else ''
+                pull_labels = item.xpath('string(.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/span[2])')
+                pull_labels = pull_labels[0] if pull_labels else ''
+                pull_opened_by = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/div/span[1]/text()')
+                pull_opened_by = pull_opened_by[0] if pull_opened_by else ''
+                pull_opened_creater = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/div/span[1]/a/text()')
+                pull_opened_creater = pull_opened_creater[0] if pull_opened_creater else ''
+                pull_time = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/div/span[1]/relative-time/@datetime')
+                pull_time = pull_time[0] if pull_time else ''
+                pull_changes_requested = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/div/span[2]/a/text()')
+                pull_changes_requested = pull_changes_requested[0] if pull_changes_requested else ''
 
     def run(self):
         pass
@@ -52,67 +95,69 @@ class IssueHandle(object):
 
 
 class CommiterHandle(object):
-    def __init__(self, commit_url):
-        self._commit_url = commit_url
+    def __init__(self, version, commit_url_base):
+        self._commit_url_base = commit_url_base
+        self._version = version
+        self._next_page_id = None
+        self._next_page_count = 0
 
-    def get_first_page(self):
-        url = 'https://github.com/tensorflow/tensorflow/commits/{}'.format('')
-        headers = {
-            "Host": "github.com",
-            "If-None-Match": 'W/"e13fd2a7072437a5541964a18151f4d7"',
-            "Referer": "https://github.com/tensorflow/tensorflow",
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "none",
-            "Sec-Fetch-User": "?1",
-            "Upgrade-Insecure-Requests": "1",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36"
-        }
+    def get_pages(self, version):
+        while True:
+            params = None
+            if self._next_page_count:
+                url = '{}/commits/{}'.format(self._commit_url_base, version)
+                params = {
+                    "after": "{} {}".format(self._next_page_id, self._next_page_count),
+                    "branch": "{}".format(self._version)
+                }
+            else:
+                url = '{}/commits/{}'.format(self._commit_url_base, version)
 
-        url = 'https://github.com/tensorflow/tensorflow/commits/master?after=c5e13d84ca6da4bfc6a190c649f35e7c15154121+34&branch=master'
+            headers = get_headers()
+            headers["Referer"] = "{}".format(self._commit_url_base)
 
-        res = requests.get(url, headers=headers)
-        if res.status_code == 200:
-            html = etree.HTML(res.text)
-            li_items = html.xpath('//div[@class="TimelineItem-body"]/ol/li')
-            for li_item in li_items:
-                show_text = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/text()')
-                show_text = show_text[0] if show_text else ''
-                commit_url = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/@href')
-                commit_url = commit_url[0] if commit_url else ''
-                commit_id = os.path.basename(commit_url)
-                commitor = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/a/text()')
-                commitor = commitor[0] if commitor else ''
-                commit_time = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/relative-time/@datetime')
-                commit_time = commit_time[0] if commit_time else ''
-                print("{} = {} = {} = {} = {}".format(commitor, commit_time, commit_id, commit_url, show_text))
+            if params:
+                res = requests.get(url, params=params, headers=headers)
+            else:
+                res = requests.get(url, headers=headers)
+            if res.status_code == 200:
+                html = etree.HTML(res.text)
+                li_items = html.xpath('//div[@class="TimelineItem-body"]/ol/li')
+                index = 0
+                for li_item in li_items:
+                    show_text = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/text()')
+                    show_text = show_text[0] if show_text else ''
+                    commit_url = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/@href')
+                    commit_url = commit_url[0] if commit_url else ''
+                    commit_id = os.path.basename(commit_url)
+                    if index == 0:
+                        self._next_page_id = commit_id
+                        index += 1
+                    commitor = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/a/text()')
+                    commitor = commitor[0] if commitor else ''
+                    commit_time = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/relative-time/@datetime')
+                    commit_time = commit_time[0] if commit_time else ''
+                    print("{} = {} = {} = {} = {}".format(commitor, commit_time, commit_id, commit_url, show_text))
 
     def run(self):
-        pass
+        self.get_pages()
 
 
 class GetRepo(object):
     def __init__(self, repo_url):
         self._repo_url = repo_url
         self._branch_versions = []
+        self.get_versions()
+
         self._commiter_handle = CommiterHandle('')
         self._issue_handle = IssueHandle('')
         self._pull_request_handle = PullRequestHandle('')
 
     def get_versions(self):
         for i in range(1, 200):
-            url = 'https://github.com/tensorflow/tensorflow/branches/all?page={}'.format(i)
-            headers = {
-                "Host": "github.com",
-                "If-None-Match": 'W/"e13fd2a7072437a5541964a18151f4d7"',
-                "Referer": "https://github.com/tensorflow/tensorflow",
-                "Sec-Fetch-Dest": "document",
-                "Sec-Fetch-Mode": "navigate",
-                "Sec-Fetch-Site": "none",
-                "Sec-Fetch-User": "?1",
-                "Upgrade-Insecure-Requests": "1",
-                "User-Agent": random.choice(user_agent_list)
-            }
+            url = '{}/branches/all?page={}'.format(self._repo_url, i)
+            headers = get_headers()
+            headers["Referer"] = "{}".format(self._repo_url)
             res = ''
             try:
                 res = requests.get(url, headers=headers)
@@ -136,6 +181,9 @@ class GetRepo(object):
 
 
 if __name__ == "__main__":
-    get_repo = GetRepo('')
+    get_repo = GetRepo('https://github.com/tensorflow/tensorflow')
     get_repo.run()
+
+
+
 
