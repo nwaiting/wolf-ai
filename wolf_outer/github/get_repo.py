@@ -96,7 +96,7 @@ class SqlModel(object):
         with self.conn as conn, conn.cursor() as cur:
             sql = "insert into tb_basic_info(repo_id,repo_name,commit_count,branch_count,package_count,release_count,contributors_count," \
                   "watch_count,star_count,fork_count,issue_count,pull_request_count,tags_count,license,topic,languages,link,get_ts) " \
-                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)"
             cur.executemany(sql, datas)
 
     def save_release_version(self, datas):
@@ -118,8 +118,13 @@ class SqlModel(object):
             sql = "insert into tb_issues(repo_id,repo_name,issue_id,issue_link,issue_title,issue_label," \
                   "issue_project,issue_milestones,issue_linked_pull_request,open_time,participants,commitors," \
                   "assigners,assignee,issue_network_links,get_ts) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            print(sql)
-            print(datas)
+            cur.executemany(sql, datas)
+
+    def save_pull_requests(self, datas):
+        with self.conn as conn, conn.cursor() as cur:
+            sql = "insert into tb_pull_requests(repo_id,repo_name,pull_request_id,pull_request_link,pull_request_title," \
+                  "pull_request_label,pull_request_project,pull_request_milestones,linked_issue,open_time,participants," \
+                  "commitors,assigners,assignee,get_ts) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             cur.executemany(sql, datas)
 
 
@@ -145,9 +150,41 @@ class PullRequestHandle(SpiderHandleBase):
         self._pull_url_base = pull_url_base
         super(PullRequestHandle, self).__init__(repo_id, repo_name)
 
+    def get_page_details(self, url):
+        result = {}
+        res = None
+        try:
+            url = "{}{}".format(self._request_domain_base, url)
+            logger.info("detail {}".format(url))
+            headers = get_headers(self._pull_url_base)
+            res = requests.get(url, headers=headers)
+        except Exception as e:
+            logger.error("get_page_detail {} err {}".format(url, e))
+            return result
+        finally:
+            self.maybe_sleep_for_while()
+
+        html = etree.HTML(res.text)
+        reviewers = html.xpath('//div[@id="partial-discussion-sidebar"]/div[1]/form/span/p[1]/span/a[2]/span/text()')
+        result["reviewers"] = reviewers[0] if reviewers else ''
+        assignees = html.xpath('//div[@id="partial-discussion-sidebar"]/div[2]/form/span/p[1]/span/a[2]/span/text()')
+        result["assignees"] = assignees[0] if assignees else ''
+        labels = html.xpath('//div[@id="partial-discussion-sidebar"]/div[3]/div[2]/a/span/text()')
+        result["labels"] = ','.join([it.strip('\r\n ') for it in labels])
+        projects = html.xpath('//div[@id="partial-discussion-sidebar"]/div[4]/form/span/div/div[2]/div[1]/div/@aria-label')
+        result["projects"] = projects[0] if projects else ''
+        milestone = html.xpath('//div[@id="partial-discussion-sidebar"]/div[5]/form/text()')
+        result["milestone"] = ','.join([it.strip('\r\n ') for it in milestone])
+        linked_issues = html.xpath('//div[@id="partial-discussion-sidebar"]/div[6]/form/p/text()')
+        result["linked_issues"] = ','.join([it.strip('\r\n ') for it in linked_issues])
+        participants = html.xpath('//div[@id="partial-discussion-sidebar"]/div[7]/div/div[2]/a/img/@alt')
+        result["participants"] = ','.join([it.strip('\r\n ') for it in participants])
+        return result
+
     def get_pages(self):
         for page_type in ('open', 'closed'):
             for i in range(1, 1000):
+                results = []
                 url = '{}/pulls'.format(self._pull_url_base)
                 headers = get_headers(self._pull_url_base)
                 headers["If-None-Match"] = 'W/"cab2ea7c28cbb6326fa6a335326c1d29"'
@@ -159,6 +196,7 @@ class PullRequestHandle(SpiderHandleBase):
 
                 res = None
                 try:
+                    logger.info("start {} {}".format(url, params))
                     res = requests.get(url, params=params, headers=headers)
                     if res.status_code != 200:
                         logger.error("{} status {}".format(url, res.status_code))
@@ -179,6 +217,7 @@ class PullRequestHandle(SpiderHandleBase):
                     pull_text = pull_text[0] if pull_text else ''
                     pull_url = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/a/@href')
                     pull_url = pull_url[0] if pull_url else ''
+                    page_detail = self.get_page_details(pull_url)
                     pull_id = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/a/@id')
                     pull_id = pull_id[0] if pull_id else ''
                     pull_labels = item.xpath('string(.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/span[2])')
@@ -192,10 +231,21 @@ class PullRequestHandle(SpiderHandleBase):
                     pull_changes_requested = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/div/span[2]/a/text()')
                     pull_changes_requested = pull_changes_requested[0] if pull_changes_requested else ''
 
-                    print("{} {} {} {} {} {} {} {}".format(pull_text, pull_url, pull_id, pull_labels, pull_opened_by, pull_opened_creater, pull_time, pull_changes_requested))
+                    results.append((self._repo_id,self._repo_name,pull_id,pull_url,pull_text,
+                                    page_detail.get('labels', ''),page_detail.get('projects', ''),
+                                    page_detail.get('milestone', ''),page_detail.get('linked_issues', ''),
+                                    pull_time,page_detail.get('participants', ''),'',
+                                    page_detail.get('assignees', ''),page_detail.get('assignees', ''),int(time.time())))
+
+                if results:
+                    self._sql_model.save_pull_requests(results)
+                    if len(results) <= 5:
+                        break
+                else:
+                    break
 
     def run(self):
-        pass
+        self.get_pages()
 
 
 class IssueHandle(SpiderHandleBase):
@@ -205,6 +255,7 @@ class IssueHandle(SpiderHandleBase):
 
     def get_page_detail(self, url):
         result = {}
+        res = None
         try:
             url = "{}{}".format(self._request_domain_base, url)
             logger.info("detail {}".format(url))
@@ -215,8 +266,6 @@ class IssueHandle(SpiderHandleBase):
             return result
         finally:
             self.maybe_sleep_for_while()
-
-        write_file(res.text)
 
         html = etree.HTML(res.text)
         item_assignees = html.xpath('//div[@id="partial-discussion-sidebar"]/div[1]/form/span/p/span/a[2]/span/text()')
@@ -613,23 +662,32 @@ class GetRepo(threading.Thread):
             basic_infos = self.get_basic_info()
             self._sql_model.save_basic_info(basic_infos)
 
-            # self.get_release_version()
+            self.get_release_version()
 
-            # tags = self.get_all_tags()
-            # self._commiter_handle = CommiterHandle(tags, self._repo_url, self._repo_id, self._repo_name)
-            # self._commiter_handle.run()
+            tags = self.get_all_tags()
+            self._commiter_handle = CommiterHandle(tags, self._repo_url, self._repo_id, self._repo_name)
+            self._commiter_handle.run()
 
             self._issue_handle = IssueHandle(self._repo_url, self._repo_id, self._repo_name)
-            # self._issue_handle.run()
+            self._issue_handle.run()
 
             self._pull_request_handle = PullRequestHandle(self._repo_url, self._repo_id, self._repo_name)
             self._pull_request_handle.run()
 
 
+def get_tasks(input_queue):
+    file_path = os.path.join(os.path.dirname(os.path.realpath), '300_topic_links.txt')
+    with open(file_path, 'rb') as f:
+        for line in f.readlines():
+            line = line.decode('utf-8').strip('\r\n ')
+            if line:
+                input_queue.put(line)
+
+
 if __name__ == "__main__":
     url_queue = Queue()
-    url_queue.put('https://github.com/tensorflow/tensorflow')
-    threading_count = 1
+    get_tasks(url_queue)
+    threading_count = 10
     threading_objs = []
 
     for i in range(threading_count):

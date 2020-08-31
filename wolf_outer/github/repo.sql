@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS `tb_basic_info` (
     `languages` JSON NULL DEFAULT NULL comment '',
     `link` TEXT NULL DEFAULT NULL comment '',
     `get_ts` BIGINT(20) NULL DEFAULT '0' comment '获取时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    unique index tb_basic_info_repo_name_idx (`repo_name`)
 ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 
@@ -83,19 +84,18 @@ CREATE TABLE IF NOT EXISTS `tb_pull_requests` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `repo_id` VARCHAR(64) NULL DEFAULT NULL comment '',
     `repo_name` VARCHAR(256) NULL DEFAULT NULL comment '',
-    issue_id VARCHAR(64) NULL DEFAULT NULL comment '',
-    issue_link VARCHAR(1024) NULL DEFAULT NULL comment '',
-    issue_title VARCHAR(1024) NULL DEFAULT NULL comment '',
-    issue_label VARCHAR(1024) NULL DEFAULT NULL comment '',
-    issue_project VARCHAR(1024) NULL DEFAULT NULL comment '',
-    issue_milestones VARCHAR(1024) NULL DEFAULT NULL comment '',
-    issue_linked_pull_request VARCHAR(1024) NULL DEFAULT NULL comment '',
+    pull_request_id VARCHAR(64) NULL DEFAULT NULL comment '',
+    pull_request_link VARCHAR(1024) NULL DEFAULT NULL comment '',
+    pull_request_title VARCHAR(1024) NULL DEFAULT NULL comment '',
+    pull_request_label VARCHAR(1024) NULL DEFAULT NULL comment '',
+    pull_request_project VARCHAR(1024) NULL DEFAULT NULL comment '',
+    pull_request_milestones VARCHAR(1024) NULL DEFAULT NULL comment '',
+    linked_issue VARCHAR(1024) NULL DEFAULT NULL comment '',
     open_time VARCHAR(64) NULL DEFAULT NULL comment '',
     participants VARCHAR(64) NULL DEFAULT NULL comment '',
     commitors VARCHAR(1024) NULL DEFAULT NULL comment '',
     assigners VARCHAR(1024) NULL DEFAULT NULL comment '',
     assignee VARCHAR(128) NULL DEFAULT NULL comment '',
-    `issue_network_links` JSON NULL DEFAULT NULL comment '',
     `get_ts` BIGINT(20) NULL DEFAULT '0' comment '获取时间',
     PRIMARY KEY (`id`) USING BTREE
 ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
