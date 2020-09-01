@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `tb_release_version` (
     `id` INT(11) NOT NULL AUTO_INCREMENT,
     `repo_id` VARCHAR(64) NULL DEFAULT NULL comment '',
     `repo_name` VARCHAR(256) NULL DEFAULT NULL comment '',
-    `version_name` VARCHAR(64) NULL DEFAULT NULL comment '',
+    `version_name` VARCHAR(256) NULL DEFAULT NULL comment '',
     `version_id` VARCHAR(64) NULL DEFAULT NULL comment '',
     `release_time` VARCHAR(64) NULL DEFAULT NULL comment '',
     `contributors` JSON NULL DEFAULT NULL comment '',
@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS `tb_release_version` (
     `tag_id` VARCHAR(64) NULL DEFAULT NULL comment '',
     verified VARCHAR(64) NULL DEFAULT NULL comment '',
     `get_ts` BIGINT(20) NULL DEFAULT '0' comment '获取时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `tb_release_version_repo_name_IDX` (`repo_name`) USING BTREE
 ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 
@@ -54,7 +55,8 @@ CREATE TABLE IF NOT EXISTS `tb_commits` (
     checkstatus VARCHAR(64) NULL DEFAULT NULL comment '',
     commit_text text NULL DEFAULT NULL comment '',
     `get_ts` BIGINT(20) NULL DEFAULT '0' comment '获取时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `tb_commits_repo_name_IDX` (`repo_name`) USING BTREE
 ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 
@@ -70,13 +72,14 @@ CREATE TABLE IF NOT EXISTS `tb_issues` (
     issue_milestones VARCHAR(1024) NULL DEFAULT NULL comment '',
     issue_linked_pull_request VARCHAR(1024) NULL DEFAULT NULL comment '',
     open_time VARCHAR(64) NULL DEFAULT NULL comment '',
-    participants VARCHAR(64) NULL DEFAULT NULL comment '',
+    participants VARCHAR(1024) NULL DEFAULT NULL comment '',
     commitors VARCHAR(1024) NULL DEFAULT NULL comment '',
     assigners VARCHAR(1024) NULL DEFAULT NULL comment '',
     assignee VARCHAR(128) NULL DEFAULT NULL comment '',
     `issue_network_links` JSON NULL DEFAULT NULL comment '',
     `get_ts` BIGINT(20) NULL DEFAULT '0' comment '获取时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `tb_issues_repo_name_IDX` (`repo_name`) USING BTREE
 ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 
@@ -92,12 +95,13 @@ CREATE TABLE IF NOT EXISTS `tb_pull_requests` (
     pull_request_milestones VARCHAR(1024) NULL DEFAULT NULL comment '',
     linked_issue VARCHAR(1024) NULL DEFAULT NULL comment '',
     open_time VARCHAR(64) NULL DEFAULT NULL comment '',
-    participants VARCHAR(64) NULL DEFAULT NULL comment '',
+    participants VARCHAR(1024) NULL DEFAULT NULL comment '',
     commitors VARCHAR(1024) NULL DEFAULT NULL comment '',
     assigners VARCHAR(1024) NULL DEFAULT NULL comment '',
     assignee VARCHAR(128) NULL DEFAULT NULL comment '',
     `get_ts` BIGINT(20) NULL DEFAULT '0' comment '获取时间',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `tb_pull_requests_repo_name_IDX` (`repo_name`) USING BTREE
 ) COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
 
 

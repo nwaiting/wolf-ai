@@ -11,8 +11,9 @@ import logging
 import pymysql
 from DBUtils.PersistentDB import PersistentDB
 
-
+log_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "{}.log".format(os.path.basename(__file__)))
 logging.basicConfig(level=logging.INFO,
+    filename=log_file,
     format=('[%(levelname)s %(asctime)s.%(msecs)03d] [%(process)d:%(threadName)s:%(funcName)s:%(lineno)d] %(message)s'),
     datefmt="%Y-%m-%d %H:%M:%S"
 )
@@ -60,6 +61,65 @@ def get_headers(referer):
         "User-Agent": "{}".format(random.choice(user_agent_list))
     }
     return headers
+
+
+class InnerObj(object):
+    def __init__(self, status_code=400, msg='err'):
+        self.status_code = status_code
+        self.msg = msg
+        self.text = ''
+
+
+class ProxyHandler(object):
+    def __init__(self):
+        self._ip_list = []
+        self._current_proxy = self.get_valid_proxy()
+
+    def get_valid_proxy(self):
+        return
+        if not self._ip_list:
+            proxy_list_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "proxies")
+            with open(proxy_list_file, 'rb') as f:
+                for line in f.readlines():
+                    line = line.decode('utf-8').strip('\r\n ')
+                    if line:
+                        self._ip_list.append(line)
+        while True:
+            ip = random.choice(self._ip_list)
+            ip = '220.194.226.136:3128'
+            proxies = {
+                'http': ip,
+                'https': ip
+            }
+            url = 'https://www.baidu.com/'
+            headers = get_headers(url)
+            try:
+                res = requests.get(url, headers=headers, proxies=proxies, timeout=3)
+                if res.status_code == 200:
+                    return proxies
+            except Exception as e:
+                time.sleep(0.2)
+
+    def change_proxy(self):
+        self._current_proxy = self.get_valid_proxy()
+        logger.info("current proxy {}".format(self._current_proxy))
+
+    def get(self, url, params=None, headers=None):
+        self._current_proxy = None
+        for _ in range(3):
+            try:
+                res = requests.get(url, params=params, headers=headers, proxies=self._current_proxy, timeout=5)
+                if int(res.status_code / 100) == 4:
+                    logger.info("{} start change proxy".format(url))
+                    self.change_proxy()
+                    time.sleep(0.2)
+                    continue
+                return res
+            except Exception as e:
+                logger.error("{} {}:{} {}".format(_, url, e, params))
+                self.change_proxy()
+                time.sleep(0.2)
+        return InnerObj()
 
 
 class SqlModel(object):
@@ -133,13 +193,16 @@ class SpiderHandleBase(object):
         self._repo_id = repo_id
         self._repo_name = repo_name
         self._except_try_times = 3
-        self._max_sleep_value = 6
+        self._max_sleep_value = 5
         self._request_domain_base = 'https://github.com'
-
+        self._proxy = ProxyHandler()
         self._sql_model = SqlModel(None)
 
     def maybe_sleep_for_while(self):
         time.sleep(random.uniform(0, self._max_sleep_value))
+
+    def get(self, url, params=None, headers=None):
+        return self._proxy.get(url, params=params, headers=headers)
 
     def save_db(self):
         pass
@@ -157,7 +220,8 @@ class PullRequestHandle(SpiderHandleBase):
             url = "{}{}".format(self._request_domain_base, url)
             logger.info("detail {}".format(url))
             headers = get_headers(self._pull_url_base)
-            res = requests.get(url, headers=headers)
+            res = self.get(url, headers=headers)
+            # res = requests.get(url, headers=headers)
         except Exception as e:
             logger.error("get_page_detail {} err {}".format(url, e))
             return result
@@ -165,6 +229,8 @@ class PullRequestHandle(SpiderHandleBase):
             self.maybe_sleep_for_while()
 
         html = etree.HTML(res.text)
+        if not html:
+            return result
         reviewers = html.xpath('//div[@id="partial-discussion-sidebar"]/div[1]/form/span/p[1]/span/a[2]/span/text()')
         result["reviewers"] = reviewers[0] if reviewers else ''
         assignees = html.xpath('//div[@id="partial-discussion-sidebar"]/div[2]/form/span/p[1]/span/a[2]/span/text()')
@@ -197,7 +263,8 @@ class PullRequestHandle(SpiderHandleBase):
                 res = None
                 try:
                     logger.info("start {} {}".format(url, params))
-                    res = requests.get(url, params=params, headers=headers)
+                    res = self.get(url, params=params, headers=headers)
+                    # res = requests.get(url, params=params, headers=headers)
                     if res.status_code != 200:
                         logger.error("{} status {}".format(url, res.status_code))
                         break
@@ -260,7 +327,8 @@ class IssueHandle(SpiderHandleBase):
             url = "{}{}".format(self._request_domain_base, url)
             logger.info("detail {}".format(url))
             headers = get_headers(self._issue_url_base)
-            res = requests.get(url, headers=headers)
+            res = self.get(url, headers=headers)
+            # res = requests.get(url, headers=headers)
         except Exception as e:
             logger.error("get_page_detail {} err {}".format(url, e))
             return result
@@ -268,6 +336,8 @@ class IssueHandle(SpiderHandleBase):
             self.maybe_sleep_for_while()
 
         html = etree.HTML(res.text)
+        if not html:
+            return result
         item_assignees = html.xpath('//div[@id="partial-discussion-sidebar"]/div[1]/form/span/p/span/a[2]/span/text()')
         result["item_assignees"] = item_assignees[0] if item_assignees else ''
         item_labels = html.xpath('//div[@id="partial-discussion-sidebar"]/div[2]/div[2]/a/span/text()')
@@ -283,7 +353,6 @@ class IssueHandle(SpiderHandleBase):
             result["item_milestones"] = tmp_str
         item_linked_pull_requests = html.xpath('string(//div[@id="partial-discussion-sidebar"]/div[5]/form)')
         if item_linked_pull_requests:
-            print('item_linked_pull_requests={}'.format(item_linked_pull_requests.strip('\r\n ')))
             result["item_linked_pull_requests"] = item_linked_pull_requests.strip('\r\n ')
         item_notifications = html.xpath('//div[@id="partial-discussion-sidebar"]/div[6]/div/p/text()')
         result["item_notifications"] = item_notifications[0] if item_notifications else ''
@@ -314,7 +383,8 @@ class IssueHandle(SpiderHandleBase):
                 res = None
                 try:
                     logger.info("{} {}".format(url, params))
-                    res = requests.get(url, params=params, headers=headers)
+                    res = self.get(url, params=params, headers=headers)
+                    # res = requests.get(url, params=params, headers=headers)
                     if res.status_code != 200:
                         logger.error("{} status {}".format(url, res.status_code))
                         break
@@ -396,10 +466,7 @@ class CommiterHandle(SpiderHandleBase):
                 res = ''
                 try:
                     logger.info("start {} {}".format(url, params))
-                    if params:
-                        res = requests.get(url, params=params, headers=headers)
-                    else:
-                        res = requests.get(url, headers=headers)
+                    res = self.get(url, params=params, headers=headers)
                 except Exception as e:
                     logger.error("{} {} {}".format(self.__class__, url, e))
                     break
@@ -453,10 +520,15 @@ class GetRepo(threading.Thread):
 
         self._sql_model = SqlModel(None)
 
+        self._proxy = ProxyHandler()
+
         self._commiter_handle = None
         self._issue_handle = None
         self._pull_request_handle = None
         super(GetRepo, self).__init__()
+
+    def get(self, url, params=None, headers=None):
+        return self._proxy.get(url, params=params, headers=headers)
 
     def get_basic_info(self):
         results = []
@@ -464,7 +536,8 @@ class GetRepo(threading.Thread):
         res = ''
         try:
             logger.info("basic info {}".format(self._repo_url))
-            res = requests.get(self._repo_url, headers=headers)
+            res = self.get(self._repo_url, headers=headers)
+            # res = requests.get(self._repo_url, headers=headers)
         except Exception as e:
             logger.error("{} msg {}".format(self._repo_url, e))
             return {}
@@ -548,10 +621,7 @@ class GetRepo(threading.Thread):
             res = ''
             try:
                 logger.info("start {} {}".format(url, params))
-                if params:
-                    res = requests.get(url, headers=headers, params=params)
-                else:
-                    res = requests.get(url, headers=headers)
+                res = self.get(url, headers=headers, params=params)
             except Exception as e:
                 logger.error("{} msg {}".format(url, e))
                 return {}
@@ -600,7 +670,8 @@ class GetRepo(threading.Thread):
             headers["Referer"] = "{}".format(self._repo_url)
             res = ''
             try:
-                res = requests.get(url, headers=headers)
+                res = self.get(url, headers=headers)
+                # res = requests.get(url, headers=headers)
             except Exception as e:
                 logger.error("{} msg {}".format(url, e))
                 break
@@ -630,10 +701,7 @@ class GetRepo(threading.Thread):
             res = ''
             try:
                 logger.info("start {} {}".format(url, params))
-                if params:
-                    res = requests.get(url, headers=headers, params=params)
-                else:
-                    res = requests.get(url, headers=headers)
+                res = self.get(url, headers=headers, params=params)
             except Exception as e:
                 logger.error("{} msg {}".format(url, e))
                 return {}
@@ -676,7 +744,7 @@ class GetRepo(threading.Thread):
 
 
 def get_tasks(input_queue):
-    file_path = os.path.join(os.path.dirname(os.path.realpath), '300_topic_links.txt')
+    file_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), '300_topic_links.txt')
     with open(file_path, 'rb') as f:
         for line in f.readlines():
             line = line.decode('utf-8').strip('\r\n ')
