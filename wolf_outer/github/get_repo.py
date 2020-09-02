@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+from requests.auth import HTTPProxyAuth
 from lxml import etree
 import time
 import datetime
@@ -96,7 +97,19 @@ class ProxyHandler(object):
         self._current_proxy = self.get_valid_proxy()
 
     def get_valid_proxy(self):
-        return
+        ""
+        proxies_list = ['', None]
+        select_proxy = random.choice(proxies_list)
+        if select_proxy:
+            self._current_proxy = {
+                'http': "http://{}".format(select_proxy),
+                'https': "https://{}".format(select_proxy)
+            }
+        else:
+            self._current_proxy = None
+        return self._current_proxy
+
+        """
         if not self._ip_list:
             proxy_list_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "proxies")
             with open(proxy_list_file, 'rb') as f:
@@ -106,7 +119,6 @@ class ProxyHandler(object):
                         self._ip_list.append(line)
         while True:
             ip = random.choice(self._ip_list)
-            ip = '220.194.226.136:3128'
             proxies = {
                 'http': ip,
                 'https': ip
@@ -119,13 +131,13 @@ class ProxyHandler(object):
                     return proxies
             except Exception as e:
                 time.sleep(0.2)
+        """
 
     def change_proxy(self):
         self._current_proxy = self.get_valid_proxy()
         logger.info("current proxy {}".format(self._current_proxy))
 
     def get(self, url, params=None, headers=None):
-        self._current_proxy = None
         for _ in range(3):
             try:
                 res = requests.get(url, params=params, headers=headers, proxies=self._current_proxy, timeout=5)
@@ -678,13 +690,16 @@ class GetRepo(threading.Thread):
                 version_id = item.xpath('./div/div[1]/ul/li[1]/a/@title')
                 version_id = version_id[0] if version_id else ''
                 tag_id = version_id
-                next_page_after = version_id
+                if version_id:
+                    next_page_after = version_id
                 verified = item.xpath('./div/div[1]/ul/li[3]/details/summary/text()')
                 verified = verified[0] if verified else 'NOT'
                 link = item.xpath('./div/div[2]/div[1]/div/div/a/@href')
                 link = link[0] if link else ''
                 version_name = item.xpath('./div/div[2]/div[1]/div/div/a/text()')
                 version_name = version_name[0] if version_name else ''
+                if not version_name:
+                    continue
                 release_time = item.xpath('./div/div[2]/div[1]/p/relative-time/@datetime')
                 release_time = release_time[0] if release_time else ''
                 contributors = []
@@ -703,7 +718,7 @@ class GetRepo(threading.Thread):
 
             if results:
                 self._sql_model.save_release_version(results)
-                if len(results) <= 5:
+                if len(results) <= 3:
                     break
             else:
                 break
