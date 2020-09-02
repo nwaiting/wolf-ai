@@ -48,6 +48,26 @@ def write_file(contents):
         f.write(contents.encode('utf-8'))
 
 
+def to_int(s, default=0):
+    if isinstance(s, int):
+        return s
+
+    s = s.strip('\r\n ').replace(',', '')
+    try:
+        return int(s)
+    except:
+        return default
+
+
+def clean_str(s):
+    if isinstance(s, list) and len(s) > 0:
+        s = s[0]
+    if isinstance(s, str):
+        s = s.strip('\r\n ').replace(' ', '')
+        return s
+    return s
+
+
 def get_headers(referer):
     headers = {
         "Host": "github.com",
@@ -169,8 +189,8 @@ class SqlModel(object):
     def save_commits(self, datas):
         with self.conn as conn, conn.cursor() as cur:
             sql = "insert into tb_commits(repo_id,repo_name,tag_id,commit_id,commitor,author," \
-                  "commit_time,link,checkstatus,commit_text,get_ts) " \
-                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+                  "commit_time,link,checkstatus,verified,commit_text,get_ts) " \
+                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
             cur.executemany(sql, datas)
 
     def save_issues(self, datas):
@@ -240,11 +260,23 @@ class PullRequestHandle(SpiderHandleBase):
         projects = html.xpath('//div[@id="partial-discussion-sidebar"]/div[4]/form/span/div/div[2]/div[1]/div/@aria-label')
         result["projects"] = projects[0] if projects else ''
         milestone = html.xpath('//div[@id="partial-discussion-sidebar"]/div[5]/form/text()')
-        result["milestone"] = ','.join([it.strip('\r\n ') for it in milestone])
+        new_milestone = []
+        for it in milestone:
+            it_str = it.strip('\r\n ')
+            if it_str:
+                new_milestone.append(it_str)
+        result["milestone"] = ','.join(new_milestone)
         linked_issues = html.xpath('//div[@id="partial-discussion-sidebar"]/div[6]/form/p/text()')
         result["linked_issues"] = ','.join([it.strip('\r\n ') for it in linked_issues])
         participants = html.xpath('//div[@id="partial-discussion-sidebar"]/div[7]/div/div[2]/a/img/@alt')
-        result["participants"] = ','.join([it.strip('\r\n ') for it in participants])
+        new_participants = []
+        for it in participants:
+            it_str = it.strip('\r\n ')
+            if it_str:
+                if it_str.startswith('@'):
+                    it_str = it_str[1:]
+                new_participants.append(it_str)
+        result["participants"] = ','.join(new_participants)
         return result
 
     def get_pages(self):
@@ -285,8 +317,7 @@ class PullRequestHandle(SpiderHandleBase):
                     pull_url = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/a/@href')
                     pull_url = pull_url[0] if pull_url else ''
                     page_detail = self.get_page_details(pull_url)
-                    pull_id = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/a/@id')
-                    pull_id = pull_id[0] if pull_id else ''
+                    pull_id = to_int(os.path.basename(pull_url))
                     pull_labels = item.xpath('string(.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/span[2])')
                     pull_labels = pull_labels[0] if pull_labels else ''
                     pull_opened_by = item.xpath('.//div[@class="flex-auto min-width-0 p-2 pr-3 pr-md-2"]/div/span[1]/text()')
@@ -359,7 +390,11 @@ class IssueHandle(SpiderHandleBase):
 
         item_participants = []
         for item in html.xpath('//div[@id="partial-discussion-sidebar"]/div[last()]/div/div[2]/a/img/@alt'):
-            item_participants.append(item)
+            item_str = item.strip('\r\n ')
+            if item_str:
+                if item_str.startswith('@'):
+                    item_str = item_str[1:]
+                item_participants.append(item_str)
         result["item_participants"] = ','.join(item_participants) if item_participants else ''
         issue_network_links = []
         for item in html.xpath('//div[@class="TimelineItem js-targetable-element"]'):
@@ -408,11 +443,9 @@ class IssueHandle(SpiderHandleBase):
                     issuse_status = issuse_status[0] if issuse_status else ''
                     issuse_text = item.xpath('./div/div[2]/a/text()')
                     issuse_text = issuse_text[0] if issuse_text else ''
-                    issuse_id = item.xpath('./div/div[2]/a/@id')
-                    issuse_id = issuse_id[0] if issuse_id else ''
-                    issuse_id = issuse_id[issuse_id.find('_')+1:] if issuse_id.find("_") > 0 else ''
                     issuse_url = item.xpath('./div/div[2]/a/@href')
                     issuse_url = issuse_url[0] if issuse_url else ''
+                    issuse_id = os.path.basename(issuse_url)
                     res_details = self.get_page_detail(issuse_url)
                     issuse_labels = item.xpath('./div/div[2]/span/a/text()')
                     issuse_labels = issuse_labels[0] if issuse_labels else ''
@@ -494,10 +527,12 @@ class CommiterHandle(SpiderHandleBase):
                         commit_time = commit_time[0] if commit_time else ''
                         link = li_item.xpath('./div[1]/p/a/@href')
                         link = link[0] if link else ''
-                        checkstatus = li_item.xpath('./ol/li/div[2]/details/summary/text()')
-                        checkstatus = checkstatus[0] if checkstatus else 'NOT'
+                        checkstatus = li_item.xpath('./div[1]/div[last()]/div[last()]/details/summary/@class')
+                        checkstatus = checkstatus[0] if checkstatus else 'None'
+                        verified = li_item.xpath('./div[last()]/details/summary/text()')
+                        verified = clean_str(verified) if verified else 'None'
                         results.append((self._repo_id,self._repo_name,version,commit_id,commitor,author,commit_time,link,
-                                        checkstatus,commit_text,int(time.time())))
+                                        checkstatus,verified,commit_text,int(time.time())))
                     self._next_page_count = len(li_items) - 1
                 if results:
                     self._sql_model.save_commits(results)
@@ -549,36 +584,38 @@ class GetRepo(threading.Thread):
             return results
 
         html = etree.HTML(res.text)
+        if not html:
+            return results
         repo_id = html.xpath('//meta[@name="octolytics-dimension-repository_id"]/@content')
         repo_id = repo_id[0] if repo_id else '0'
         self._repo_id = repo_id
         repo_name = self._repo_name = os.path.basename(self._repo_url)
         issue_count = html.xpath('//ul[@class="UnderlineNav-body list-style-none "]/li[2]/a/span[2]/@title')
-        issue_count = issue_count[0] if issue_count else '0'
+        issue_count = to_int(issue_count[0] if issue_count else '0')
         pull_request_count = html.xpath('//ul[@class="UnderlineNav-body list-style-none "]/li[3]/a/span[2]/@title')
-        pull_request_count = pull_request_count[0] if pull_request_count else '0'
+        pull_request_count = to_int(pull_request_count[0] if pull_request_count else '0')
         branches_count = html.xpath('//div[@class="file-navigation mb-3 d-flex flex-items-start"]/div[2]/a[1]/strong/text()')
-        branches_count = branches_count[0] if branches_count else '0'
+        branches_count = to_int(branches_count[0] if branches_count else '0')
         tags_count = html.xpath('//div[@class="file-navigation mb-3 d-flex flex-items-start"]/div[2]/a[2]/strong/text()')
-        tags_count = tags_count[0] if tags_count else '0'
+        tags_count = to_int(tags_count[0] if tags_count else '0')
         commit_count = html.xpath('//div[@class="flex-shrink-0"]/ul/li/a/span/strong/text()')
-        commit_count = commit_count[0] if commit_count else '0'
-        watch_count = html.xpath('//main[@id="js-repo-pjax-container"]/div[1]/div[1]/ul/li[1]/a[2]/@aria-label')
+        commit_count = to_int(commit_count[0] if commit_count else '0')
+        watch_count = html.xpath('//main[@id="js-repo-pjax-container"]/div[1]/div[1]/ul/li[last()-2]/a[last()]/@aria-label')
         watch_count = watch_count[0] if watch_count else '0'
-        watch_count = watch_count.split()[0]
+        watch_count = to_int(watch_count.split()[0])
 
-        star_count = html.xpath('//main[@id="js-repo-pjax-container"]/div[1]/div[1]/ul/li[2]/a[2]/@aria-label')
+        star_count = html.xpath('//main[@id="js-repo-pjax-container"]/div[1]/div[1]/ul/li[last()-1]/a[last()]/@aria-label')
         star_count = star_count[0] if star_count else '0'
-        star_count = star_count.split()[0]
+        star_count = to_int(star_count.split()[0])
 
-        fork_count = html.xpath('//main[@id="js-repo-pjax-container"]/div[1]/div[1]/ul/li[3]/a[2]/@aria-label')
+        fork_count = html.xpath('//main[@id="js-repo-pjax-container"]/div[1]/div[1]/ul/li[last()]/a[last()]/@aria-label')
         fork_count = fork_count[0] if fork_count else '0'
-        fork_count = fork_count.split()[0]
+        fork_count = to_int(fork_count.split()[0])
 
-        topic = html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[1]/div/div[2]/div/a/text()')
+        topic = html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[1]/div/div//a[@data-octo-click="topic_click"]/text()')
         topic = ','.join([it.strip('\r\n ') for it in topic]) if topic else ''
 
-        license = html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[1]/div/div[4]/a/text()')
+        license = html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[1]/div/div[last()]/a/text()')
         new_license = ''
         if license:
             for it in license:
@@ -587,20 +624,24 @@ class GetRepo(threading.Thread):
         license = new_license
 
         release_count = html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[2]/div/h2/a/span/text()')
-        release_count = release_count[0] if release_count else 0
+        release_count = to_int(release_count[0] if release_count else 0)
 
         packages = html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[3]/div/div/text()')
-        packages = packages[0] if packages else ''
+        packages = to_int(packages[0] if packages else '')
 
         languages = []
-        for language_item in html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[6]/div/ul/li'):
+        for language_item in html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[last()]/div/ul/li'):
             if language_item.xpath('./a/span[1]/text()'):
                 languages.append({
                     language_item.xpath('./a/span[1]/text()')[0]: language_item.xpath('./a/span[2]/text()')[0]
                 })
+            if language_item.xpath('./span/span[1]/text()'):
+                languages.append({
+                    language_item.xpath('./span/span[1]/text()')[0]: language_item.xpath('./span/span[2]/text()')[0]
+                })
 
         contributors = html.xpath('//div[@class="BorderGrid BorderGrid--spacious"]/div[5]/div/h2/a/span/text()')
-        contributors = contributors[0] if contributors else ''
+        contributors = to_int(contributors[0] if contributors else '')
         results.append((repo_id, repo_name, commit_count, branches_count, packages, release_count, contributors,
                         watch_count, star_count, fork_count, issue_count, pull_request_count, tags_count,
                         license, topic, json.dumps(languages), self._repo_url, int(time.time())
@@ -646,7 +687,11 @@ class GetRepo(threading.Thread):
                 version_name = version_name[0] if version_name else ''
                 release_time = item.xpath('./div/div[2]/div[1]/p/relative-time/@datetime')
                 release_time = release_time[0] if release_time else ''
-                contributors = item.xpath('./div/div[2]/div[2]/p[last()]/text()')
+                contributors = []
+                contributors_title = item.xpath('./div/div[2]/div[2]/h2[last()]/text()')
+                if contributors_title:
+                    if contributors_title[0].find('Contributors') > 0:
+                        contributors = item.xpath('./div/div[2]/div[2]/p[last()]/text()')
                 contributors = json.dumps(contributors)
                 documents = item.xpath('string(./div/div[2]/div[2])')
                 documents = documents[0] if documents else ''
@@ -732,12 +777,12 @@ class GetRepo(threading.Thread):
 
             self.get_release_version()
 
-            tags = self.get_all_tags()
-            self._commiter_handle = CommiterHandle(tags, self._repo_url, self._repo_id, self._repo_name)
-            self._commiter_handle.run()
-
-            self._issue_handle = IssueHandle(self._repo_url, self._repo_id, self._repo_name)
-            self._issue_handle.run()
+            # tags = self.get_all_tags()
+            # self._commiter_handle = CommiterHandle(tags, self._repo_url, self._repo_id, self._repo_name)
+            # self._commiter_handle.run()
+            #
+            # self._issue_handle = IssueHandle(self._repo_url, self._repo_id, self._repo_name)
+            # self._issue_handle.run()
 
             self._pull_request_handle = PullRequestHandle(self._repo_url, self._repo_id, self._repo_name)
             self._pull_request_handle.run()
@@ -755,7 +800,7 @@ def get_tasks(input_queue):
 if __name__ == "__main__":
     url_queue = Queue()
     get_tasks(url_queue)
-    threading_count = 10
+    threading_count = 5
     threading_objs = []
 
     for i in range(threading_count):
