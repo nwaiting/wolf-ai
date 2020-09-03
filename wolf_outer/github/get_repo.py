@@ -727,21 +727,21 @@ class GetRepo(threading.Thread):
                 tag_id = version_id
                 if version_id:
                     next_page_after = version_id
-                verified = item.xpath('./div/div[1]/ul/li[3]/details/summary/text()')
-                verified = verified[0] if verified else 'NOT'
-                link = item.xpath('./div/div[2]/div[1]/div/div/a/@href')
+                verified = item.xpath('./div//summary[@title="Commit signature"]/text()')
+                verified = clean_str(verified) if verified else 'NOT'
+                link = item.xpath('.//div[@class="release-header"]/div/div/a/@href')
                 link = link[0] if link else ''
-                version_name = item.xpath('./div/div[2]/div[1]/div/div/a/text()')
+                version_name = item.xpath('.//div[@class="release-header"]/div/div/a/text()')
                 version_name = version_name[0] if version_name else ''
                 if not version_name:
                     continue
-                release_time = item.xpath('./div/div[2]/div[1]/p/relative-time/@datetime')
+                release_time = item.xpath('.//div[@class="release-header"]/p/relative-time/@datetime')
                 release_time = release_time[0] if release_time else ''
                 contributors = []
-                contributors_title = item.xpath('./div/div[2]/div[2]/h2[last()]/text()')
+                contributors_title = item.xpath('.//div[@class="markdown-body"]/h2[last()]/text()')
                 if contributors_title:
                     if contributors_title[0].find('Contributors') > 0:
-                        contributors = item.xpath('./div/div[2]/div[2]/p[last()]/text()')
+                        contributors = item.xpath('.//div[@class="markdown-body"]/p/text()')
                 contributors = json.dumps(contributors)
                 documents = item.xpath('string(./div/div[2]/div[2])')
                 documents = documents[0] if documents else ''
