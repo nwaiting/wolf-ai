@@ -69,6 +69,19 @@ def clean_str(s):
     return s
 
 
+def clean_str_cr(s):
+    if isinstance(s, list) and len(s) > 0:
+        s = s[0]
+    if isinstance(s, str):
+        lines = []
+        for line in s.split('\n'):
+            line = line.strip('\r\n ')
+            if line:
+                lines.append(line)
+        return ','.join(lines)
+    return s
+
+
 def get_headers(referer):
     headers = {
         "Host": "github.com",
@@ -189,35 +202,51 @@ class SqlModel(object):
             sql = "insert into tb_basic_info(repo_id,repo_name,commit_count,branch_count,package_count,release_count,contributors_count," \
                   "watch_count,star_count,fork_count,issue_count,pull_request_count,tags_count,license,topic,languages,link,get_ts) " \
                   "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)"
-            cur.executemany(sql, datas)
+            try:
+                cur.executemany(sql, datas)
+            except Exception as e:
+                logger.error("{} {}".format("save_basic_info", e))
 
     def save_release_version(self, datas):
         with self.conn as conn, conn.cursor() as cur:
             sql = "insert into tb_release_version(repo_id,repo_name,version_name,version_id,release_time,contributors," \
                   "link,release_documents,source_link,tag_id,verified,get_ts) " \
-                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            cur.executemany(sql, datas)
+                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)"
+            try:
+                cur.executemany(sql, datas)
+            except Exception as e:
+                logger.error("{} {}".format("save_release_version", e))
 
     def save_commits(self, datas):
         with self.conn as conn, conn.cursor() as cur:
             sql = "insert into tb_commits(repo_id,repo_name,tag_id,commit_id,commitor,author," \
                   "commit_time,link,checkstatus,verified,commit_text,get_ts) " \
-                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            cur.executemany(sql, datas)
+                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)"
+            try:
+                cur.executemany(sql, datas)
+            except Exception as e:
+                logger.error("{} {}".format("save_commits", e))
 
     def save_issues(self, datas):
         with self.conn as conn, conn.cursor() as cur:
             sql = "insert into tb_issues(repo_id,repo_name,issue_id,issue_link,issue_title,issue_label," \
                   "issue_project,issue_milestones,issue_linked_pull_request,open_time,participants,commitors," \
-                  "assigners,assignee,issue_network_links,get_ts) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            cur.executemany(sql, datas)
+                  "assigners,assignee,issue_network_links,issue_text,get_ts) " \
+                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)"
+            try:
+                cur.executemany(sql, datas)
+            except Exception as e:
+                logger.error("{} {}".format("save_issues", e))
 
     def save_pull_requests(self, datas):
         with self.conn as conn, conn.cursor() as cur:
             sql = "insert into tb_pull_requests(repo_id,repo_name,pull_request_id,pull_request_link,pull_request_title," \
                   "pull_request_label,pull_request_project,pull_request_milestones,linked_issue,open_time,participants," \
-                  "commitors,assigners,assignee,get_ts) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-            cur.executemany(sql, datas)
+                  "commitors,assigners,assignee,get_ts) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)"
+            try:
+                cur.executemany(sql, datas)
+            except Exception as e:
+                logger.error("{} {}".format("save_pull_requests", e))
 
 
 class SpiderHandleBase(object):
@@ -263,24 +292,24 @@ class PullRequestHandle(SpiderHandleBase):
         html = etree.HTML(res.text)
         if not html:
             return result
-        reviewers = html.xpath('//div[@id="partial-discussion-sidebar"]/div[1]/form/span/p[1]/span/a[2]/span/text()')
-        result["reviewers"] = reviewers[0] if reviewers else ''
-        assignees = html.xpath('//div[@id="partial-discussion-sidebar"]/div[2]/form/span/p[1]/span/a[2]/span/text()')
-        result["assignees"] = assignees[0] if assignees else ''
-        labels = html.xpath('//div[@id="partial-discussion-sidebar"]/div[3]/div[2]/a/span/text()')
+        reviewers = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Select reviewers"]/span/p/span//span[@class="css-truncate-target"]/text()')
+        result["reviewers"] = ','.join(reviewers)
+        assignees = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Select assignees"]/span/text()')
+        result["assignees"] = ','.join(assignees) if assignees else ''
+        labels = html.xpath('//div[@id="partial-discussion-sidebar"]//div[@class="labels css-truncate js-issue-labels"]/a/span/text()')
         result["labels"] = ','.join([it.strip('\r\n ') for it in labels])
-        projects = html.xpath('//div[@id="partial-discussion-sidebar"]/div[4]/form/span/div/div[2]/div[1]/div/@aria-label')
+        projects = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Select projects"]/span/div/div[last()]/div[1]/div/@aria-label')
         result["projects"] = projects[0] if projects else ''
-        milestone = html.xpath('//div[@id="partial-discussion-sidebar"]/div[5]/form/text()')
+        milestone = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Select milestones"]/text()')
         new_milestone = []
         for it in milestone:
             it_str = it.strip('\r\n ')
             if it_str:
                 new_milestone.append(it_str)
         result["milestone"] = ','.join(new_milestone)
-        linked_issues = html.xpath('//div[@id="partial-discussion-sidebar"]/div[6]/form/p/text()')
+        linked_issues = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Link issues"]/p/text()')
         result["linked_issues"] = ','.join([it.strip('\r\n ') for it in linked_issues])
-        participants = html.xpath('//div[@id="partial-discussion-sidebar"]/div[7]/div/div[2]/a/img/@alt')
+        participants = html.xpath('//div[@id="partial-discussion-sidebar"]/div[last()]/div/div[last()]/a/img/@alt')
         new_participants = []
         for it in participants:
             it_str = it.strip('\r\n ')
@@ -381,27 +410,27 @@ class IssueHandle(SpiderHandleBase):
         html = etree.HTML(res.text)
         if not html:
             return result
-        item_assignees = html.xpath('//div[@id="partial-discussion-sidebar"]/div[1]/form/span/p/span/a[2]/span/text()')
-        result["item_assignees"] = item_assignees[0] if item_assignees else ''
-        item_labels = html.xpath('//div[@id="partial-discussion-sidebar"]/div[2]/div[2]/a/span/text()')
-        result["item_labels"] = item_labels[0] if item_labels else ''
-        item_projects = html.xpath('//div[@id="partial-discussion-sidebar"]/div[3]/form/span/text()')
+        item_assignees = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Select assignees"]/span/p/span/a[last()]/span/text()')
+        result["item_assignees"] = ','.join(item_assignees)
+        item_labels = html.xpath('//div[@id="partial-discussion-sidebar"]//div[@class="labels css-truncate js-issue-labels"]/a/span/text()')
+        result["item_labels"] = ','.join(item_labels)
+        item_projects = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Select projects"]/span/text()')
         result["item_projects"] = item_projects[0] if item_projects else ''
-        item_milestones = html.xpath('//div[@id="partial-discussion-sidebar"]/div[4]/form/text()')
+        item_milestones = html.xpath('//div[@id="partial-discussion-sidebar"]//form[@aria-label="Select milestones"]/text()')
         if item_milestones:
             tmp_str = ''
             for it in item_milestones:
                 if it.strip('\r\n '):
                     tmp_str += it.strip('\r\n ')
             result["item_milestones"] = tmp_str
-        item_linked_pull_requests = html.xpath('string(//div[@id="partial-discussion-sidebar"]/div[5]/form)')
+        item_linked_pull_requests = html.xpath('string(//div[@id="partial-discussion-sidebar"]//form[@aria-label="Link issues"])')
         if item_linked_pull_requests:
-            result["item_linked_pull_requests"] = item_linked_pull_requests.strip('\r\n ')
-        item_notifications = html.xpath('//div[@id="partial-discussion-sidebar"]/div[6]/div/p/text()')
+            result["item_linked_pull_requests"] = clean_str_cr(item_linked_pull_requests)
+        item_notifications = html.xpath('//div[@id="partial-discussion-sidebar"]/div[last()-1]/div/p/text()')
         result["item_notifications"] = item_notifications[0] if item_notifications else ''
 
         item_participants = []
-        for item in html.xpath('//div[@id="partial-discussion-sidebar"]/div[last()]/div/div[2]/a/img/@alt'):
+        for item in html.xpath('//div[@id="partial-discussion-sidebar"]/div[last()]/div/div[last()]/a/img/@alt'):
             item_str = item.strip('\r\n ')
             if item_str:
                 if item_str.startswith('@'):
@@ -412,6 +441,7 @@ class IssueHandle(SpiderHandleBase):
         for item in html.xpath('//div[@class="TimelineItem js-targetable-element"]'):
             issue_network_links.append(item.xpath('string(./div[2])'))
         result["issue_network_links"] = json.dumps(issue_network_links)
+        result["issue_text"] = html.xpath('string(//div[@class="edit-comment-hide"]/task-lists/table/tbody/tr/td/ul[1])')
         return result
 
     def get_pages(self):
@@ -470,7 +500,8 @@ class IssueHandle(SpiderHandleBase):
                                     res_details.get('item_milestones', ''),res_details.get('item_linked_pull_requests', '')
                                     ,issuse_time,res_details.get('item_participants', ''),issuse_open_author,
                                     res_details.get('item_assignees', ''),res_details.get('item_assignees', ''),
-                                    res_details.get('issue_network_links', ''),int(time.time())))
+                                    res_details.get('issue_network_links', ''),res_details.get('issue_text', ''),
+                                    int(time.time())))
                 if results:
                     self._sql_model.save_issues(results)
                     if len(results) <= 5:
@@ -524,17 +555,21 @@ class CommiterHandle(SpiderHandleBase):
                     index = 0
                     for li_item in li_items:
                         commit_text = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/text()')
-                        commit_text = commit_text[0] if commit_text else ''
+                        commit_text = ','.join(commit_text) if commit_text else ''
                         commit_url = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/@href')
                         commit_url = commit_url[0] if commit_url else ''
                         commit_id = os.path.basename(commit_url)
                         if index == 0:
                             self._next_page_id = commit_id
                             index += 1
-                        author = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/a[1]/text()')
-                        author = author[0] if author else ''
-                        commitor = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/a[2]/text()')
-                        commitor = commitor[0] if commitor else ''
+                        authors = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/a/text()')
+                        commitor = ''
+                        author = ''
+                        if len(authors) == 2:
+                            author = authors[0]
+                            commitor = authors[1]
+                        elif len(authors) == 1:
+                            commitor = authors[0]
                         commit_time = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/relative-time/@datetime')
                         commit_time = commit_time[0] if commit_time else ''
                         link = li_item.xpath('./div[1]/p/a/@href')
@@ -792,12 +827,12 @@ class GetRepo(threading.Thread):
 
             self.get_release_version()
 
-            # tags = self.get_all_tags()
-            # self._commiter_handle = CommiterHandle(tags, self._repo_url, self._repo_id, self._repo_name)
-            # self._commiter_handle.run()
-            #
-            # self._issue_handle = IssueHandle(self._repo_url, self._repo_id, self._repo_name)
-            # self._issue_handle.run()
+            tags = self.get_all_tags()
+            self._commiter_handle = CommiterHandle(tags, self._repo_url, self._repo_id, self._repo_name)
+            self._commiter_handle.run()
+
+            self._issue_handle = IssueHandle(self._repo_url, self._repo_id, self._repo_name)
+            self._issue_handle.run()
 
             self._pull_request_handle = PullRequestHandle(self._repo_url, self._repo_id, self._repo_name)
             self._pull_request_handle.run()
