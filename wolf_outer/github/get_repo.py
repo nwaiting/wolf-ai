@@ -744,7 +744,6 @@ class GetRepo(threading.Thread):
                         contributors = item.xpath('.//div[@class="markdown-body"]/p/text()')
                 contributors = json.dumps(contributors)
                 documents = item.xpath('string(./div/div[2]/div[2])')
-                documents = documents[0] if documents else ''
                 source_link = item.xpath('./div/div[2]/details/div/div/div[1]/a/@href')
                 source_link = source_link[0] if source_link else ''
 
