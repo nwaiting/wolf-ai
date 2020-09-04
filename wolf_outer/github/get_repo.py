@@ -254,7 +254,7 @@ class SpiderHandleBase(object):
         self._repo_id = repo_id
         self._repo_name = repo_name
         self._except_try_times = 3
-        self._max_sleep_value = 5
+        self._max_sleep_value = 4
         self._request_domain_base = 'https://github.com'
         self._proxy = ProxyHandler()
         self._sql_model = SqlModel(None)
@@ -500,7 +500,7 @@ class IssueHandle(SpiderHandleBase):
                                     res_details.get('item_milestones', ''),res_details.get('item_linked_pull_requests', '')
                                     ,issuse_time,res_details.get('item_participants', ''),issuse_open_author,
                                     res_details.get('item_assignees', ''),res_details.get('item_assignees', ''),
-                                    res_details.get('issue_network_links', ''),res_details.get('issue_text', ''),
+                                    res_details.get('issue_network_links', json.dumps([])),res_details.get('issue_text', ''),
                                     int(time.time())))
                 if results:
                     self._sql_model.save_issues(results)
@@ -827,14 +827,19 @@ class GetRepo(threading.Thread):
             self.get_release_version()
 
             tags = self.get_all_tags()
+            handle_list = []
             self._commiter_handle = CommiterHandle(tags, self._repo_url, self._repo_id, self._repo_name)
-            self._commiter_handle.run()
+            handle_list.append(self._commiter_handle)
 
             self._issue_handle = IssueHandle(self._repo_url, self._repo_id, self._repo_name)
-            self._issue_handle.run()
+            handle_list.append(self._issue_handle)
 
             self._pull_request_handle = PullRequestHandle(self._repo_url, self._repo_id, self._repo_name)
-            self._pull_request_handle.run()
+            handle_list.append(self._pull_request_handle)
+
+            random.shuffle(handle_list)
+            for it in handle_list:
+                it.run()
 
 
 def get_tasks(input_queue):
