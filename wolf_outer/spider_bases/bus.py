@@ -4,6 +4,18 @@ import time
 import json
 import re
 from urllib.parse import quote
+import logging
+import random
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+
+
+logging.basicConfig(level=logging.INFO,
+    format=('[%(levelname)s %(asctime)s.%(msecs)03d] [%(process)d:%(threadName)s:%(funcName)s:%(lineno)d] %(message)s'),
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
+logger = logging.getLogger(__file__)
 
 
 class DuGet(object):
@@ -47,10 +59,50 @@ class DuGet(object):
         res_data = requests.get(url, headers=self.headers).json()
         return res_data
 
+    def show(self):
+        # d = DuGet()
+        # res = d.search_keywords('fw9348', 1, 1)
+        # if res['data']['total'] == 1:
+        #     data_info = res['data']['productList'][0]
+        #     print("soldNum:{},price:{},minPrice:{},spuMinPrice:{},{},{}:{}".format(data_info.get('soldNum', '异常'), data_info.get('price', '异常'),
+        #                                                                        data_info.get('minSalePrice', '异常'), data_info.get('spuMinSalePrice', '异常'),
+        #                                                                        data_info.get('articleNumber', '异常'), data_info.get('title', '异常'), data_info.get('subTitle', '异常')))
+        pass
+
+
+class MailNotify(object):
+    @staticmethod
+    def Send(send_list):
+        logger.info("start mail notify thread")
+        mail_host, mail_pass, sender, receivers = 'smtp.qq.com', '', '798990255@qq.com',['798990255@qq.com']
+        send_str_list = []
+        for it in send_list:
+            send_str_list.append("name:{},saleDiscount:{},price:{},marketPrice:{},extern:{},title:{},detail:{}".format(
+                it['name'],it['saleDiscount'],it['price'],it['marketPrice'],it['extern'],it['title'],it['detail']
+            ))
+        contents = '\n\n'.join(send_str_list)
+        message = MIMEText(contents, 'plain', 'utf-8')
+
+        message['From'] = Header("PetStock", 'utf-8')
+        message['To'] = Header("Receiver", 'utf-8')
+
+        subject = 'Goods Info'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        try:
+            smtpObj = smtplib.SMTP_SSL(mail_host, 465)
+            smtpObj.login(sender, mail_pass)
+            smtpObj.sendmail(sender, receivers, message.as_string())
+            smtpObj.quit()
+        except smtplib.SMTPException as e:
+            logger.error('send {} mail error {}'.format(receivers, e))
+        else:
+            logger.info("send {} email success".format(receivers))
+
 
 class VipGet(object):
-    def __init__(self, product_type=None):
-        self.product_type = product_type
+    def __init__(self, pro_dict):
+        self.products_dict = pro_dict
         self.headers = {
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.183 Safari/537.36",
             "referer": "https://list.vip.com/"
@@ -77,6 +129,19 @@ class VipGet(object):
             _: 1604907079000
         """
 
+
+    @staticmethod
+    def get_discount(dis_str):
+        if not dis_str:
+            return 9999
+        dis_str = dis_str.strip('\r\n ')
+        res = dis_str.replace('折', '').replace('起', '')
+        try:
+            return float(res)
+        except Exception as e:
+            logger.error("{} {}".format(dis_str, e))
+        return 9999
+
     def get_cookie(self):
         results = {}
         url = 'https://www.vip.com/'
@@ -95,36 +160,48 @@ class VipGet(object):
             api_key = api_key[1:]
         return results, api_key
 
-    def get_product_ids(self):
-        url = "https://list.vip.com/api-ajax.php"
-        params = {
-            "callback": "getMerchandiseIds",
-            "getPart": "getMerchandiseRankList",
-            "fromIndex": "0",
-            "mInfoNum": "0",
-            "batchSize": "0",
-            "r": "{}".format(self.product_type),
-            "q": "|0||0|0|1",
-            "brandStoreSns": "",
-            "vipService": "",
-            "props": "",
-            "landingOption": "",
-            "preview": "0",
-            "sell_time_from":"",
-            "time_from":"",
-            "token":"",
-            "_": "{}".format(int(time.time()) * 1000)
-        }
-        res = requests.get(url, params=params, headers=self.headers)
-        if res.text.startswith('getMerchandiseIds('):
-            res = json.loads(res.text[len('getMerchandiseIds('):-1])
-        return res['data']['getMerchandiseRankList']['products']
+    def get_product_ids(self, product_type):
+        results_list = []
+        for i in range(1, 6):
+            url = "https://list.vip.com/api-ajax.php"
+            params = {
+                "callback": "getMerchandiseIds",
+                "getPart": "getMerchandiseRankList",
+                "fromIndex": "0",
+                "mInfoNum": "0",
+                "batchSize": "0",
+                "r": "{}".format(product_type),
+                "q": "|0||0|0|{}".format(i),
+                "brandStoreSns": "",
+                "vipService": "",
+                "props": "",
+                "landingOption": "",
+                "preview": "0",
+                "sell_time_from":"",
+                "time_from":"",
+                "token":"",
+                "_": "{}".format(int(time.time()) * 1000)
+            }
+            try:
+                res = requests.get(url, params=params, headers=self.headers)
+                if res.text.startswith('getMerchandiseIds('):
+                    res = json.loads(res.text[len('getMerchandiseIds('):-1])
+                    results_list.extend(res['data']['getMerchandiseRankList']['products'])
+            except Exception as e:
+                logger.error("{}:{} {}".format(url, i, e))
+                break
+            else:
+                time.sleep(random.uniform(0, 3))
 
-    def get_products(self):
+        return results_list
+
+    def get_products(self, product_type):
+        products_infos = []
         cookies, api_key = self.get_cookie()
         cookies['mars_cid'] = '1604906927034_08fa7a00d3c9cd0288978fe43e69bb46'
 
-        product_ids = self.get_product_ids()
+        product_ids = self.get_product_ids(product_type)
+        logger.info("{} products:{}".format(self.products_dict[product_type], len(product_ids)))
 
         ts = int(time.time()) * 1000
         url = 'https://mapi.vip.com/vips-mobile/rest/shopping/pc/product/module/list/v2'
@@ -161,33 +238,57 @@ class VipGet(object):
             if datas.startswith('getMerchandiseDroplets1('):
                 datas = json.loads(datas[len('getMerchandiseDroplets1('):-1])
             for d in datas['data']['products']:
-                print("title:{},price:{},saleDiscount:{},marketPrice:{},extern:{}".format(d['title'],
-                                        d['price']['salePrice'], d['price']['saleDiscount'],
-                                        d['price']['marketPrice'], ','.join([it.get('value', '') for it in d.get('labels', [])])))
-            time.sleep(3)
+                if float(d['price']['salePrice']) < 120 or d['title'].find('鞋') == -1:
+                    continue
+                products_infos.append({
+                    "name": self.products_dict[product_type],
+                    "price": d['price']['salePrice'],
+                    "saleDiscount": d['price']['saleDiscount'],
+                    "marketPrice": d['price']['marketPrice'],
+                    "extern": ','.join([it.get('value', '') for it in d.get('labels', [])]),
+                    "title": d['title'],
+                    "discount": self.get_discount(d['price']['saleDiscount']),
+                    "detail": "https://detail.vip.com/detail-{}-{}.html".format(d['brandId'], d['productId'])
+                })
+            time.sleep(random.uniform(0, 3))
+
+        products_infos.sort(key=lambda x:x['discount'])
+        MailNotify().Send(products_infos)
+        for it in products_infos:
+            logging.info("name:{},saleDiscount:{},price:{},marketPrice:{},extern:{},title:{},detail:{}".format(
+                it['name'],it['saleDiscount'],it['price'],it['marketPrice'],it['extern'],it['title'],it['detail']
+            ))
+
+    def get_detail(self, detail_info):
+        'https://detail.vip.com/detail-1710764153-6918201241854064281.html'
+        url = 'https://detail.vip.com/detail-{}.html'.format(detail_info)
+        requests.get(url, headers=self.headers, )
+
+    def run(self):
+        for k,v in self.products_dict.items():
+            self.get_products(k)
 
 
 if __name__ == '__main__':
-    # d = DuGet()
-    # res = d.search_keywords('fw9348', 1, 1)
-    # if res['data']['total'] == 1:
-    #     data_info = res['data']['productList'][0]
-    #     print("soldNum:{},price:{},minPrice:{},spuMinPrice:{},{},{}:{}".format(data_info.get('soldNum', '异常'), data_info.get('price', '异常'),
-    #                                                                        data_info.get('minSalePrice', '异常'), data_info.get('spuMinSalePrice', '异常'),
-    #                                                                        data_info.get('articleNumber', '异常'), data_info.get('title', '异常'), data_info.get('subTitle', '异常')))
-
-    vip = VipGet('100781402')
-    # vip.get_product_ids()
-    # vip.get_cookie()
-    vip.get_products()
-
-
-
-
-
-
-
-
+    goods_dict = {
+        '100782915': 'VANS',
+        # '100782926': 'fila',
+        '100781402': 'puma',
+        # '100782911': '北面',
+        # '100782929': '鬼冢虎',
+        # '100782903': 'UNDER ARMOUR',
+        '100782927': 'converse',
+        '100782922': 'SKECHERS',
+        '100782928': 'adidas',
+        '100782924': 'Jordan',
+        '100782909': 'nike',
+        '100782939': 'New Balance',
+        '100707713': 'ADIDAS NEO',
+        '100782923': 'adidas',
+        # '100782919': '添柏岚TIMBERLAND',
+    }
+    vip = VipGet(goods_dict)
+    vip.run()
 
 
 
