@@ -23,6 +23,20 @@ logging.basicConfig( level=logging.INFO,
 logger = logging.getLogger(__file__)
 
 
+def to_int(v, default=0):
+    try:
+        return int(v)
+    except:
+        return default
+
+
+def to_float(v, default=0.0):
+    try:
+        return float(v)
+    except:
+        return default
+
+
 class SqlModel(object):
     def __init__(self, host, port, user, passwd, name, charset='utf8mb4'):
         self._db_host = host
@@ -63,8 +77,11 @@ class SqlModel(object):
             sql = 'insert into tb_goods(uuid,brandId,productId,good_id,title,pic,detail,saleDiscount,discount,price,' \
                   'marketPrice,source_extern,source,du_price,du_count,extern,updated_ts,updated_date) ' \
                   'values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-            hownamy = cur.executemany(sql, datas)
-            conn.commit()
+            try:
+                cur.executemany(sql, datas)
+                conn.commit()
+            except Exception as e:
+                logger.error("{} {}".format(e, datas))
 
     def get_goods(self, limit, size, prod_type=None):
         def _format_condition():
@@ -73,7 +90,8 @@ class SqlModel(object):
             if prod_type:
                 where.append('prod_type=%s')
                 args.append(prod_type)
-            where.append('good_id is not NULL')
+            where.append("good_id=''")
+
             where = ('where ' + (' and '.join(where))) if where else ''
             return where, args
 
@@ -124,8 +142,8 @@ class UpdateResults(threading.Thread):
                 time.sleep(1)
                 continue
             item = self.task_queue.get()
-            sql = 'update tb_goods set good_id=%s,du_count=%s,du_price=%s where id=%s'
-            args = [item[1], item[2], item[3], item[0]]
+            sql = 'update tb_goods set good_id=%s,du_count=%s,du_price=%s,extern=%s where id=%s'
+            args = [item[1], item[2], item[3], item[4], item[0]]
             try:
                 self.sql.execute(sql, args)
             except Exception as e:
@@ -177,13 +195,17 @@ class DuGet(threading.Thread):
 
         soldNum = 0
         price = 0
-        if res_data['data']['total'] >= 1:
-            data_info = res_data['data']['productList'][0]
-            soldNum = data_info.get('soldNum', 0)
-            price = data_info.get('price', 0)
+        others = []
+        if res_data['data']['total'] == 1:
+            it = res_data['data']['productList'][0]
+            soldNum = it.get('soldNum', 0)
+            price = it.get('price', 0)
             if price > 0:
                 price = price / 100
-        return soldNum, price
+        elif res_data['data']['total'] > 1 and res_data['data']['total'] < 5:
+            for it in res_data['data']['productList']:
+                others.append({"soldNum":it.get('soldNum'), "price":it.get('price'), "title":it.get('title')})
+        return soldNum, price, json.dumps(others)
 
     def show(self):
         # d = DuGet()
@@ -243,8 +265,8 @@ class DuGet(threading.Thread):
             items = self.task_queue.get()
             db_id, product_id = items[0], items[1]
             good_id = self.get_detail(product_id)
-            soldNum, price = self.search_keywords(good_id)
-            self.results_queue.put((db_id, good_id, soldNum, price))
+            soldNum, price, others = self.search_keywords(good_id)
+            self.results_queue.put((db_id, good_id, soldNum, price, others))
             time.sleep(random.uniform(0, 2))
 
 
@@ -368,7 +390,7 @@ class VipGet(BaseGet):
 
     def get_product_ids(self, product_type):
         results_list = []
-        for i in range(1, 5):
+        for i in range(1, 20):
             url = "https://list.vip.com/api-ajax.php"
             params = {
                 "callback": "getMerchandiseIds",
@@ -446,11 +468,13 @@ class VipGet(BaseGet):
                 datas = json.loads(datas[len('getMerchandiseDroplets1('):-1])
             products_infos = []
             for d in datas['data']['products']:
+                if d['title'].find('鞋') == -1:
+                    continue
                 products_infos.append(("{}-{}".format(d['brandId'], d['productId']), d['brandId'], d['productId'], '',
                                        d['title'], d['smallImage'],
                                        self.get_detail_url(d['brandId'], d['productId']),d['price']['saleDiscount'],
-                                       self.get_discount(d['price']['saleDiscount']),d['price']['salePrice'],
-                                       d['price']['marketPrice'], ','.join([it.get('value', '') for it in d.get('labels', [])]),
+                                       self.get_discount(d['price']['saleDiscount']), to_float(d['price']['salePrice']),
+                                       to_float(d['price']['marketPrice']), ','.join([it.get('value', '') for it in d.get('labels', [])]),
                                        self.products_dict[product_type], 0, 0, json.dumps({}), int(time.time()), datetime.datetime.now()
                                        ))
 
@@ -472,33 +496,38 @@ class VipGet(BaseGet):
 
 if __name__ == '__main__':
     goods_dict = {
+        '100782909': 'nike',
         '100782915': 'vans',
-        # '100782926': 'fila',
+        '100782928': 'adidas',
+        '100707713': 'adidas_neo',
+        '100782923': 'adidas_sport',
         '100781402': 'puma',
+        '100782927': 'converse',
+        '100782922': 'skechers',
+        '100782924': 'jordan',
+        '100782939': 'new_balance',
         # '100782911': '北面',
         # '100782929': '鬼冢虎',
         # '100782903': 'under_armour',
-        '100782927': 'converse',
-        '100782922': 'skechers',
-        '100782928': 'adidas',
-        '100782924': 'jordan',
-        '100782909': 'nike',
-        '100782939': 'new_balance',
-        '100707713': 'adidas_neo',
-        '100782923': 'adidas_sport',
+        # '100782926': 'fila',
         # '100782919': 'timberland',
     }
 
     works = []
     tasks = Queue(1000)
     results = Queue(1000)
-    vip = VipGet(goods_dict, '192.168.64.128', 3306, 'root', 'abcd.1234', 'goods')
+    dbhost = '192.168.2.129'
+    dbport = 3306
+    dbuser = ''
+    dbpwd = ''
+    db = 'goods'
+    vip = VipGet(goods_dict, dbhost, dbport, dbuser, dbpwd, db)
     works.append(vip)
 
-    update_result = UpdateResults(results, '192.168.64.128', 3306, 'root', 'abcd.1234', 'goods')
+    update_result = UpdateResults(results, dbhost, dbport, dbuser, dbpwd, db)
     works.append(update_result)
 
-    generator_task = GeneratorTask(tasks, '192.168.64.128', 3306, 'root', 'abcd.1234', 'goods')
+    generator_task = GeneratorTask(tasks, dbhost, dbport, dbuser, dbpwd, db)
     works.append(generator_task)
 
     for _ in range(3):
