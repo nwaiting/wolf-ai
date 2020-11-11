@@ -18,7 +18,9 @@ CREATE TABLE IF NOT EXISTS `tb_goods` (
     `extern` JSON NULL DEFAULT NULL COMMENT 'extern',
     `updated_ts` BIGINT(20) NULL DEFAULT NULL,
     `updated_date` DATETIME NULL DEFAULT NULL,
+    `updated_day` VARCHAR(16) NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
+    UNIQUE INDEX `tb_goods_uuid_price_source_updated_day_IDX` (`uuid`, `price`, `source`, `updated_day`) USING BTREE,
     INDEX `tb_goods_uuid_IDX` (`uuid`) USING BTREE,
     INDEX `tb_goods_discount_IDX` (`discount`) USING BTREE,
     INDEX `tb_goods_updated_ts_IDX` (`updated_ts`) USING BTREE
