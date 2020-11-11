@@ -162,16 +162,16 @@ class GeneratorTask(threading.Thread):
     def run(self):
         logger.info("start thread {}".format(self.__class__))
         while True:
-            if self.task_queue.qsize() > 100 and self.task_queue_du.qsize() > 100:
+            if self.task_queue.qsize() > 1 and self.task_queue_du.qsize() > 1:
                 time.sleep(1)
                 continue
 
-            if self.task_queue.qsize() < 100:
+            if self.task_queue.qsize() <= 1:
                 res = self.sql.get_goods(0, 20)
                 for it in res:
                     self.task_queue.put((it['id'], it['productId']))
 
-            if self.task_queue_du.qsize() < 100:
+            if self.task_queue_du.qsize() <= 1:
                 res = self.sql.get_good_ids(0, 20)
                 for it in res:
                     self.task_queue_du.put((it['id'], it['good_id']))
@@ -262,6 +262,7 @@ class GoodDetailGet(threading.Thread):
 
     def run(self):
         logger.info("start thread {}".format(self.__class__))
+        statistic_count = 0
         while True:
             if self.task_queue.empty():
                 time.sleep(1)
@@ -270,6 +271,10 @@ class GoodDetailGet(threading.Thread):
             db_id, product_id = items[0], items[1]
             good_id = self.get_detail(product_id)
             self.result_queue.put((db_id, good_id))
+            statistic_count += 1
+            if statistic_count % 100 == 0:
+                logger.info("{} done {}, current {}:{}".format(self.__class__, statistic_count,
+                                                               self.task_queue.qsize(), self.result_queue.qsize()))
             time.sleep(random.uniform(0, 3))
 
 
@@ -343,6 +348,7 @@ class DuGet(threading.Thread):
 
     def run(self):
         logger.info("start thread {}".format(self.__class__))
+        statistic_count = 0
         while True:
             if self.task_queue.empty():
                 time.sleep(1)
@@ -351,6 +357,10 @@ class DuGet(threading.Thread):
             db_id, good_id = items[0], items[1]
             soldNum, price, others = self.search_keywords(good_id)
             self.results_queue.put((db_id, soldNum, price, others))
+            statistic_count += 1
+            if statistic_count % 100 == 0:
+                logger.info("{} done {}, current {}:{}".format(self.__class__, statistic_count,
+                                                               self.task_queue.qsize(), self.results_queue.qsize()))
             time.sleep(random.uniform(0, 3))
 
 
@@ -380,7 +390,7 @@ class MailNotify(threading.Thread):
                                                                              it['delta'],it['saleDiscount'],
                                                                              it['price'],it['du_price'],it['du_count'],
                                                                              it['marketPrice'],it['good_id'],
-                                                                             it['extern'],it['title'],
+                                                                             it['source_extern'],it['title'],
                                                                              it['detail'],it['pic']
             ))
         contents = '\n\n'.join(send_str_list)
