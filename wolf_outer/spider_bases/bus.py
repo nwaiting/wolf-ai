@@ -135,7 +135,7 @@ class SqlModel(object):
             if prod_type:
                 where.append('prod_type=%s')
                 args.append(prod_type)
-            where.append("good_id!=''")
+            where.append("good_id!='' and du_count=0")
 
             where = ('where ' + (' and '.join(where))) if where else ''
             return where, args
@@ -318,7 +318,7 @@ class DuGet(threading.Thread):
              'sortType={}&' \
              'sortMode={}&limit=20&showHot=-1&unionId='.format(sign, quote(keywords), page, sortType, sortMode)
 
-        soldNum = 0
+        soldNum = -1
         price = 0
         others = []
         try:
@@ -523,11 +523,16 @@ class VipGet(BaseGet):
         params = {
             "2017111202": ""
         }
-        res = requests.get(url, headers=self.get_headers(), params=params)
-        re_result = re.search(r'(?<=(api_key:)).*(?=(",))', res.text)
-        api_key = re_result.group().strip('\r\n ')
-        if api_key.startswith('"'):
-            api_key = api_key[1:]
+
+        api_key = ''
+        try:
+            res = requests.get(url, headers=self.get_headers(), params=params)
+            re_result = re.search(r'(?<=(api_key:)).*(?=(",))', res.text)
+            api_key = re_result.group().strip('\r\n ')
+            if api_key.startswith('"'):
+                api_key = api_key[1:]
+        except Exception as e:
+            logger.error("{}:{} {}".format(self.__class__, url, e))
         return results, api_key
 
     def get_product_ids(self, product_type):
@@ -600,16 +605,17 @@ class VipGet(BaseGet):
                 "_": "{}".format(ts)
             }
 
-            # res = requests.get(url, params=params, headers=self.headers, cookies=cookies)
-            res = self.get(url, params=params, headers=self.get_headers(), cookies=self.cookies)
-            datas = res.text
-            if datas.startswith('getMerchandiseDroplets1('):
-                datas = json.loads(datas[len('getMerchandiseDroplets1('):-1])
             products_infos = []
             try:
+                # res = requests.get(url, params=params, headers=self.headers, cookies=cookies)
+                res = self.get(url, params=params, headers=self.get_headers(), cookies=self.cookies)
+                datas = res.text
+                if datas.startswith('getMerchandiseDroplets1('):
+                    datas = json.loads(datas[len('getMerchandiseDroplets1('):-1])
+
                 for d in datas['data']['products']:
-                    if d['title'].find('鞋') == -1:
-                        continue
+                    # if d['title'].find('鞋') == -1:
+                    #     continue
                     products_infos.append(("{}-{}".format(d['brandId'], d['productId']), d['brandId'], d['productId'], '',
                                            d['title'], d['smallImage'],
                                            self.get_detail_url(d['brandId'], d['productId']),d['price']['saleDiscount'],
@@ -652,11 +658,17 @@ if __name__ == '__main__':
         '100782922': 'skechers',
         '100782924': 'jordan',
         '100782939': 'new_balance',
-        # '100782926': 'fila',
-        # '100782919': 'timberland',
-        # '100782911': '北面',
-        # '100782929': '鬼冢虎',
-        # '100782903': 'under_armour',
+        '100782926': 'fila',
+        '100782919': 'timberland',
+        '100782911': '北面',
+        '100782929': '鬼冢虎',
+        '100782903': 'under_armour',
+        '100707710': '卡西欧CASIO腕表',
+        '100707659': 'COACH箱包',
+        '100782940': 'Champion',
+        '100707702': '浪琴LONGINES腕表',
+        '100707644': '天梭TISSOT腕表',
+        '100707676': 'VERSUS石英表'
     }
 
     works = []
