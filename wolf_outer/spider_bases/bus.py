@@ -162,16 +162,16 @@ class GeneratorTask(threading.Thread):
     def run(self):
         logger.info("start thread {}".format(self.__class__))
         while True:
-            if self.task_queue.qsize() > 1 and self.task_queue_du.qsize() > 1:
+            if self.task_queue.qsize() >= 1 and self.task_queue_du.qsize() >= 1:
                 time.sleep(1)
                 continue
 
-            if self.task_queue.qsize() <= 1:
+            if self.task_queue.qsize() < 1:
                 res = self.sql.get_goods(0, 20)
                 for it in res:
                     self.task_queue.put((it['id'], it['productId']))
 
-            if self.task_queue_du.qsize() <= 1:
+            if self.task_queue_du.qsize() < 1:
                 res = self.sql.get_good_ids(0, 20)
                 for it in res:
                     self.task_queue_du.put((it['id'], it['good_id']))
