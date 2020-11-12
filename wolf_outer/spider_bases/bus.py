@@ -413,10 +413,11 @@ class MailNotify(threading.Thread):
             logger.info("send {} email success".format(self.receivers))
 
     def get_list(self, price_delta, count_delta, limit=0, size=50):
+        now_day = datetime.datetime.now().strftime('%Y-%m-%d')
         sql = 'select title,good_id,saleDiscount,detail,pic,price,du_price,marketPrice,du_count,source_extern,' \
-              '`source`,extern,updated_date from tb_goods ' \
-              'where du_price-price>=%s and du_count>%s order by updated_ts desc limit %s,%s'
-        res = self.sql.execute(sql, [price_delta, count_delta, limit, size])
+              '`source`,extern,updated_date,updated_day from tb_goods ' \
+              'where du_price-price>=%s and du_count>%s and updated_day=%s order by updated_ts desc limit %s,%s'
+        res = self.sql.execute(sql, [price_delta, count_delta, now_day, limit, size])
         for d in res:
             d['delta'] = d['du_price'] - d['price']
         res.sort(key=lambda x:x['delta'], reverse=True)
@@ -425,7 +426,7 @@ class MailNotify(threading.Thread):
     def run(self):
         logger.info("start thread {}".format(self.__class__))
         while True:
-            res = self.get_list(30, 4000)
+            res = self.get_list(60, 1000)
             if len(res) != self.last_count and len(res) > 0:
                 self.send(res)
                 self.last_count = len(res)
