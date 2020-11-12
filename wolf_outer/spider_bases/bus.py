@@ -325,7 +325,7 @@ class DuGet(threading.Thread):
             res_data = requests.get(url, headers=self.headers).json()
             if res_data['data']['total'] == 1:
                 it = res_data['data']['productList'][0]
-                soldNum = it.get('soldNum', 0)
+                soldNum = it.get('soldNum', -1)
                 price = it.get('price', 0)
                 if price > 0:
                     price = price / 100
