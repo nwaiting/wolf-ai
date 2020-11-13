@@ -252,7 +252,7 @@ class GoodDetailGet(threading.Thread):
             "propsVer": "1"
         }
         try:
-            res = requests.get(url, headers=headers, params=params)
+            res = requests.get(url, headers=headers, params=params, timeout=5)
             contents = res.text.replace('detailInfoCB(', '').strip('\r\n ')[:-1]
             c = json.loads(contents)
             return c['data']['product']['merchandiseSn']
@@ -311,18 +311,23 @@ class DuGet(threading.Thread):
     def search_keywords(self, keywords, sortMode=1, sortType=1, page=0):
         # 关键词搜索商品接口
         sign = self.sign('limit20page{}showHot-1sortMode{}sortType{}title{}unionId19bc545a393a25177083d4a748807cc0'.format(page, sortMode, sortType, keywords))
-        url = 'https://app.poizon.com/api/v1/h5/search/fire/search/list?' \
-             'sign={}&' \
-             'title={}&' \
-             'page={}&' \
-             'sortType={}&' \
-             'sortMode={}&limit=20&showHot=-1&unionId='.format(sign, quote(keywords), page, sortType, sortMode)
+        url = 'https://app.poizon.com/api/v1/h5/search/fire/search/list'
+        params = {
+            'sign': sign,
+            'title': quote(keywords),
+            'page': page,
+            'sortType': sortType,
+            'sortMode': sortMode,
+            'limit': '20',
+            'showHot': '-1',
+            'unionId': ''
+        }
 
         soldNum = -1
         price = 0
         others = []
         try:
-            res_data = requests.get(url, headers=self.headers).json()
+            res_data = requests.get(url, headers=self.headers, params=params, timeout=5).json()
             if res_data['data']['total'] == 1:
                 it = res_data['data']['productList'][0]
                 soldNum = it.get('soldNum', -1)
@@ -452,7 +457,7 @@ class BaseGet(threading.Thread):
     def get(self, url, headers=None, params=None, cookies=None):
         for _ in range(3):
             try:
-                return requests.get(url, headers=headers, params=params, cookies=cookies)
+                return requests.get(url, headers=headers, params=params, cookies=cookies, timeout=5)
             except Exception as e:
                 logger.error("{} {}".format(url, e))
                 time.sleep(random.uniform(0, 3))
@@ -527,7 +532,7 @@ class VipGet(BaseGet):
 
         api_key = ''
         try:
-            res = requests.get(url, headers=self.get_headers(), params=params)
+            res = self.get(url, headers=self.get_headers(), params=params)
             re_result = re.search(r'(?<=(api_key:)).*(?=(",))', res.text)
             api_key = re_result.group().strip('\r\n ')
             if api_key.startswith('"'):
