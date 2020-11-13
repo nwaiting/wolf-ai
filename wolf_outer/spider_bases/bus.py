@@ -434,7 +434,7 @@ class MailNotify(threading.Thread):
 
     def get_discount_list(self, max_discount, min_marketPrice, limit=0, size=50):
         now_day = datetime.datetime.now().strftime('%Y-%m-%d')
-        sql = 'select title,good_id,saleDiscount,detail,pic,price,du_price,marketPrice,du_count,source_extern,' \
+        sql = 'select title,good_id,saleDiscount,discount,detail,pic,price,du_price,marketPrice,du_count,source_extern,' \
               '`source`,extern,updated_date,updated_day from tb_goods ' \
               'where discount<%s and marketPrice>%s and updated_day=%s order by updated_ts desc limit %s,%s'
         res = self.sql.execute(sql, [max_discount, min_marketPrice, now_day, limit, size])
