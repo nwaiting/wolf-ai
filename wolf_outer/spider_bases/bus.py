@@ -382,6 +382,7 @@ class MailNotify(threading.Thread):
         self.receivers = _receivers
 
         self.last_count = 0
+        self.last_discount_count = 0
         self.sleep = sleep
         self.sql = SqlModel(_dbhost, _dbport, _dbuser, _dbpwd, _db)
 
@@ -428,13 +429,28 @@ class MailNotify(threading.Thread):
         res.sort(key=lambda x:x['delta'], reverse=True)
         return res
 
+    def get_discount_list(self, max_discount, min_marketPrice, limit=0, size=50):
+        now_day = datetime.datetime.now().strftime('%Y-%m-%d')
+        sql = 'select title,good_id,saleDiscount,detail,pic,price,du_price,marketPrice,du_count,source_extern,' \
+              '`source`,extern,updated_date,updated_day from tb_goods ' \
+              'where discount<%s and marketPrice>%s and updated_day=%s order by updated_ts desc limit %s,%s'
+        res = self.sql.execute(sql, [max_discount, min_marketPrice, now_day, limit, size])
+        for d in res:
+            d['delta'] = d['du_price'] - d['price']
+        res.sort(key=lambda x:x['discount'], reverse=False)
+        return res
+
     def run(self):
         logger.info("start thread {}".format(self.__class__))
         while True:
-            res = self.get_list(60, 1000)
+            res = self.get_list(50, 500)
             if len(res) != self.last_count and len(res) > 0:
                 self.send(res)
                 self.last_count = len(res)
+            res = self.get_discount_list(3, 500)
+            if len(res) != self.last_discount_count and len(res) > 0:
+                self.send(res)
+                self.last_discount_count = len(res)
             time.sleep(self.sleep)
 
 
