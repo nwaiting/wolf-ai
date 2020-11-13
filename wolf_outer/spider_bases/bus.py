@@ -388,7 +388,7 @@ class MailNotify(threading.Thread):
 
         super(MailNotify, self).__init__()
 
-    def send(self, send_list):
+    def send(self, send_list, header=None):
         send_str_list = []
         for it in send_list:
             send_str_list.append("name:{},delta:{},saleDiscount:{},price:{},du_price:{},du_count:{},marketPrice:{},"
@@ -399,7 +399,10 @@ class MailNotify(threading.Thread):
                                                                              it['source_extern'],it['title'],
                                                                              it['detail'],it['pic']
             ))
-        contents = '\n\n'.join(send_str_list)
+        if header:
+            contents = "{}:".format(header) + '\n\n'.join(send_str_list)
+        else:
+            contents = '\n\n'.join(send_str_list)
         message = MIMEText(contents, 'plain', 'utf-8')
 
         message['From'] = Header("GoodsInfo", 'utf-8')
@@ -449,7 +452,7 @@ class MailNotify(threading.Thread):
                 self.last_count = len(res)
             res = self.get_discount_list(3, 500)
             if len(res) != self.last_discount_count and len(res) > 0:
-                self.send(res)
+                self.send(res, 'discount')
                 self.last_discount_count = len(res)
             time.sleep(self.sleep)
 
