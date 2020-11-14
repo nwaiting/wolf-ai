@@ -216,9 +216,10 @@ class UpdateResults(threading.Thread):
 
 
 class GoodDetailGet(threading.Thread):
-    def __init__(self, task_q, result_q):
+    def __init__(self, task_q, result_q, sleep=4):
         self.task_queue = task_q
         self.result_queue = result_q
+        self.sleep =sleep
         super(GoodDetailGet, self).__init__()
 
     def get_detail(self, productId, api_key='70f71280d5d547b2a7bb370a529aeea1'):
@@ -275,13 +276,14 @@ class GoodDetailGet(threading.Thread):
             if statistic_count % 100 == 0:
                 logger.info("{} done {}, current {}:{}".format(self.__class__, statistic_count,
                                                                self.task_queue.qsize(), self.result_queue.qsize()))
-            time.sleep(random.uniform(0, 3))
+            time.sleep(random.uniform(0, self.sleep))
 
 
 class DuGet(threading.Thread):
-    def __init__(self, task_q, results_q):
+    def __init__(self, task_q, results_q, sleep=4):
         self.task_queue = task_q
         self.results_queue = results_q
+        self.sleep = sleep
         self.headers = {
                'Host': "app.poizon.com",
                'User-Agent': "{} MicroMessenger/7.0.4.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat".format(random.choice(user_agent_list)),
@@ -366,7 +368,7 @@ class DuGet(threading.Thread):
             if statistic_count % 100 == 0:
                 logger.info("{} done {}, current {}:{}".format(self.__class__, statistic_count,
                                                                self.task_queue.qsize(), self.results_queue.qsize()))
-            time.sleep(random.uniform(0, 3))
+            time.sleep(random.uniform(0, self.sleep))
 
 
 class MailNotify(threading.Thread):
@@ -515,9 +517,12 @@ class VipGet(BaseGet):
 
     def init(self):
         cookies, api_key = self.get_cookie()
+        if not cookies:
+            return False
         cookies['mars_cid'] = '1604906927034_08fa7a00d3c9cd0288978fe43e69bb46'
         self.cookies = cookies
         self.api_key = api_key
+        return True
 
     def get_detail_url(self, brandId, productId):
         return "https://detail.vip.com/detail-{}-{}.html".format(brandId, productId)
@@ -665,7 +670,12 @@ class VipGet(BaseGet):
         #     ))
 
     def run(self):
-        self.init()
+        while True:
+            res = self.init()
+            if not res:
+                time.sleep(2)
+            else:
+                break
 
         for k, v in self.products_dict.items():
             self.get_products(k)
@@ -674,26 +684,30 @@ class VipGet(BaseGet):
 if __name__ == '__main__':
     goods_dict = {
         '100782909': 'nike',
+        '100781965': 'nike_sport',
         '100782915': 'vans',
         '100782928': 'adidas',
         '100707713': 'adidas_neo',
         '100782923': 'adidas_sport',
         '100781402': 'puma',
+        '100796138': 'puma_sport',
         '100782927': 'converse',
         '100782922': 'skechers',
         '100782924': 'jordan',
+        '100787685': 'skechers_sport',
         '100782939': 'new_balance',
+        '100786078': 'new_balance_sport',
         '100782926': 'fila',
         '100782919': 'timberland',
         '100782911': '北面',
         '100782929': '鬼冢虎',
         '100782903': 'under_armour',
-        '100707710': '卡西欧CASIO腕表',
-        '100707659': 'COACH箱包',
-        '100782940': 'Champion',
-        '100707702': '浪琴LONGINES腕表',
-        '100707644': '天梭TISSOT腕表',
-        '100707676': 'VERSUS石英表'
+        # '100707710': '卡西欧CASIO腕表',
+        # '100707659': 'COACH箱包',
+        # '100782940': 'Champion',
+        # '100707702': '浪琴LONGINES腕表',
+        # '100707644': '天梭TISSOT腕表',
+        # '100707676': 'VERSUS石英表'
     }
 
     works = []
