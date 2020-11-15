@@ -372,7 +372,8 @@ class DuGet(threading.Thread):
 
 
 class MailNotify(threading.Thread):
-    def __init__(self, _dbhost, _dbport, _dbuser, _dbpwd, _db, _mail_host, _mail_pass, _sender, _receivers, sleep=30):
+    def __init__(self, _dbhost, _dbport, _dbuser, _dbpwd, _db, _mail_host, _mail_pass,
+                 _sender, _receivers, _params, _sleep=30):
         self.dbhost = _dbhost
         self.dbport = _dbport
         self.dbuser = _dbuser
@@ -382,10 +383,11 @@ class MailNotify(threading.Thread):
         self.mail_pass = _mail_pass
         self.sender = _sender
         self.receivers = _receivers
+        self.params = _params
 
         self.last_count = 0
         self.last_discount_count = 0
-        self.sleep = sleep
+        self.sleep = _sleep
         self.sql = SqlModel(_dbhost, _dbport, _dbuser, _dbpwd, _db)
 
         super(MailNotify, self).__init__()
@@ -448,11 +450,11 @@ class MailNotify(threading.Thread):
     def run(self):
         logger.info("start thread {}".format(self.__class__))
         while True:
-            res = self.get_list(50, 500)
+            res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500))
             if len(res) != self.last_count and len(res) > 0:
                 self.send(res)
                 self.last_count = len(res)
-            res = self.get_discount_list(3, 500)
+            res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
             if len(res) != self.last_discount_count and len(res) > 0:
                 self.send(res, 'discount')
                 self.last_discount_count = len(res)
@@ -733,7 +735,13 @@ if __name__ == '__main__':
     generator_task = GeneratorTask(tasks_detail, tasks_du, dbhost, dbport, dbuser, dbpwd, db)
     works.append(generator_task)
 
-    mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailpwd, mailsender, mailreceivers)
+    params = {
+        "delta": 100,
+        "delta_count": 1000,
+        "discount": 3,
+        "discount_count": 1000
+    }
+    mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailpwd, mailsender, mailreceivers, params)
     works.append(mail_task)
 
     for _ in range(4):
