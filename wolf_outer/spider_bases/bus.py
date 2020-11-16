@@ -467,15 +467,67 @@ class BaseGet(threading.Thread):
         self.dbport = _dbport
         self.dbuser = _dbuser
         self.dbpwd = _dbpwd
+        self.cookies = None
+        self.api_key = None
         self.db = _db
         self.sql = SqlModel(_dbhost, _dbport, _dbuser, _dbpwd, _db)
         super(BaseGet, self).__init__()
+
+    def init(self):
+        cookies, api_key = self.get_cookie()
+        if not cookies:
+            return False
+        self.cookies = cookies
+        self.api_key = api_key
+        return True
 
     def get_headers(self):
         return {
             "user-agent": random.choice(user_agent_list),
             "referer": "https://list.vip.com/"
         }
+
+    def get_detail_url(self, brandId, productId):
+        return "https://detail.vip.com/detail-{}-{}.html".format(brandId, productId)
+
+    @staticmethod
+    def get_discount(dis_str):
+        if not dis_str:
+            return 9999
+        dis_str = dis_str.strip('\r\n ')
+        res = dis_str.replace('折', '').replace('起', '')
+        try:
+            return float(res)
+        except Exception as e:
+            logger.error("{} {}".format(dis_str, e))
+        return 9999
+
+    def get_cookie(self):
+        results = {}
+        url = 'https://www.vip.com/'
+        # res = requests.get(url, headers=self.headers)
+        res = self.get(url, headers=self.get_headers())
+        if not res:
+            return None, None
+        for cookie in res.cookies:
+            results[cookie.name] = cookie.value
+        results['mars_cid'] = '1604906927034_08fa7a00d3c9cd0288978fe43e69bb46'
+
+        url = 'https://shop.vipstatic.com/js/public/core3.1.0-hash-1a0a48d2.js'
+        params = {
+            "2017111202": ""
+        }
+
+        api_key = ''
+        try:
+            res = self.get(url, headers=self.get_headers(), params=params)
+            re_result = re.search(r'(?<=(api_key:)).*(?=(",))', res.text)
+            api_key = re_result.group().strip('\r\n ')
+            if api_key.startswith('"'):
+                api_key = api_key[1:]
+        except Exception as e:
+            logger.error("{}:{} {}".format(self.__class__, url, e))
+        return results, api_key
 
     def get(self, url, headers=None, params=None, cookies=None):
         for _ in range(3):
@@ -513,59 +565,7 @@ class VipGet(BaseGet):
             context: 
             _: 1604907079000
         """
-        self.cookies = None
-        self.api_key = None
         super(VipGet, self).__init__(dbhost, dbport, dbuser, dbpwd, db)
-
-    def init(self):
-        cookies, api_key = self.get_cookie()
-        if not cookies:
-            return False
-        cookies['mars_cid'] = '1604906927034_08fa7a00d3c9cd0288978fe43e69bb46'
-        self.cookies = cookies
-        self.api_key = api_key
-        return True
-
-    def get_detail_url(self, brandId, productId):
-        return "https://detail.vip.com/detail-{}-{}.html".format(brandId, productId)
-
-    @staticmethod
-    def get_discount(dis_str):
-        if not dis_str:
-            return 9999
-        dis_str = dis_str.strip('\r\n ')
-        res = dis_str.replace('折', '').replace('起', '')
-        try:
-            return float(res)
-        except Exception as e:
-            logger.error("{} {}".format(dis_str, e))
-        return 9999
-
-    def get_cookie(self):
-        results = {}
-        url = 'https://www.vip.com/'
-        # res = requests.get(url, headers=self.headers)
-        res = self.get(url, headers=self.get_headers())
-        if not res:
-            return None, None
-        for cookie in res.cookies:
-            results[cookie.name] = cookie.value
-
-        url = 'https://shop.vipstatic.com/js/public/core3.1.0-hash-1a0a48d2.js'
-        params = {
-            "2017111202": ""
-        }
-
-        api_key = ''
-        try:
-            res = self.get(url, headers=self.get_headers(), params=params)
-            re_result = re.search(r'(?<=(api_key:)).*(?=(",))', res.text)
-            api_key = re_result.group().strip('\r\n ')
-            if api_key.startswith('"'):
-                api_key = api_key[1:]
-        except Exception as e:
-            logger.error("{}:{} {}".format(self.__class__, url, e))
-        return results, api_key
 
     def get_product_ids(self, product_type):
         results_list = []
@@ -664,13 +664,6 @@ class VipGet(BaseGet):
                 logger.info("add {} {}".format(self.products_dict[product_type], len(products_infos)))
             time.sleep(random.uniform(0, 3))
 
-        # products_infos.sort(key=lambda x:x['discount'])
-        # MailNotify().Send(products_infos)
-        # for it in products_infos:
-        #     logging.info("name:{},saleDiscount:{},price:{},marketPrice:{},extern:{},title:{},detail:{}".format(
-        #         it['name'],it['saleDiscount'],it['price'],it['marketPrice'],it['extern'],it['title'],it['detail']
-        #     ))
-
     def run(self):
         while True:
             res = self.init()
@@ -681,6 +674,135 @@ class VipGet(BaseGet):
 
         for k, v in self.products_dict.items():
             self.get_products(k)
+
+
+class SearchVIPGet(BaseGet):
+    def __init__(self, _keys_list, dbhost, dbport, dbuser, dbpwd, db):
+        self.keys_list = _keys_list
+        super(SearchVIPGet, self).__init__(dbhost, dbport, dbuser, dbpwd, db)
+
+    def get_ids(self, key_word):
+        results_list = []
+        for i in range(1):
+            url = "https://mapi.vip.com/vips-mobile/rest/shopping/pc/search/product/rank"
+            params = {
+                "callback": "getMerchandiseIds",
+                "app_name": "shop_pc",
+                "app_version": "4.0",
+                "warehouse": "VIP_SH",
+                "fdc_area_id": "931101113121",
+                "client": "pc",
+                "mobile_platform": "1",
+                "province_id": "103101",
+                "api_key": self.api_key,
+                "user_id": "",
+                "mars_cid": "1605533789294_e23f274b271b6897ed83c52cad62f1f0",
+                "wap_consumer": "a",
+                "standby_id": "nature",
+                "keyword": key_word,
+                "lv3CatIds": "",
+                "lv2CatIds": "",
+                "lv1CatIds": "",
+                "brandStoreSns": "",
+                "props": "",
+                "priceMin": "",
+                "priceMax": "",
+                "vipService": "",
+                "sort": "0",
+                "pageOffset": "0",
+                "channelId": "1",
+                "gPlatform": "PC",
+                "batchSize": "120",
+                "_": "{}".format(int(time.time()) * 1000)
+            }
+            try:
+                res = self.get(url, headers=self.get_headers(), params=params)
+                res_json = {}
+                find_str = 'getMerchandiseIds('
+                if res.text.startswith(find_str):
+                    res_json = json.loads(res.text[len(find_str):-1])
+
+                results_list.extend([it['pid'] for it in res_json['data']['products']])
+                logger.info("{} get ids {}:{}".format(self.__class__, key_word, len(results_list)))
+            except Exception as e:
+                logger.error("{} {}:{} {}".format(self.__class__, url, i, e))
+                break
+            else:
+                time.sleep(random.uniform(0, 3))
+        return results_list
+
+    def get_products(self, key_word):
+        product_ids = self.get_ids(key_word)
+        logger.info("{} {} products:{}".format(self.__class__, key_word, len(product_ids)))
+
+        ts = int(time.time()) * 1000
+        url = 'https://mapi.vip.com/vips-mobile/rest/shopping/pc/product/module/list/v2'
+
+        for i_index in range(100):
+            begin_index = i_index * 50
+            end_index = (i_index + 1) * 50
+            if begin_index >= len(product_ids):
+                break
+            params = {
+                "callback": "getMerchandiseDroplets1",
+                "app_name": "shop_pc",
+                "app_version": "4.0",
+                "warehouse": "VIP_SH",
+                "fdc_area_id": "103101101",
+                "client": "pc",
+                "mobile_platform": "1",
+                "province_id": "103101",
+                "api_key": "{}".format(self.api_key),
+                "user_id": "",
+                "mars_cid": "1604906927034_08fa7a00d3c9cd0288978fe43e69bb46",
+                "wap_consumer": "a",
+                "productIds": '{}'.format(','.join(product_ids[begin_index:end_index])),
+                "scene": "brand",
+                "standby_id": "nature",
+                "extParams": json.dumps({"multiBrandStore": "", "stdSizeVids": "", "subjectId": "", "brandId": "", "preheatTipsVer": "3",
+                            "couponVer": "v2", "exclusivePrice": "1", "iconSpec": "2x"}),
+                "context":"",
+                "_": "{}".format(ts)
+            }
+
+            products_infos = []
+            try:
+                # res = requests.get(url, params=params, headers=self.headers, cookies=cookies)
+                res = self.get(url, params=params, headers=self.get_headers(), cookies=self.cookies)
+                datas = res.text
+                if datas.startswith('getMerchandiseDroplets1('):
+                    datas = json.loads(datas[len('getMerchandiseDroplets1('):-1])
+
+                for d in datas['data']['products']:
+                    # if d['title'].find('鞋') == -1:
+                    #     continue
+                    products_infos.append(("{}-{}".format(d['brandId'], d['productId']), d['brandId'], d['productId'], '',
+                                           d['title'], d['smallImage'],
+                                           self.get_detail_url(d['brandId'], d['productId']),d['price']['saleDiscount'],
+                                           self.get_discount(d['price']['saleDiscount']), to_float(d['price']['salePrice']),
+                                           to_float(d['price']['marketPrice']), ','.join([it.get('value', '') for it in d.get('labels', [])]),
+                                           "search_{}".format(key_word), 0, 0, json.dumps({}), int(time.time()),
+                                           datetime.datetime.now(), datetime.datetime.now().strftime("%Y-%m-%d")
+                                           ))
+            except Exception as e:
+                logger.error("{}:{}:{}".format(self.__class__, url, e))
+
+            if products_infos:
+                self.save(products_infos)
+                logger.info("add {} {}".format("search_{}".format(key_word), len(products_infos)))
+            time.sleep(random.uniform(0, 4))
+
+    def run(self):
+        logger.info("start thread {}".format(self.__class__))
+        while True:
+            res = self.init()
+            if not res:
+                time.sleep(2)
+            else:
+                break
+
+        for it in self.keys_list:
+            self.get_products(it)
 
 
 if __name__ == '__main__':
@@ -711,6 +833,14 @@ if __name__ == '__main__':
         # '100707644': '天梭TISSOT腕表',
         # '100707676': 'VERSUS石英表'
     }
+
+    search_list = [
+        'ah2613',
+        '李宁',
+        'adidas',
+        'zoom',
+        'm2k'
+    ]
 
     works = []
     tasks_detail = Queue(1000)
@@ -743,6 +873,9 @@ if __name__ == '__main__':
     }
     mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailpwd, mailsender, mailreceivers, params)
     works.append(mail_task)
+
+    search_vip = SearchVIPGet(search_list, dbhost, dbport, dbuser, dbpwd, db)
+    works.append(search_vip)
 
     for _ in range(4):
         d = DuGet(tasks_du, results_du)
