@@ -740,7 +740,7 @@ class SearchVIPGet(BaseGet):
                 logger.error("{} {}:{} {}".format(self.__class__, url, i, e))
                 break
             else:
-                time.sleep(random.uniform(0, 3))
+                time.sleep(random.uniform(0, 4))
         return results_list
 
     def get_products(self, key_word):
@@ -848,10 +848,19 @@ if __name__ == '__main__':
 
     search_list = [
         'ah2613',
-        '李宁',
+        '欧文',
+        '詹姆斯',
+        'boost',
+        '空军一号',
+        '李宁闪击'
+        '李宁音速',
+        '李宁驭帅',
+        '李宁韦德之道',
         'adidas',
         'zoom',
-        'm2k'
+        'm2k',
+        '李宁',
+        'vans 板鞋'
     ]
 
     works = []
