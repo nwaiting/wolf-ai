@@ -386,6 +386,7 @@ class MailNotify(threading.Thread):
         self.params = _params
 
         self.last_count = 0
+        self.lowprice_last_count = 0
         self.last_discount_count = 0
         self.sleep = _sleep
         self.sql = SqlModel(_dbhost, _dbport, _dbuser, _dbpwd, _db)
@@ -454,10 +455,17 @@ class MailNotify(threading.Thread):
             if len(res) != self.last_count and len(res) > 0:
                 self.send(res)
                 self.last_count = len(res)
+
+            res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50))
+            if len(res) != self.lowprice_last_count and len(res) > 0:
+                self.send(res, 'lowprice')
+                self.lowprice_last_count = len(res)
+
             res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
             if len(res) != self.last_discount_count and len(res) > 0:
                 self.send(res, 'discount')
                 self.last_discount_count = len(res)
+
             time.sleep(self.sleep)
 
 
@@ -870,10 +878,12 @@ if __name__ == '__main__':
     works.append(generator_task)
 
     params = {
-        "delta": 100,
+        "delta": 80,
         "delta_count": 1000,
         "discount": 3,
-        "discount_count": 1000
+        "discount_count": 1000,
+        "lowprice_delta": 200,
+        "lowprice_delta_count": 100
     }
     mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailpwd, mailsender, mailreceivers, params)
     works.append(mail_task)
