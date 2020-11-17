@@ -883,7 +883,7 @@ if __name__ == '__main__':
         "discount": 3,
         "discount_count": 1000,
         "lowprice_delta": 200,
-        "lowprice_delta_count": 100
+        "lowprice_delta_count": 20
     }
     mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailpwd, mailsender, mailreceivers, params)
     works.append(mail_task)
