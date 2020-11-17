@@ -723,8 +723,11 @@ class SearchVIPGet(BaseGet):
                 if res.text.startswith(find_str):
                     res_json = json.loads(res.text[len(find_str):-1])
 
-                results_list.extend([it['pid'] for it in res_json['data']['products']])
+                tmp_list = [it['pid'] for it in res_json['data']['products']]
+                results_list.extend(tmp_list)
                 logger.info("{} get ids {}:{}".format(self.__class__, key_word, len(results_list)))
+                if len(tmp_list) < per_count - 10:
+                    break
             except Exception as e:
                 logger.error("{} {}:{} {}".format(self.__class__, url, i, e))
                 break
