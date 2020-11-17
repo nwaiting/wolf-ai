@@ -683,7 +683,8 @@ class SearchVIPGet(BaseGet):
 
     def get_ids(self, key_word):
         results_list = []
-        for i in range(1):
+        for i in range(3):
+            per_count = 200
             url = "https://mapi.vip.com/vips-mobile/rest/shopping/pc/search/product/rank"
             params = {
                 "callback": "getMerchandiseIds",
@@ -709,10 +710,10 @@ class SearchVIPGet(BaseGet):
                 "priceMax": "",
                 "vipService": "",
                 "sort": "0",
-                "pageOffset": "0",
+                "pageOffset": "{}".format(i * per_count),
                 "channelId": "1",
                 "gPlatform": "PC",
-                "batchSize": "120",
+                "batchSize": "{}".format(per_count),
                 "_": "{}".format(int(time.time()) * 1000)
             }
             try:
