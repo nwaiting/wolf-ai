@@ -860,7 +860,13 @@ if __name__ == '__main__':
         'zoom',
         'm2k',
         '李宁',
-        'vans 板鞋'
+        'vans 板鞋',
+        '皮克',
+        'air jordan',
+        'air force',
+        '1970s',
+        'dunk sb',
+        'new balance'
     ]
 
     works = []
