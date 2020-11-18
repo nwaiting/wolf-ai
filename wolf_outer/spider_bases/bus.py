@@ -340,7 +340,7 @@ class DuGet(threading.Thread):
                 for it in res_data['data']['productList']:
                     others.append({"soldNum":it.get('soldNum'), "price":it.get('price'), "title":it.get('title')})
         except Exception as e:
-            logger.error("{}:{} {}".format(self.__class__, url, e))
+            logger.error("{}:{} {} {}".format(self.__class__, url, keywords, e))
         return soldNum, price, json.dumps(others)
 
     def show(self):
@@ -852,7 +852,7 @@ if __name__ == '__main__':
         '詹姆斯',
         'boost',
         '空军一号',
-        '李宁闪击'
+        '李宁闪击',
         '李宁音速',
         '李宁驭帅',
         '李宁韦德之道',
