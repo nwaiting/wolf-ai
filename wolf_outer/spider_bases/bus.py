@@ -866,7 +866,8 @@ if __name__ == '__main__':
         'air force',
         '1970s',
         'dunk sb',
-        'new balance'
+        'new balance',
+        '哥伦比亚'
     ]
 
     works = []
@@ -877,10 +878,10 @@ if __name__ == '__main__':
     dbhost = '192.168.64.128'
     dbport = 3306
     dbuser = 'root'
-    dbpwd = ''
+    dbpwd = 'abcd.1234'
     db = 'goods'
     mailhost = 'smtp.qq.com'
-    mailpwd = ''
+    mailpwd = 'qamydjzxmgclbbcc'
     mailsender = '798990255@qq.com'
     mailreceivers = ['798990255@qq.com']
     vip = VipGet(goods_dict, dbhost, dbport, dbuser, dbpwd, db)
@@ -893,12 +894,12 @@ if __name__ == '__main__':
     works.append(generator_task)
 
     params = {
-        "delta": 80,
+        "delta": 50,
         "delta_count": 1000,
         "discount": 3,
         "discount_count": 1000,
-        "lowprice_delta": 200,
-        "lowprice_delta_count": 20
+        "lowprice_delta": 100,
+        "lowprice_delta_count": 100
     }
     mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailpwd, mailsender, mailreceivers, params)
     works.append(mail_task)
