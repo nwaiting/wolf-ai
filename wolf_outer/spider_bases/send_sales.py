@@ -13,6 +13,7 @@ import os
 import time
 from PIL import Image
 from PIL import ImageDraw, ImageFont
+import shutil
 
 
 user_agent_list = [
@@ -123,6 +124,7 @@ class DuGet(object):
             except Exception as e:
                 logger.error("{}:{} {} {}".format(self.__class__, url, keywords, e))
             finally:
+                logger.info("{} {}".format(keywords, len(others)))
                 time.sleep(random.randint(1, 3))
         return others
 
@@ -144,16 +146,23 @@ class MailNotify(object):
     def sen_images(self, image_list, header=''):
         for ite in image_list:
             with open(ite, 'rb') as f:
-                msgRoot = MIMEMultipart('related')
+                msgRoot = MIMEMultipart()
+                msgRoot['From'] = Header("GoodsPic", 'utf-8')
+                msgRoot['To'] = Header("Receiver", 'utf-8')
+                msgRoot['Subject'] = Header('Goods Pic', 'utf-8')
 
-                message = MIMEText(header, 'plain', 'utf-8')
-                message['From'] = Header("GoodsPic", 'utf-8')
-                message['To'] = Header("Receiver", 'utf-8')
-                message['Subject'] = Header('Goods Pic', 'utf-8')
+                boby = """
+                    <h3>{}</h3>
+                    <p>
+                    <br><img src="cid:image1"></br> 
+                    </p>
+                    <p>
+                """.format(header)
+                message = MIMEText(boby, 'html', 'utf-8')
                 msgRoot.attach(message)
 
                 img = MIMEImage(f.read())
-                img.add_header('Content-ID', 'imageid')
+                img.add_header('Content-ID', '<image1>')
                 msgRoot.attach(img)
 
                 try:
@@ -203,7 +212,8 @@ def merge_pic(per_count=9):
     results_list = []
     im_list = []
     path_base = 'pic'
-    for fn in os.listdir(path_base):
+    file_list = list(os.listdir(path_base))
+    for fn in file_list:
         if fn.endswith('.jpg'):
             # im_list.append(Image.open(os.path.join(path_base, fn)))
             rfind_index = fn.rfind('_')
@@ -212,11 +222,10 @@ def merge_pic(per_count=9):
             # 新建一个空白图片,尺寸与打开图片一样
             txt = Image.new('RGBA', im.size, (0, 0, 0, 0))
             # 设置字体
-            fnt = ImageFont.truetype("c:/Windows/Fonts/Tahoma.ttf", 20)
+            fnt = ImageFont.truetype("c:/Windows/Fonts/Tahoma.ttf", 30)
             # 操作新建的空白图片>>将新建的图片添入画板
             d = ImageDraw.Draw(txt)
             # 在新建的图片上添加字体
-            # d.text((txt.size[0] - 115, txt.size[1] - 80), "测试", font=fnt, fill=(255, 255, 255, 255))
             d.text((txt.size[0] - 450, txt.size[1] - 150), articleNumber, font=fnt, fill=(255, 0, 0, 255))
             # 合并两个图片
             out = Image.alpha_composite(im, txt)
@@ -261,41 +270,31 @@ def merge_pic(per_count=9):
     return results_list
 
 
-def show_water():
-    # 打开图片
-    im = Image.open("./pic/1.jpg").convert('RGBA')
-    # 新建一个空白图片,尺寸与打开图片一样
-    txt = Image.new('RGBA', im.size, (0, 0, 0, 0))
-    # 设置字体
-    fnt = ImageFont.truetype("c:/Windows/Fonts/Tahoma.ttf", 40)
-    # 操作新建的空白图片>>将新建的图片添入画板
-    d = ImageDraw.Draw(txt)
-    # 在新建的图片上添加字体
-    # d.text((txt.size[0] - 115, txt.size[1] - 80), "测试", font=fnt, fill=(255, 255, 255, 255))
-    d.text((txt.size[0] - 115, txt.size[1] - 80), "test", fill=(255, 0, 0, 255))
-    # 合并两个图片
-    out = Image.alpha_composite(im, txt)
-    # out.show()
-    out.save('./pic/test.jpg', 'png')
-
-
 if __name__ == '__main__':
     mailhost = 'smtp.qq.com'
     mailpwd = ''
     mailsender = '798990255@qq.com'
     mailreceivers = ['798990255@qq.com']
     search_list = [
-        "nike"
+        "nike",
+        "adidas",
+        "puma",
+        "new balance",
+        "lining"
     ]
 
     dg = DuGet()
     mn = MailNotify(mailhost, mailpwd, mailsender, mailreceivers)
-    # for ite in search_list:
-    #     results = dg.search_keywords(ite)
-    #     mn.send(results, ite)
-    results_pics = merge_pic(20)
-    mn.sen_images(results_pics)
-    # show_water()
+    for ite in search_list:
+        results = dg.search_keywords(ite)
+        # mn.send(results, ite)
+        results_pics = merge_pic(30)
+        mn.sen_images(results_pics, ite)
+        try:
+            shutil.rmtree('pic')
+            os.mkdir('pic')
+        except:
+            pass
 
 
 
