@@ -812,9 +812,10 @@ class SearchVIPGet(BaseGet):
                 time.sleep(2)
             else:
                 break
-
-        for it in self.keys_list:
-            self.get_products(it)
+        while True:
+            for it in self.keys_list:
+                self.get_products(it)
+            time.sleep(1)
 
 
 if __name__ == '__main__':
