@@ -577,7 +577,7 @@ class VipGet(BaseGet):
 
     def get_product_ids(self, product_type):
         results_list = []
-        for i in range(1, 20):
+        for i in range(1, 80):
             url = "https://list.vip.com/api-ajax.php"
             params = {
                 "callback": "getMerchandiseIds",
@@ -618,7 +618,7 @@ class VipGet(BaseGet):
         ts = int(time.time()) * 1000
         url = 'https://mapi.vip.com/vips-mobile/rest/shopping/pc/product/module/list/v2'
 
-        for i_index in range(100):
+        for i_index in range(200):
             begin_index = i_index * 50
             end_index = (i_index + 1) * 50
             if begin_index >= len(product_ids):
@@ -691,7 +691,7 @@ class SearchVIPGet(BaseGet):
 
     def get_ids(self, key_word):
         results_list = []
-        for i in range(3):
+        for i in range(50):
             per_count = 200
             url = "https://mapi.vip.com/vips-mobile/rest/shopping/pc/search/product/rank"
             params = {
@@ -750,7 +750,7 @@ class SearchVIPGet(BaseGet):
         ts = int(time.time()) * 1000
         url = 'https://mapi.vip.com/vips-mobile/rest/shopping/pc/product/module/list/v2'
 
-        for i_index in range(100):
+        for i_index in range(1000):
             begin_index = i_index * 50
             end_index = (i_index + 1) * 50
             if begin_index >= len(product_ids):
@@ -878,10 +878,10 @@ if __name__ == '__main__':
     dbhost = '192.168.64.128'
     dbport = 3306
     dbuser = 'root'
-    dbpwd = 'abcd.1234'
+    dbpwd = ''
     db = 'goods'
     mailhost = 'smtp.qq.com'
-    mailpwd = 'qamydjzxmgclbbcc'
+    mailpwd = ''
     mailsender = '798990255@qq.com'
     mailreceivers = ['798990255@qq.com']
     vip = VipGet(goods_dict, dbhost, dbport, dbuser, dbpwd, db)

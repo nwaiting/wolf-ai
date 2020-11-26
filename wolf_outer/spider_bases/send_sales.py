@@ -114,11 +114,17 @@ class DuGet(object):
             try:
                 res_data = requests.get(url, headers=self.headers, params=params, timeout=5).json()
                 for item in res_data['data']['productList']:
+                    image_url = item["logoUrl"]
+                    if item["logoUrl"].endswith('.jpg') or item["logoUrl"].endswith('.png'):
+                        image_url = item["logoUrl"]
+                    elif item["brandLogoUrl"].endswith('.jpg') or item["brandLogoUrl"].endswith('.png'):
+                        image_url = item["brandLogoUrl"]
+
                     others.append({
                         "title": "{}({})".format(item['title'], item["articleNumber"]),
                         "price": item["price"]/100,
                         "soldNum": item["soldNum"],
-                        "logoUrl": item["logoUrl"]
+                        "logoUrl": image_url
                     })
                     self.get_pic(item["logoUrl"], item["articleNumber"], int(item["price"]/100), item["soldNum"])
             except Exception as e:
@@ -165,30 +171,31 @@ class MailNotify(object):
                 img.add_header('Content-ID', '<image1>')
                 msgRoot.attach(img)
 
-                try:
-                    smtpObj = smtplib.SMTP_SSL(self.mail_host, 465)
-                    smtpObj.login(self.sender, self.mail_pass)
-                    smtpObj.sendmail(self.sender, self.receivers, msgRoot.as_string())
-                    smtpObj.quit()
-                except smtplib.SMTPException as e:
-                    logger.error('send {} mail error {}'.format(self.receivers, e))
-                else:
-                    logger.info("send {} email success".format(self.receivers))
+                for _ in range(3):
+                    try:
+                        smtpObj = smtplib.SMTP_SSL(self.mail_host, 465)
+                        smtpObj.login(self.sender, self.mail_pass)
+                        smtpObj.sendmail(self.sender, self.receivers, msgRoot.as_string())
+                        smtpObj.quit()
+                    except smtplib.SMTPException as e:
+                        logger.error('send {} mail error {}'.format(self.receivers, e))
+                    else:
+                        logger.info("send {} email success".format(self.receivers))
+                        break
+                    finally:
+                        time.sleep(1)
 
     def send(self, send_list, header=None):
         if not send_list:
             return
         send_str_list = []
         for it in send_list:
-            send_str_list.append("name:{},du_price:{},du_count:{},\nImage:{}".format(it['title'],
-                                                                             it['price'],it['soldNum'],
-                                                                             it['logoUrl']
-            ))
+            send_str_list.append("""<a href={}>{}({}:{})</a><br></br>""".format(it['logoUrl'],it['title'],it['price'],it['soldNum']))
         if header:
             contents = "{}:".format(header) + '\n\n'.join(send_str_list)
         else:
             contents = '\n\n'.join(send_str_list)
-        message = MIMEText(contents, 'plain', 'utf-8')
+        message = MIMEText(contents, 'html', 'utf-8')
 
         message['From'] = Header("GoodsInfo", 'utf-8')
         message['To'] = Header("Receiver", 'utf-8')
@@ -196,15 +203,49 @@ class MailNotify(object):
         subject = 'Goods Info'
         message['Subject'] = Header(subject, 'utf-8')
 
-        try:
-            smtpObj = smtplib.SMTP_SSL(self.mail_host, 465)
-            smtpObj.login(self.sender, self.mail_pass)
-            smtpObj.sendmail(self.sender, self.receivers, message.as_string())
-            smtpObj.quit()
-        except smtplib.SMTPException as e:
-            logger.error('send {} mail error {}'.format(self.receivers, e))
-        else:
-            logger.info("send {} email success".format(self.receivers))
+        for _ in range(3):
+            try:
+                smtpObj = smtplib.SMTP_SSL(self.mail_host, 465)
+                smtpObj.login(self.sender, self.mail_pass)
+                smtpObj.sendmail(self.sender, self.receivers, message.as_string())
+                smtpObj.quit()
+            except smtplib.SMTPException as e:
+                logger.error('send {} mail error {}'.format(self.receivers, e))
+            else:
+                logger.info("send {} email success".format(self.receivers))
+                break
+            finally:
+                time.sleep(1)
+
+    def send_html(self):
+        contents = """
+                    <a href=https://www.baidu.com>name:</a>
+                    <p>du_price:</p>
+                    <p>du_count:</p>
+                    <p>Image:</p>
+        """
+        message = MIMEText(contents, 'html', 'utf-8')
+
+        message['From'] = Header("GoodsInfo", 'utf-8')
+        message['To'] = Header("Receiver", 'utf-8')
+
+        subject = 'Goods Info'
+        message['Subject'] = Header(subject, 'utf-8')
+
+        for _ in range(3):
+            try:
+                smtpObj = smtplib.SMTP_SSL(self.mail_host, 465)
+                smtpObj.login(self.sender, self.mail_pass)
+                smtpObj.sendmail(self.sender, self.receivers, message.as_string())
+                smtpObj.quit()
+            except smtplib.SMTPException as e:
+                logger.error('send {} mail error {}'.format(self.receivers, e))
+            else:
+                logger.info("send {} email success".format(self.receivers))
+                break
+            finally:
+                time.sleep(1)
+
 
 
 def merge_pic(per_count=9):
@@ -279,15 +320,16 @@ if __name__ == '__main__':
         "nike",
         "adidas",
         "puma",
-        "new balance",
-        "lining"
+        "newbalance",
+        "lining",
+        "vans"
     ]
 
     dg = DuGet()
     mn = MailNotify(mailhost, mailpwd, mailsender, mailreceivers)
     for ite in search_list:
         results = dg.search_keywords(ite)
-        # mn.send(results, ite)
+        mn.send(results, ite)
         results_pics = merge_pic(30)
         mn.sen_images(results_pics, ite)
         try:
