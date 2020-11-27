@@ -121,10 +121,11 @@ class DuGet(object):
                         image_url = item["brandLogoUrl"]
 
                     others.append({
-                        "title": "{}({})".format(item['title'], item["articleNumber"]),
+                        "title": item['title'],
                         "price": item["price"]/100,
                         "soldNum": item["soldNum"],
-                        "logoUrl": image_url
+                        "logoUrl": image_url,
+                        "articleNumber": item["articleNumber"]
                     })
                     self.get_pic(item["logoUrl"], item["articleNumber"], int(item["price"]/100), item["soldNum"])
             except Exception as e:
@@ -162,7 +163,6 @@ class MailNotify(object):
                     <p>
                     <br><img src="cid:image1"></br> 
                     </p>
-                    <p>
                 """.format(header)
                 message = MIMEText(boby, 'html', 'utf-8')
                 msgRoot.attach(message)
@@ -190,17 +190,17 @@ class MailNotify(object):
             return
         send_str_list = []
         for it in send_list:
-            send_str_list.append("""<a href={}>{}({}:{})</a><br></br>""".format(it['logoUrl'],it['title'],it['price'],it['soldNum']))
+            send_str_list.append("""<p>{}: <a href={}>{}({}:{})</a><br></br></p>""".format(it['articleNumber'],it['logoUrl'],it['title'],it['price'],it['soldNum']))
         if header:
             contents = "{}:".format(header) + '\n\n'.join(send_str_list)
         else:
             contents = '\n\n'.join(send_str_list)
         message = MIMEText(contents, 'html', 'utf-8')
 
-        message['From'] = Header("GoodsInfo", 'utf-8')
+        message['From'] = Header("GoodsTextDetails", 'utf-8')
         message['To'] = Header("Receiver", 'utf-8')
 
-        subject = 'Goods Info'
+        subject = 'Goods Text Details'
         message['Subject'] = Header(subject, 'utf-8')
 
         for _ in range(3):

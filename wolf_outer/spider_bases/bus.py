@@ -618,7 +618,7 @@ class VipGet(BaseGet):
         ts = int(time.time()) * 1000
         url = 'https://mapi.vip.com/vips-mobile/rest/shopping/pc/product/module/list/v2'
 
-        for i_index in range(200):
+        for i_index in range(10000):
             begin_index = i_index * 50
             end_index = (i_index + 1) * 50
             if begin_index >= len(product_ids):
@@ -680,8 +680,10 @@ class VipGet(BaseGet):
             else:
                 break
 
-        for k, v in self.products_dict.items():
-            self.get_products(k)
+        while True:
+            for k, v in self.products_dict.items():
+                self.get_products(k)
+            time.sleep(1)
 
 
 class SearchVIPGet(BaseGet):
