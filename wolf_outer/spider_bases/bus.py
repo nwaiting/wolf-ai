@@ -198,8 +198,8 @@ class UpdateResults(threading.Thread):
 
             if not self.task_queue.empty():
                 item = self.task_queue.get()
-                sql = 'update tb_goods set good_id=%s where id=%s'
-                args = [item[1], item[0]]
+                sql = 'update tb_goods set good_id=%s, sold_items=%s where id=%s'
+                args = [item[1], item[2], item[0]]
                 try:
                     self.sql.execute_autocommit(sql, args)
                 except Exception as e:
@@ -222,12 +222,39 @@ class GoodDetailGet(threading.Thread):
         self.sleep =sleep
         super(GoodDetailGet, self).__init__()
 
+    def get_headers(self):
+        return {
+                "user-agent": random.choice(user_agent_list),
+                "referer": "https://list.vip.com/"
+                }
+
+    def get_sold_detail(self, productId):
+        url = 'https://stock.vip.com/detail/'
+        params = {
+            "callback": "stock_detail",
+            "merchandiseId": productId,
+            "is_old": "0",
+            "areaId": "103101",
+            "_": "{}".format(int(time.time() * 1000))
+        }
+
+        r = []
+        try:
+            res = requests.get(url, headers=self.get_headers(), params=params, timeout=5)
+            contents = res.text.replace("stock_detail(", '').strip('\r\n ')[:-1]
+            c2 = json.loads(contents)
+            for it in c2['items']:
+                if int(it.get('stock', 0)) > 0:
+                    r.append({
+                        it['name']: it['stock']
+                    })
+            return json.dumps(r)
+        except Exception as e:
+            logger.error("get_sold_detail {}={}={}".format(url, productId, e))
+        return json.dumps(r)
+
     def get_detail(self, productId, api_key='70f71280d5d547b2a7bb370a529aeea1'):
         url = 'https://mapi.vip.com/vips-mobile/rest/shopping/pc/product/detail/v5'
-        headers = {
-            "user-agent": random.choice(user_agent_list),
-            "referer": "https://list.vip.com/"
-        }
         params = {
             "callback": "detailInfoCB",
             "app_name": "shop_pc",
@@ -253,12 +280,12 @@ class GoodDetailGet(threading.Thread):
             "propsVer": "1"
         }
         try:
-            res = requests.get(url, headers=headers, params=params, timeout=5)
+            res = requests.get(url, headers=self.get_headers(), params=params, timeout=5)
             contents = res.text.replace('detailInfoCB(', '').strip('\r\n ')[:-1]
             c = json.loads(contents)
             return c['data']['product']['merchandiseSn']
         except Exception as e:
-            logger.error("{}={}={}={}".format(url, params, productId, e))
+            logger.error("get_detail {}={}={}".format(url, productId, e))
         return ''
 
     def run(self):
@@ -271,7 +298,8 @@ class GoodDetailGet(threading.Thread):
             items = self.task_queue.get()
             db_id, product_id = items[0], items[1]
             good_id = self.get_detail(product_id)
-            self.result_queue.put((db_id, good_id))
+            sold_items = self.get_sold_detail(product_id)
+            self.result_queue.put((db_id, good_id, sold_items))
             statistic_count += 1
             if statistic_count % 100 == 0:
                 logger.info("{} done {}, current {}:{}".format(self.__class__, statistic_count,
@@ -396,19 +424,17 @@ class MailNotify(threading.Thread):
     def send(self, send_list, header=None):
         send_str_list = []
         for it in send_list:
-            send_str_list.append("name:{},delta:{},saleDiscount:{},price:{},du_price:{},du_count:{},marketPrice:{},"
-                                 "good_id:{},extern:{},title:{},detail:{},\nsmallImage:{}".format(it['source'],
-                                                                             it['delta'],it['saleDiscount'],
-                                                                             it['price'],it['du_price'],it['du_count'],
-                                                                             it['marketPrice'],it['good_id'],
-                                                                             it['source_extern'],it['title'],
-                                                                             it['detail'],it['pic']
-            ))
+            tmp_str = """<p>name: {},id: {} delta:{},price:{}/{}({}),du:{}/{},extern:{},sold:{} <a href={}>{}</a>
+            <a href={}>(详情)</a></p>""".format(it['source'],it['good_id'],it['delta'],
+                                                it['price'],it['marketPrice'],it['saleDiscount'],
+                                                it['du_price'],it['du_count'],it['source_extern'],
+                                                it['sold_items'],it['pic'],it['title'],it['detail'])
+            send_str_list.append(tmp_str)
         if header:
-            contents = "{}:".format(header) + '\n\n'.join(send_str_list)
+            contents = "<h3>{}</h3>".format(header) + ''.join(send_str_list)
         else:
-            contents = '\n\n'.join(send_str_list)
-        message = MIMEText(contents, 'plain', 'utf-8')
+            contents = ''.join(send_str_list)
+        message = MIMEText(contents, 'html', 'utf-8')
 
         message['From'] = Header("GoodsInfo", 'utf-8')
         message['To'] = Header("Receiver", 'utf-8')
@@ -429,7 +455,7 @@ class MailNotify(threading.Thread):
     def get_list(self, price_delta, count_delta, limit=0, size=50):
         now_day = datetime.datetime.now().strftime('%Y-%m-%d')
         sql = 'select title,good_id,saleDiscount,detail,pic,price,du_price,marketPrice,du_count,source_extern,' \
-              '`source`,extern,updated_date,updated_day from tb_goods ' \
+              '`source`,extern,sold_items,updated_date,updated_day from tb_goods ' \
               'where du_price-price>=%s and du_count>%s and updated_day=%s order by updated_ts desc limit %s,%s'
         res = self.sql.execute(sql, [price_delta, count_delta, now_day, limit, size])
         for d in res:
@@ -440,7 +466,7 @@ class MailNotify(threading.Thread):
     def get_discount_list(self, max_discount, min_marketPrice, limit=0, size=50):
         now_day = datetime.datetime.now().strftime('%Y-%m-%d')
         sql = 'select title,good_id,saleDiscount,discount,detail,pic,price,du_price,marketPrice,du_count,source_extern,' \
-              '`source`,extern,updated_date,updated_day from tb_goods ' \
+              '`source`,extern,sold_items,updated_date,updated_day from tb_goods ' \
               'where discount<%s and marketPrice>%s and updated_day=%s order by updated_ts desc limit %s,%s'
         res = self.sql.execute(sql, [max_discount, min_marketPrice, now_day, limit, size])
         for d in res:

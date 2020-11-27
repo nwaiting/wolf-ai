@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS `tb_goods` (
     `du_price` float NULL DEFAULT NULL COMMENT 'du price',
     `du_count` INT(11) NULL DEFAULT NULL COMMENT 'du count',
     `extern` JSON NULL DEFAULT NULL COMMENT 'extern',
+    `sold_items` JSON NULL DEFAULT NULL COMMENT '当前详情',
     `updated_ts` BIGINT(20) NULL DEFAULT NULL,
     `updated_date` DATETIME NULL DEFAULT NULL,
     `updated_day` VARCHAR(16) NULL DEFAULT NULL,
@@ -26,4 +27,18 @@ CREATE TABLE IF NOT EXISTS `tb_goods` (
     INDEX `tb_goods_updated_ts_IDX` (`updated_ts`) USING BTREE
 )
 COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;
+
+
+alter table tb_goods add column sold_items JSON NULL DEFAULT NULL comment '当前详情' after extern;
+
+
+
+
+
+
+
+
+
+
+
 
