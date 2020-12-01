@@ -414,7 +414,7 @@ class MailNotify(threading.Thread):
         self.params = _params
 
         self.last_list = []
-        self.lowprice_last_ist = []
+        self.lowprice_last_list = []
         self.last_discount_list = []
         self.sleep = _sleep
         self.sql = SqlModel(_dbhost, _dbport, _dbuser, _dbpwd, _db)
