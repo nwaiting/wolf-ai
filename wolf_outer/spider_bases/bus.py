@@ -413,9 +413,9 @@ class MailNotify(threading.Thread):
         self.receivers = _receivers
         self.params = _params
 
-        self.last_count = 0
-        self.lowprice_last_count = 0
-        self.last_discount_count = 0
+        self.last_list = []
+        self.lowprice_last_ist = []
+        self.last_discount_list = []
         self.sleep = _sleep
         self.sql = SqlModel(_dbhost, _dbport, _dbuser, _dbpwd, _db)
 
@@ -478,19 +478,19 @@ class MailNotify(threading.Thread):
         logger.info("start thread {}".format(self.__class__))
         while True:
             res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500))
-            if len(res) != self.last_count and len(res) > 0:
+            if res != self.last_list and len(res) > 0:
                 self.send(res)
-                self.last_count = len(res)
+                self.last_list = res[:]
 
             res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50))
-            if len(res) != self.lowprice_last_count and len(res) > 0:
+            if res != self.lowprice_last_list and len(res) > 0:
                 self.send(res, 'lowprice')
-                self.lowprice_last_count = len(res)
+                self.lowprice_last_list = res[:]
 
             res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
-            if len(res) != self.last_discount_count and len(res) > 0:
+            if res != self.last_discount_list and len(res) > 0:
                 self.send(res, 'discount')
-                self.last_discount_count = len(res)
+                self.last_discount_list = res[:]
 
             time.sleep(self.sleep)
 
@@ -877,25 +877,40 @@ if __name__ == '__main__':
 
     search_list = [
         'ah2613',
+        '羽绒服',
         '欧文',
+        'adidas三叶草',
+        'adidas三叶草羽绒服',
+        'adidas三叶草裤子',
+        'adidas三叶草卫衣',
+        'adidas羽绒服',
         '詹姆斯',
         'boost',
         '空军一号',
+        'nike羽绒服',
+        'nike卫衣',
+        'nike裤子',
         '李宁闪击',
         '李宁音速',
         '李宁驭帅',
         '李宁韦德之道',
         'adidas',
         'zoom',
+        'adidas三叶草羽绒服',
         'm2k',
         '李宁',
+        '李宁卫衣',
+        '李宁裤子',
+        '李宁羽绒服',
         'vans 板鞋',
         '皮克',
+        '皮克羽绒服',
         'air jordan',
         'air force',
         '1970s',
         'dunk sb',
-        'new balance',
+        'newbalance',
+        'newbalance羽绒服',
         '哥伦比亚'
     ]
 
