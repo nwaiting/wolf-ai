@@ -413,9 +413,9 @@ class MailNotify(threading.Thread):
         self.receivers = _receivers
         self.params = _params
 
-        self.last_list = []
-        self.lowprice_last_list = []
-        self.last_discount_list = []
+        self.last_list = set()
+        self.lowprice_last_list = set()
+        self.last_discount_list = set()
         self.sleep = _sleep
         self.sql = SqlModel(_dbhost, _dbport, _dbuser, _dbpwd, _db)
 
@@ -424,10 +424,11 @@ class MailNotify(threading.Thread):
     def send(self, send_list, header=None):
         send_str_list = []
         for it in send_list:
-            tmp_str = """<p>name: {},id: {} delta:{},price:{}/{}({}),du:{}/{},extern:{},sold:{} <a href={}>{}</a>
+            tmp_str = """<p>name: {},id: {} delta:{},price:{}/{}({}),du:{}/{},extern:{},new:{},sold:{} <a href={}>{}</a>
             <a href={}>(详情)</a></p>""".format(it['source'],it['good_id'],it['delta'],
                                                 it['price'],it['marketPrice'],it['saleDiscount'],
                                                 it['du_price'],it['du_count'],it['source_extern'],
+                                                it.get('new', 0),
                                                 it['sold_items'],it['pic'],it['title'],it['detail'])
             send_str_list.append(tmp_str)
         if header:
@@ -477,20 +478,38 @@ class MailNotify(threading.Thread):
     def run(self):
         logger.info("start thread {}".format(self.__class__))
         while True:
-            res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500))
-            if res != self.last_list and len(res) > 0:
+            res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500), 100)
+            is_send = False
+            for it in res:
+                tmp_key = "{}_{}".format(it['good_id'], it['price'])
+                if tmp_key not in self.last_list:
+                    self.last_list.add(tmp_key)
+                    it['new'] = 1
+                    is_send = True
+            if is_send:
                 self.send(res)
-                self.last_list = res[:]
 
-            res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50))
-            if res != self.lowprice_last_list and len(res) > 0:
+            res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50), 100)
+            is_send = False
+            for it in res:
+                tmp_key = "{}_{}".format(it['good_id'], it['price'])
+                if tmp_key not in self.lowprice_last_list:
+                    self.lowprice_last_list.add(tmp_key)
+                    it['new'] = 1
+                    is_send = True
+            if is_send:
                 self.send(res, 'lowprice')
-                self.lowprice_last_list = res[:]
 
             res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
-            if res != self.last_discount_list and len(res) > 0:
+            is_send = False
+            for it in res:
+                tmp_key = "{}_{}".format(it['good_id'], it['price'])
+                if tmp_key not in self.last_discount_list:
+                    self.last_discount_list.add(tmp_key)
+                    it['new'] = 1
+                    is_send = True
+            if is_send:
                 self.send(res, 'discount')
-                self.last_discount_list = res[:]
 
             time.sleep(self.sleep)
 
