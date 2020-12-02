@@ -478,7 +478,7 @@ class MailNotify(threading.Thread):
     def run(self):
         logger.info("start thread {}".format(self.__class__))
         while True:
-            res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500), 100)
+            res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500), size=100)
             is_send = False
             for it in res:
                 tmp_key = "{}_{}".format(it['good_id'], it['price'])
@@ -489,7 +489,7 @@ class MailNotify(threading.Thread):
             if is_send:
                 self.send(res)
 
-            res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50), 100)
+            res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50), size=100)
             is_send = False
             for it in res:
                 tmp_key = "{}_{}".format(it['good_id'], it['price'])
@@ -500,16 +500,16 @@ class MailNotify(threading.Thread):
             if is_send:
                 self.send(res, 'lowprice')
 
-            res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
-            is_send = False
-            for it in res:
-                tmp_key = "{}_{}".format(it['good_id'], it['price'])
-                if tmp_key not in self.last_discount_list:
-                    self.last_discount_list.add(tmp_key)
-                    it['new'] = 1
-                    is_send = True
-            if is_send:
-                self.send(res, 'discount')
+            # res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
+            # is_send = False
+            # for it in res:
+            #     tmp_key = "{}_{}".format(it['good_id'], it['price'])
+            #     if tmp_key not in self.last_discount_list:
+            #         self.last_discount_list.add(tmp_key)
+            #         it['new'] = 1
+            #         is_send = True
+            # if is_send:
+            #     self.send(res, 'discount')
 
             time.sleep(self.sleep)
 
@@ -960,7 +960,7 @@ if __name__ == '__main__':
         "delta": 50,
         "delta_count": 1000,
         "discount": 3,
-        "discount_count": 1000,
+        "discount_count": 300,
         "lowprice_delta": 100,
         "lowprice_delta_count": 100
     }
