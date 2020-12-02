@@ -486,7 +486,7 @@ class MailNotify(threading.Thread):
                     it['new'] = 1
                     is_send = True
             if is_send:
-                res.sort(key=lambda x: (x['new'], x['delta']), reverse=True)
+                res.sort(key=lambda x: (x.get('new', 0), x['delta']), reverse=True)
                 self.send(res)
 
             res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50), size=100)
@@ -498,7 +498,7 @@ class MailNotify(threading.Thread):
                     it['new'] = 1
                     is_send = True
             if is_send:
-                res.sort(key=lambda x: (x['new'], x['delta']), reverse=True)
+                res.sort(key=lambda x: (x.get('new', 0), x['delta']), reverse=True)
                 self.send(res, 'lowprice')
 
             # res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
