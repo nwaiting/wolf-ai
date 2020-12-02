@@ -461,7 +461,6 @@ class MailNotify(threading.Thread):
         res = self.sql.execute(sql, [price_delta, count_delta, now_day, limit, size])
         for d in res:
             d['delta'] = d['du_price'] - d['price']
-        res.sort(key=lambda x:x['delta'], reverse=True)
         return res
 
     def get_discount_list(self, max_discount, min_marketPrice, limit=0, size=50):
@@ -487,6 +486,7 @@ class MailNotify(threading.Thread):
                     it['new'] = 1
                     is_send = True
             if is_send:
+                res.sort(key=lambda x: (x['new'], x['delta']), reverse=True)
                 self.send(res)
 
             res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50), size=100)
@@ -498,6 +498,7 @@ class MailNotify(threading.Thread):
                     it['new'] = 1
                     is_send = True
             if is_send:
+                res.sort(key=lambda x: (x['new'], x['delta']), reverse=True)
                 self.send(res, 'lowprice')
 
             # res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
@@ -899,7 +900,9 @@ if __name__ == '__main__':
         '羽绒服',
         '欧文',
         'adidas三叶草',
+        'fila',
         'adidas三叶草羽绒服',
+        'fila羽绒服'
         'adidas三叶草裤子',
         'adidas三叶草卫衣',
         'adidas羽绒服',
@@ -957,10 +960,10 @@ if __name__ == '__main__':
     works.append(generator_task)
 
     params = {
-        "delta": 50,
-        "delta_count": 1000,
+        "delta": 80,
+        "delta_count": 100,
         "discount": 3,
-        "discount_count": 300,
+        "discount_count": 100,
         "lowprice_delta": 100,
         "lowprice_delta_count": 100
     }
