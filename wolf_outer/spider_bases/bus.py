@@ -114,6 +114,8 @@ class SqlModel(object):
         def _format_condition():
             where = []
             args = []
+            where.append('updated_day=%s')
+            args.append(datetime.datetime.now().strftime('%Y-%m-%d'))
             if prod_type:
                 where.append('prod_type=%s')
                 args.append(prod_type)
@@ -132,6 +134,8 @@ class SqlModel(object):
         def _format_condition():
             where = []
             args = []
+            where.append('updated_day=%s')
+            args.append(datetime.datetime.now().strftime('%Y-%m-%d'))
             if prod_type:
                 where.append('prod_type=%s')
                 args.append(prod_type)
@@ -889,7 +893,7 @@ if __name__ == '__main__':
         '100782903': 'under_armour',
         # '100707710': '卡西欧CASIO腕表',
         # '100707659': 'COACH箱包',
-        # '100782940': 'Champion',
+        '100782940': 'Champion',
         # '100707702': '浪琴LONGINES腕表',
         # '100707644': '天梭TISSOT腕表',
         # '100707676': 'VERSUS石英表'
@@ -898,12 +902,14 @@ if __name__ == '__main__':
     search_list = [
         'ah2613',
         '羽绒服',
+        'timberland',
         '欧文',
         'adidas三叶草',
         'fila',
         'adidas三叶草羽绒服',
         'fila羽绒服'
         'adidas三叶草裤子',
+        'champion',
         'adidas三叶草卫衣',
         'adidas羽绒服',
         '詹姆斯',
@@ -933,7 +939,8 @@ if __name__ == '__main__':
         'dunk sb',
         'newbalance',
         'newbalance羽绒服',
-        '哥伦比亚'
+        '哥伦比亚',
+        'anta'
     ]
 
     works = []
@@ -960,7 +967,7 @@ if __name__ == '__main__':
     works.append(generator_task)
 
     params = {
-        "delta": 80,
+        "delta": 70,
         "delta_count": 100,
         "discount": 3,
         "discount_count": 100,
