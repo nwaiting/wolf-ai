@@ -480,6 +480,7 @@ class MailNotify(threading.Thread):
 
     def run(self):
         logger.info("start thread {}".format(self.__class__))
+        now_day = datetime.datetime.now().strftime("%Y-%m-%d")
         while True:
             res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500), size=100)
             is_send = False
@@ -517,6 +518,10 @@ class MailNotify(threading.Thread):
             #     self.send(res, 'discount')
 
             time.sleep(self.sleep)
+            if now_day != datetime.datetime.now().strftime("%Y-%m-%d"):
+                self.last_list = set()
+                self.lowprice_last_list = set()
+                now_day = datetime.datetime.now().strftime("%Y-%m-%d")
 
 
 class BaseGet(threading.Thread):
