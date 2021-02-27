@@ -16,11 +16,21 @@ import datetime
 import threading
 from queue import Queue
 
-logging.basicConfig( level=logging.INFO,
+logging.basicConfig(level=logging.INFO,
     format=('[%(levelname)s %(asctime)s.%(msecs)03d] [%(process)d:%(threadName)s:%(funcName)s:%(lineno)d] %(message)s'),
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 logger = logging.getLogger(__file__)
+
+
+def get_proxy():
+    select_proxy_address = '182.96.170.113:65000'
+    requests_proxy = {
+        'http': "http://0902gl1t1m651:0902gl1t1m651@{}".format(select_proxy_address),
+        'https': "https://0902gl1t1m651:0902gl1t1m651@{}".format(select_proxy_address)
+    }
+    requests_proxy = None
+    return requests_proxy
 
 
 user_agent_list = [
@@ -244,7 +254,10 @@ class GoodDetailGet(threading.Thread):
 
         r = []
         try:
-            res = requests.get(url, headers=self.get_headers(), params=params, timeout=5)
+            if get_proxy():
+                res = requests.get(url, headers=self.get_headers(), params=params, timeout=5, proxies=get_proxy())
+            else:
+                res = requests.get(url, headers=self.get_headers(), params=params, timeout=5)
             contents = res.text.replace("stock_detail(", '').strip('\r\n ')[:-1]
             c2 = json.loads(contents)
             for it in c2['items']:
@@ -284,7 +297,10 @@ class GoodDetailGet(threading.Thread):
             "propsVer": "1"
         }
         try:
-            res = requests.get(url, headers=self.get_headers(), params=params, timeout=5)
+            if get_proxy():
+                res = requests.get(url, headers=self.get_headers(), params=params, timeout=5, proxies=get_proxy())
+            else:
+                res = requests.get(url, headers=self.get_headers(), params=params, timeout=5)
             contents = res.text.replace('detailInfoCB(', '').strip('\r\n ')[:-1]
             c = json.loads(contents)
             return c['data']['product']['merchandiseSn']
@@ -361,7 +377,10 @@ class DuGet(threading.Thread):
         price = 0
         others = []
         try:
-            res_data = requests.get(url, headers=self.headers, params=params, timeout=5).json()
+            if get_proxy():
+                res_data = requests.get(url, headers=self.headers, params=params, timeout=5, proxies=get_proxy()).json()
+            else:
+                res_data = requests.get(url, headers=self.headers, params=params, timeout=5).json()
             if res_data['data']['total'] == 1:
                 it = res_data['data']['productList'][0]
                 soldNum = it.get('soldNum', -1)
@@ -404,7 +423,7 @@ class DuGet(threading.Thread):
 
 
 class MailNotify(threading.Thread):
-    def __init__(self, _dbhost, _dbport, _dbuser, _dbpwd, _db, _mail_host, _mail_pass,
+    def __init__(self, _dbhost, _dbport, _dbuser, _dbpwd, _db, _mail_host, _mailport, _mail_pass,
                  _sender, _receivers, _params, _sleep=30):
         self.dbhost = _dbhost
         self.dbport = _dbport
@@ -412,6 +431,7 @@ class MailNotify(threading.Thread):
         self.dbpwd = _dbpwd
         self.db = _db
         self.mail_host = _mail_host
+        self.mail_port = _mailport
         self.mail_pass = _mail_pass
         self.sender = _sender
         self.receivers = _receivers
@@ -448,7 +468,7 @@ class MailNotify(threading.Thread):
         message['Subject'] = Header(subject, 'utf-8')
 
         try:
-            smtpObj = smtplib.SMTP_SSL(self.mail_host, 465)
+            smtpObj = smtplib.SMTP_SSL(self.mail_host, self.mail_port)
             smtpObj.login(self.sender, self.mail_pass)
             smtpObj.sendmail(self.sender, self.receivers, message.as_string())
             smtpObj.quit()
@@ -482,7 +502,7 @@ class MailNotify(threading.Thread):
         logger.info("start thread {}".format(self.__class__))
         now_day = datetime.datetime.now().strftime("%Y-%m-%d")
         while True:
-            res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500), size=100)
+            res = self.get_list(self.params.get('delta', 50), self.params.get('delta_count', 500), size=200)
             is_send = False
             for it in res:
                 tmp_key = "{}_{}".format(it['good_id'], it['price'])
@@ -492,19 +512,19 @@ class MailNotify(threading.Thread):
                     is_send = True
             if is_send:
                 res.sort(key=lambda x: (x.get('new', 0), x['delta']), reverse=True)
-                self.send(res)
+                self.send(res[:100])
 
-            res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50), size=100)
-            is_send = False
-            for it in res:
-                tmp_key = "{}_{}".format(it['good_id'], it['price'])
-                if tmp_key not in self.lowprice_last_list:
-                    self.lowprice_last_list.add(tmp_key)
-                    it['new'] = 1
-                    is_send = True
-            if is_send:
-                res.sort(key=lambda x: (x.get('new', 0), x['delta']), reverse=True)
-                self.send(res, 'lowprice')
+            # res = self.get_list(self.params.get('lowprice_delta', 200), self.params.get('lowprice_delta_count', 50), size=200)
+            # is_send = False
+            # for it in res:
+            #     tmp_key = "{}_{}".format(it['good_id'], it['price'])
+            #     if tmp_key not in self.lowprice_last_list:
+            #         self.lowprice_last_list.add(tmp_key)
+            #         it['new'] = 1
+            #         is_send = True
+            # if is_send:
+            #     res.sort(key=lambda x: (x.get('new', 0), x['delta']), reverse=True)
+            #     self.send(res[:100], 'lowprice')
 
             # res = self.get_discount_list(self.params.get('discount', 3), self.params.get('discount_count', 500))
             # is_send = False
@@ -595,6 +615,8 @@ class BaseGet(threading.Thread):
     def get(self, url, headers=None, params=None, cookies=None):
         for _ in range(3):
             try:
+                if get_proxy():
+                    return requests.get(url, headers=headers, params=params, cookies=cookies, timeout=5, proxies=get_proxy())
                 return requests.get(url, headers=headers, params=params, cookies=cookies, timeout=5)
             except Exception as e:
                 logger.error("{} {}".format(url, e))
@@ -896,40 +918,101 @@ if __name__ == '__main__':
         '100782911': '北面',
         '100782929': '鬼冢虎',
         '100782903': 'under_armour',
-        # '100707710': '卡西欧CASIO腕表',
-        # '100707659': 'COACH箱包',
+        '100707710': '卡西欧CASIO腕表',
+        '100707659': 'COACH箱包',
         '100782940': 'Champion',
-        # '100707702': '浪琴LONGINES腕表',
-        # '100707644': '天梭TISSOT腕表',
-        # '100707676': 'VERSUS石英表'
+        '100707702': '浪琴LONGINES腕表',
+        '100707644': '天梭TISSOT腕表',
+        '100707676': 'VERSUS石英表'
     }
 
     search_list = [
         'ah2613',
-        '羽绒服',
+        'coach男包',
+        'coach女包',
+        'coach女鞋子',
+        'coach',
+        'armani外套',
+        'armani女装',
+        'armani男装',
+        'armani',
+        'burberry围巾',
+        'burberry包',
+        'burberry',
+        'gucci女包',
+        'gucci',
+        'michael kors女士',
+        'michael kors女士包手提',
+        'michael kors男士',
+        'michael kors',
+        'chanel香水',
+        'chanel口红',
+        'chanel',
+        'mcm双肩包',
+        'mcm单肩包',
+        'mcm',
+        'dior口红',
+        'dior香水',
+        'dior',
+        'unifree女装',
+        'unifree',
+        'dior',
+        'hermes香水',
+        'hermes',
+        'apm',
+        'swarovski项链',
+        'swarovski',
+        'mlb',
+        'genanx',
+        'gentlemonster太阳镜',
+        'gentlemonster墨镜',
+        'gentlemonster',
+        'chanel',
+        'martens',
         'timberland',
+        'timberland男鞋',
+        'timberland女鞋',
         '欧文',
         'adidas三叶草',
         'fila',
-        'adidas三叶草羽绒服',
+        'fila女鞋',
+        'fila男鞋',
+        'adidas羽绒服',
+        '三叶草羽绒服',
         'fila羽绒服'
         'adidas三叶草裤子',
+        '北面羽绒服',
+        '北面',
         'champion',
+        'champion羽绒服',
         'adidas三叶草卫衣',
         'adidas羽绒服',
+        'adidas篮球',
+        'adidas足球',
         '詹姆斯',
         'boost',
         '空军一号',
         'nike羽绒服',
+        'puma羽绒服',
+        'nike男鞋',
+        'puma男鞋',
+        'puma卫衣男',
+        'puma卫衣女',
+        'nike女鞋',
+        'puma女鞋',
         'nike卫衣',
         'nike裤子',
+        'nike篮球',
+        'nike足球',
         '李宁闪击',
         '李宁音速',
         '李宁驭帅',
         '李宁韦德之道',
+        '李宁篮球',
+        '李宁足球',
         'adidas',
         'zoom',
-        'adidas三叶草羽绒服',
+        '三叶草羽绒服',
         'm2k',
         '李宁',
         '李宁卫衣',
@@ -937,6 +1020,8 @@ if __name__ == '__main__':
         '李宁羽绒服',
         'vans 板鞋',
         '皮克',
+        '皮克男鞋',
+        '皮克女鞋',
         '皮克羽绒服',
         'air jordan',
         'air force',
@@ -945,7 +1030,20 @@ if __name__ == '__main__':
         'newbalance',
         'newbalance羽绒服',
         '哥伦比亚',
-        'anta'
+        '哥伦比亚羽绒服',
+        'anta',
+        'anta羽绒服',
+        'anta女鞋',
+        'anta男鞋',
+        'kappa羽绒服',
+        'kappa',
+        '锐步运动鞋男',
+        '锐步运动鞋女',
+        '锐步卫衣',
+        '锐步',
+        '361男鞋',
+        '361女鞋',
+        '361',
     ]
 
     works = []
@@ -953,15 +1051,17 @@ if __name__ == '__main__':
     results_detail = Queue(1000)
     tasks_du = Queue(1000)
     results_du = Queue(1000)
-    dbhost = '192.168.64.128'
+    dbhost = '192.168.2.137'
     dbport = 3306
-    dbuser = 'root'
-    dbpwd = ''
+    dbuser = 'test'
+    dbpwd = 'test'
     db = 'goods'
     mailhost = 'smtp.qq.com'
+    mailport = 465
     mailpwd = ''
     mailsender = '798990255@qq.com'
-    mailreceivers = ['798990255@qq.com']
+    mailreceivers = ['798990255@qq.com', '1589569837@qq.com']
+
     vip = VipGet(goods_dict, dbhost, dbport, dbuser, dbpwd, db)
     works.append(vip)
 
@@ -972,14 +1072,14 @@ if __name__ == '__main__':
     works.append(generator_task)
 
     params = {
-        "delta": 70,
+        "delta": 40,
         "delta_count": 100,
         "discount": 3,
         "discount_count": 100,
         "lowprice_delta": 100,
         "lowprice_delta_count": 100
     }
-    mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailpwd, mailsender, mailreceivers, params)
+    mail_task = MailNotify(dbhost, dbport, dbuser, dbpwd, db, mailhost, mailport, mailpwd, mailsender, mailreceivers, params)
     works.append(mail_task)
 
     search_vip = SearchVIPGet(search_list, dbhost, dbport, dbuser, dbpwd, db)
