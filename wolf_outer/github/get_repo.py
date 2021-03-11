@@ -845,8 +845,11 @@ class GetRepo(threading.Thread):
                             contributors = item.xpath('.//div[@class="markdown-body"]/p/text()')
                     contributors = json.dumps(contributors)
                     documents = item.xpath('string(./div/div[2]/div[2])')
-                    source_link = item.xpath('./div/div[2]/details/div/div/div[1]/a/@href')
-                    source_link = source_link[0] if source_link else ''
+                    source_link = ''
+                    for iteminner in item.xpath('./div/div[2]/details/div/div/div/a/@href'):
+                        if iteminner.endswith('.zip') or iteminner.endswith('.tar.gz'):
+                            source_link = iteminner
+                            break
                 else:
                     version_id = item.xpath('./div/div/div/div[1]/h4/a/@href')
                     version_id_str = version_id[0] if version_id else ''
@@ -863,8 +866,11 @@ class GetRepo(threading.Thread):
                     release_time = release_time[0] if release_time else ''
                     contributors = json.dumps([])
                     documents = ''
-                    source_link = item.xpath('./div/div/div/ul/li[last()]/a/@href')
-                    source_link = source_link[0] if source_link else ''
+                    source_link = ''
+                    for iteminner in item.xpath('./div/div[2]/details/div/div/div/a/@href'):
+                        if iteminner.endswith('.zip') or iteminner.endswith('.tar.gz'):
+                            source_link = iteminner
+                            break
 
                 if version_id:
                     results.append((self._repo_id,self._repo_name,version_name,version_id,release_time,contributors,
