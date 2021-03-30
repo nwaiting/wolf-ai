@@ -892,9 +892,11 @@ class SearchVIPGet(BaseGet):
             else:
                 break
         while True:
-            for it in self.keys_list:
-                self.get_products(it)
-            time.sleep(1)
+            h = int(datetime.datetime.now().strftime('%H'))
+            if h > 8 and h < 23:
+                for it in self.keys_list:
+                    self.get_products(it)
+            time.sleep(3)
 
 
 if __name__ == '__main__':
@@ -933,6 +935,7 @@ if __name__ == '__main__':
         'coach女鞋子',
         'coachT恤',
         'coach短袖',
+        'coach夹克',
         'coach',
         'armani外套',
         'armaniT恤',
@@ -940,17 +943,29 @@ if __name__ == '__main__':
         'armani女装',
         'armani男装',
         'armani',
+        'armaniT恤',
+        'armani短袖',
+        'armani夹克',
         'burberry围巾',
         'burberry包',
         'burberryT恤',
         'burberry短袖',
         'burberry',
+        'burberryT恤',
+        'burberry短袖',
+        'burberry夹克',
         'gucci女包',
         'gucci',
+        'gucciT恤',
+        'gucci短袖',
+        'gucci夹克',
         'michael kors女士',
         'michael kors女士包手提',
         'michael kors男士',
         'michael kors',
+        'michael korsT恤',
+        'michael kors短袖',
+        'michael kors夹克',
         'chanel香水',
         'chanel口红',
         'chanel',
@@ -987,15 +1002,22 @@ if __name__ == '__main__':
         'fila短袖',
         'fila女鞋',
         'fila男鞋',
+        'filaT恤',
+        'fila短袖',
+        'fila夹克',
         'adidas羽绒服',
         '三叶草羽绒服',
         'fila羽绒服'
         'adidas三叶草裤子',
         '北面羽绒服',
         '北面',
+        '北面T恤',
+        '北面短袖',
+        '北面夹克',
         'champion',
         'championT恤',
         'champion短袖',
+        'champion夹克',
         'champion羽绒服',
         'adidas三叶草卫衣',
         'adidas羽绒服',
@@ -1005,6 +1027,9 @@ if __name__ == '__main__':
         'adidas卫衣女',
         'adidasT恤',
         'adidas短袖',
+        'adidasT恤',
+        'adidas短袖',
+        'adidas夹克',
         '詹姆斯',
         'boost',
         '空军一号',
@@ -1014,6 +1039,9 @@ if __name__ == '__main__':
         'puma男鞋',
         'puma卫衣男',
         'puma卫衣女',
+        'pumaT恤',
+        'puma短袖',
+        'puma夹克',
         'nike女鞋',
         'puma女鞋',
         'nike卫衣',
@@ -1022,6 +1050,9 @@ if __name__ == '__main__':
         'nike裤子',
         'nike篮球',
         'nike足球',
+        'nikeT恤',
+        'nike短袖',
+        'nike夹克',
         '李宁闪击',
         '李宁音速',
         '李宁驭帅',
@@ -1030,6 +1061,7 @@ if __name__ == '__main__':
         '李宁足球',
         '李宁T恤',
         '李宁短袖',
+        '李宁夹克',
         'adidas',
         'zoom',
         '三叶草羽绒服',
@@ -1062,6 +1094,7 @@ if __name__ == '__main__':
         'anta男鞋',
         'antaT恤',
         'anta短袖',
+        'anta夹克',
         'kappa羽绒服',
         'kappa',
         '锐步运动鞋男',
@@ -1070,12 +1103,18 @@ if __name__ == '__main__':
         '锐步T恤',
         '锐步短袖',
         '锐步',
+        '锐步T恤',
+        '锐步短袖',
+        '锐步夹克',
         '361男鞋',
         '361女鞋',
         '361卫衣',
         '361T恤',
         '361短袖',
         '361',
+        '361T恤',
+        '361短袖',
+        '361夹克',
     ]
 
     works = []

@@ -10,6 +10,7 @@ import threading
 from queue import Queue
 import logging
 import pymysql
+import re
 from DBUtils.PersistentDB import PersistentDB
 
 log_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "{}.log".format(os.path.basename(__file__)))
@@ -19,6 +20,7 @@ logging.basicConfig(level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 logger = logging.getLogger(__name__)
+RE_NUMBER = re.compile('[0-9]', re.M|re.S)
 
 user_agent_list = [
         "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",
@@ -112,6 +114,8 @@ class ProxyHandler(object):
     def get_valid_proxy(self):
         ""
         proxies_list = ['', None]
+
+
         select_proxy = random.choice(proxies_list)
         if select_proxy:
             self._current_proxy = {
@@ -210,8 +214,9 @@ class SqlModel(object):
     def save_release_version(self, datas):
         with self.conn as conn, conn.cursor() as cur:
             sql = "insert into tb_release_version(repo_id,repo_name,version_name,version_id,release_time,contributors," \
-                  "link,release_documents,source_link,tag_id,verified,get_ts) " \
-                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)"
+                  "link,release_documents,source_link,tag_id,verified,get_ts,total_commit) " \
+                  "values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) on duplicate key update get_ts=values(get_ts)," \
+                  "total_commit=values(total_commit)"
             try:
                 cur.executemany(sql, datas)
             except Exception as e:
@@ -254,7 +259,7 @@ class SpiderHandleBase(object):
         self._repo_id = repo_id
         self._repo_name = repo_name
         self._except_try_times = 3
-        self._max_sleep_value = 4
+        self._max_sleep_value = 3
         self._request_domain_base = 'https://github.com'
         self._proxy = ProxyHandler()
         self._sql_model = SqlModel(None)
@@ -524,33 +529,41 @@ class CommiterHandle(SpiderHandleBase):
 
     def get_pages(self):
         for version in self._versions:
-            while True:
-                results = []
-                params = None
-                if self._next_page_count:
-                    url = '{}/commits/{}'.format(self._commit_url_base, version)
-                    params = {
-                        "after": "{} {}".format(self._next_page_id, self._next_page_count),
-                        "branch": "{}".format(version)
-                    }
-                else:
-                    url = '{}/commits/{}'.format(self._commit_url_base, version)
 
+            self._next_page_count = 0
+            url = '{}/commits/{}'.format(self._commit_url_base, version)
+            try_times = 0
+            is_stop = 3
+            done_times = 1
+            while is_stop:
+                is_stop = True
+                results = []
                 headers = get_headers(self._commit_url_base)
                 headers["Referer"] = "{}".format(self._commit_url_base)
 
                 res = ''
                 try:
-                    logger.info("start {} {}".format(url, params))
-                    res = self.get(url, params=params, headers=headers)
+                    logger.info("start {}".format(url))
+                    res = self.get(url, headers=headers)
                 except Exception as e:
                     logger.error("{} {} {}".format(self.__class__, url, e))
-                    break
+                    if try_times < 5:
+                        continue
+                    try_times += 1
                 finally:
                     self.maybe_sleep_for_while()
 
+                done_times += 1
                 if res.status_code == 200:
                     html = etree.HTML(res.text)
+                    older_str = html.xpath('//div[@class="BtnGroup"]/a[@rel="nofollow"][last()]/text()')
+                    older_str = older_str[0] if older_str else ''
+                    if older_str.find('Older') != -1:
+                        url_items = html.xpath('//div[@class="BtnGroup"]/a[@rel="nofollow"][last()]/@href')
+                        if url_items:
+                            url = url_items[0]
+                    else:
+                        is_stop -= 1
                     li_items = html.xpath('//div[@class="TimelineItem-body"]/ol/li')
                     index = 0
                     for li_item in li_items:
@@ -583,10 +596,76 @@ class CommiterHandle(SpiderHandleBase):
                     self._next_page_count = len(li_items) - 1
                 if results:
                     self._sql_model.save_commits(results)
-                    if len(results) <= 5:
+                    if len(results) < 3:
                         break
                 else:
                     break
+
+            if done_times < 15:
+                self._next_page_count = 0
+                while True:
+                    results = []
+                    params = None
+                    if self._next_page_count:
+                        url = '{}/commits/{}'.format(self._commit_url_base, version)
+                        params = {
+                            "after": "{} {}".format(self._next_page_id, self._next_page_count),
+                            "branch": "{}".format(version)
+                        }
+                    else:
+                        url = '{}/commits/{}'.format(self._commit_url_base, version)
+
+                    headers = get_headers(self._commit_url_base)
+                    headers["Referer"] = "{}".format(self._commit_url_base)
+
+                    res = ''
+                    try:
+                        logger.info("start {} {}".format(url, params))
+                        res = self.get(url, params=params, headers=headers)
+                    except Exception as e:
+                        logger.error("{} {} {}".format(self.__class__, url, e))
+                        break
+                    finally:
+                        self.maybe_sleep_for_while()
+
+                    if res.status_code == 200:
+                        html = etree.HTML(res.text)
+                        li_items = html.xpath('//div[@class="TimelineItem-body"]/ol/li')
+                        index = 0
+                        for li_item in li_items:
+                            commit_text = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/text()')
+                            commit_text = ','.join(commit_text) if commit_text else ''
+                            commit_url = li_item.xpath('./div[@class="flex-auto min-width-0"]/p/a/@href')
+                            commit_url = commit_url[0] if commit_url else ''
+                            commit_id = os.path.basename(commit_url)
+                            if index == 0:
+                                self._next_page_id = commit_id
+                                index += 1
+                            authors = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/a/text()')
+                            commitor = ''
+                            author = ''
+                            if len(authors) == 2:
+                                author = authors[0]
+                                commitor = authors[1]
+                            elif len(authors) == 1:
+                                commitor = authors[0]
+                            commit_time = li_item.xpath('.//div[@class="f6 text-gray min-width-0"]/relative-time/@datetime')
+                            commit_time = commit_time[0] if commit_time else ''
+                            link = li_item.xpath('./div[1]/p/a/@href')
+                            link = link[0] if link else ''
+                            checkstatus = li_item.xpath('./div[1]/div[last()]/div[last()]/details/summary/@class')
+                            checkstatus = checkstatus[0] if checkstatus else 'None'
+                            verified = li_item.xpath('./div[last()]/details/summary/text()')
+                            verified = clean_str(verified) if verified else 'None'
+                            results.append((self._repo_id,self._repo_name,version,commit_id,commitor,author,commit_time,link,
+                                            checkstatus,verified,commit_text,int(time.time())))
+                        self._next_page_count = len(li_items) - 1
+                    if results:
+                        self._sql_model.save_commits(results)
+                        if len(results) < 3:
+                            break
+                    else:
+                        break
 
     def run(self):
         self.get_pages()
@@ -695,6 +774,25 @@ class GetRepo(threading.Thread):
                         ))
         return results
 
+    def get_tag_commit_total(self, tag_id):
+        # https://github.com/tensorflow/tensorflow/tree/v2.0.1
+        res_dict = {}
+        headers = get_headers(self._repo_url)
+        url = "{}/tree/{}".format(self._repo_url, tag_id)
+        try:
+            res = self.get(url, headers=headers)
+            # f.write(res.text.encode('utf8'))
+            html = etree.HTML(res.text)
+            total_commit_str = html.xpath('//div[@class="flex-shrink-0"]/ul/li/a/span/strong/text()')
+            total_commit_str = total_commit_str[0] if total_commit_str else ''
+            logger.info("get {} total commit:{}".format(url, total_commit_str))
+            return {"commit": int(''.join(RE_NUMBER.findall(total_commit_str)))}
+        except Exception as e:
+            logger.error("{} msg {}".format(url, e))
+        finally:
+            time.sleep(random.randint(1, 5))
+        return res_dict
+
     def get_release_version(self):
         next_page_after = ''
         while True:
@@ -723,36 +821,64 @@ class GetRepo(threading.Thread):
             html = etree.HTML(res.text)
             for item in html.xpath('//div[@class="release-entry"]'):
                 version_id = item.xpath('./div/div[1]/ul/li[1]/a/@title')
-                version_id = version_id[0] if version_id else ''
-                tag_id = version_id
                 if version_id:
-                    next_page_after = version_id
-                verified = item.xpath('./div//summary[@title="Commit signature"]/text()')
-                verified = clean_str(verified) if verified else 'NOT'
-                link = item.xpath('.//div[@class="release-header"]/div/div/a/@href')
-                link = link[0] if link else ''
-                version_name = item.xpath('.//div[@class="release-header"]/div/div/a/text()')
-                version_name = version_name[0] if version_name else ''
-                if not version_name:
-                    continue
-                release_time = item.xpath('.//div[@class="release-header"]/p/relative-time/@datetime')
-                release_time = release_time[0] if release_time else ''
-                contributors = []
-                contributors_title = item.xpath('.//div[@class="markdown-body"]/h2[last()]/text()')
-                if contributors_title:
-                    if contributors_title[0].find('Contributors') > 0:
-                        contributors = item.xpath('.//div[@class="markdown-body"]/p/text()')
-                contributors = json.dumps(contributors)
-                documents = item.xpath('string(./div/div[2]/div[2])')
-                source_link = item.xpath('./div/div[2]/details/div/div/div[1]/a/@href')
-                source_link = source_link[0] if source_link else ''
+                    version_id = version_id[0] if version_id else ''
+                    tag_id = version_id
+                    total_commit = 0
+                    if version_id:
+                        total_commit = self.get_tag_commit_total(version_id).get('commit', 0)
+                        next_page_after = version_id
+                    verified = item.xpath('./div//summary[@title="Commit signature"]/text()')
+                    verified = clean_str(verified) if verified else 'NOT'
+                    link = item.xpath('.//div[@class="release-header"]/div/div/a/@href')
+                    link = link[0] if link else ''
+                    version_name = item.xpath('.//div[@class="release-header"]/div/div/a/text()')
+                    version_name = version_name[0] if version_name else ''
+                    if not version_name:
+                        continue
+                    release_time = item.xpath('.//div[@class="release-header"]/p/relative-time/@datetime')
+                    release_time = release_time[0] if release_time else ''
+                    contributors = []
+                    contributors_title = item.xpath('.//div[@class="markdown-body"]/h2[last()]/text()')
+                    if contributors_title:
+                        if contributors_title[0].find('Contributors') > 0:
+                            contributors = item.xpath('.//div[@class="markdown-body"]/p/text()')
+                    contributors = json.dumps(contributors)
+                    documents = item.xpath('string(./div/div[2]/div[2])')
+                    source_link = ''
+                    for iteminner in item.xpath('./div/div[2]/details/div/div/div/a/@href'):
+                        if iteminner.endswith('.zip') or iteminner.endswith('.tar.gz'):
+                            source_link = iteminner
+                            break
+                else:
+                    version_id = item.xpath('./div/div/div/div[1]/h4/a/@href')
+                    version_id_str = version_id[0] if version_id else ''
+                    version_id = os.path.basename(version_id_str)
+                    tag_id = version_id
+                    total_commit = 0
+                    if version_id:
+                        total_commit = self.get_tag_commit_total(version_id).get('commit', 0)
+                        next_page_after = version_id
+                    verified = ''
+                    link = version_id_str
+                    version_name = version_id
+                    release_time = item.xpath('./div/span/relative-time/@datetime')
+                    release_time = release_time[0] if release_time else ''
+                    contributors = json.dumps([])
+                    documents = ''
+                    source_link = ''
+                    for iteminner in item.xpath('./div/div[2]/details/div/div/div/a/@href'):
+                        if iteminner.endswith('.zip') or iteminner.endswith('.tar.gz'):
+                            source_link = iteminner
+                            break
 
-                results.append((self._repo_id,self._repo_name,version_name,version_id,release_time,contributors,
-                                link,documents,source_link,tag_id,verified,int(time.time())))
+                if version_id:
+                    results.append((self._repo_id,self._repo_name,version_name,version_id,release_time,contributors,
+                                link,documents,source_link,tag_id,verified,int(time.time()), total_commit))
 
             if results:
                 self._sql_model.save_release_version(results)
-                if len(results) <= 3:
+                if len(results) <= 1:
                     break
             else:
                 break
